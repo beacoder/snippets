@@ -1,0 +1,16 @@
+// 冒泡排序
+void BoobleSort(int *number, int n)
+{
+  for(int i =10; i >0; --i)
+    {
+      for(int j =0; j < i-1; ++j)
+  {
+	  if(number[j] > number[j+1])
+	    {
+	      int temp = number[j];
+	      number[j] = number[j+1];
+	      number[j+1] = temp;
+	    }
+	}
+    }
+}
