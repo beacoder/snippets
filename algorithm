@@ -1,9 +1,9 @@
 // 冒泡排序
 void BoobleSort(int *number, int n)
 {
-  for(int i =10; i >0; --i)
+  for(int i = n; i > 0; --i)
     {
-      for(int j =0; j < i-1; ++j)
+      for(int j = 0; j < i-1; ++j)
   	{
 	  if(number[j] > number[j+1])
 	    {
