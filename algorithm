@@ -1,5 +1,5 @@
 // 冒泡排序
-void BoobleSort(int *number, int n)
+void BubbleSort(int *number, int n)
 {
   for(int i = n; i > 0; --i)
     {
