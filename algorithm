@@ -1,10 +1,9 @@
 // 冒泡排序
 void BubbleSort(int *number, int n)
 {
+  int temp = 0;
   for(int i = n; i > 0; --i)
-    {
-      int temp = 0;
-      
+    {      
       for(int j = 0; j < i-1; ++j)
   	{
 	  if(number[j] > number[j+1])
