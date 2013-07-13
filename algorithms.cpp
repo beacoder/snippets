@@ -43,7 +43,7 @@ void BubbleSort(int *number, int n)
     {
 	  if(number[j] > number[j+1])
 	    {
-	      std::swap(number[j], number[j+1])
+            std::swap(number[j], number[j+1]);
 	    }
 	}
     }
