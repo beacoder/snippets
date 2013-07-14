@@ -83,3 +83,27 @@ void SelectionSort(int *number, int n)
         std::swap(number[j], number[min]);
     }
 }
+
+int partition(int *number, int l, int r)
+{
+    int i = l -1, j = r; int v = number[r];
+    for (;;)
+    {
+      while (number[++i] < v) ;
+      while (number[--j] > v) if(j == l) break;
+      if(i >= j) break;
+      std::swap(number[i], number[j]);
+    }
+
+    std::swap(number[i], number[r]);
+    return i;
+}
+
+void QuickSort(int *number, int l, int r)
+{
+    int i;
+    if (r <= 1) return;
+    i = partition(number, l, r);
+    QuickSort(number, l, i-1);
+    QuickSort(number, i+1, r);
+}
