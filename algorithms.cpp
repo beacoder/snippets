@@ -1,8 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <assert.h>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
+#define MAXNUMBER 20000
 
 void BubbleSort(int *number, int n);
 void SelectionSort(int *number, int n);
@@ -19,16 +22,29 @@ void PrintArray(int *number, int n)
 
 int main(void)
 {
-    int numbers[10];
-    for(int i=0; i<10; ++i)
+    // init rand function
+    srand (time(NULL));
+
+    int numbers[MAXNUMBER];
+    for(int i = 0; i < MAXNUMBER; ++i)
     {
-        cin >> numbers[i];
+        numbers[i] = rand();
     }
 
-    // BubbleSort(numbers, 10);
-    SelectionSort(numbers, 10);
+    time_t beg, end; 
+    double elapsed;
+    time(&beg);
 
-    PrintArray(numbers, 10);
+    //BubbleSort(numbers, MAXNUMBER);
+    SelectionSort(numbers, MAXNUMBER);
+
+    time(&end);
+    elapsed = difftime(end, beg);
+
+    cout << "time elapsed in seconds" << std::endl;
+    cout << elapsed << std::endl;
+
+    //PrintArray(numbers, MAXNUMBER);
 
     return 0;
 }
