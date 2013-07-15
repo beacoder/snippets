@@ -104,6 +104,7 @@ int partition(int *array, int left, int right)
       std::swap(array[i], array[j]);
     }
 
+  // at last, we find the right final position for pivot in the array
   std::swap(array[i], array[right]);
   return i;
 }
