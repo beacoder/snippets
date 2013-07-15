@@ -96,9 +96,11 @@ int partition(int *array, int left, int right)
       // find the first one which is smaller than pivot
       while (array[--j] > pivot) if(j == left) break;
 
+      // make sure that the bigger one is on the left of the smaller one
+      // so that we can swap them
       if(i >= j) break;
 
-      // swap the bigger and the smaller one
+      // swap the bigger one and the smaller one
       std::swap(array[i], array[j]);
     }
 
