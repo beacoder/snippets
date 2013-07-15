@@ -90,10 +90,15 @@ int partition(int *array, int left, int right)
 
   for (;;)
     {
+      // find the first one which is bigger than pivot
       while (array[++i] < pivot) ;
+
+      // find the first one which is smaller than pivot
       while (array[--j] > pivot) if(j == left) break;
 
       if(i >= j) break;
+
+      // swap the bigger and the smaller one
       std::swap(array[i], array[j]);
     }
 
@@ -104,7 +109,8 @@ int partition(int *array, int left, int right)
 void QuickSort(int *array, int left, int right)
 {
   if (right <= left) return;
-  
+
+  // divide and conquer
   int border = partition(array, left, right);
   QuickSort(array, left, border-1);
   QuickSort(array, border+1, right);
