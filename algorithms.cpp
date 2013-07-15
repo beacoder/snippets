@@ -5,103 +5,107 @@
 #include <time.h>
 
 using namespace std;
-#define MAXNUMBER 20000
+#define MAXNUMBER 50000
 
-void BubbleSort(int *number, int n);
-void SelectionSort(int *number, int n);
+void BubbleSort(int *array, int n);
+void SelectionSort(int *array, int n);
+void QuickSort(int *array, int l, int r);
 
-void PrintArray(int *number, int n)
+void PrintArray(int *array, int n)
 {
-    for(int i = 0; i < n; ++i)
+  for(int i = 0; i < n; ++i)
     {
-        cout << number[i] << std::string(" ");
+      cout << array[i] << std::string(" ");
     }
 
-    cout << std::endl;
+  cout << std::endl;
 }
 
 int main(void)
 {
-    // init rand function
-    srand (time(NULL));
+  // init rand function
+  srand (time(NULL));
 
-    int numbers[MAXNUMBER];
-    for(int i = 0; i < MAXNUMBER; ++i)
+  int numbers[MAXNUMBER];
+  for(int i = 0; i < MAXNUMBER; ++i)
     {
-        numbers[i] = rand();
+      numbers[i] = rand();
     }
 
-    time_t beg, end; 
-    double elapsed;
-    time(&beg);
+  time_t beg, end; 
+  double elapsed;
+  time(&beg);
 
-    //BubbleSort(numbers, MAXNUMBER);
-    SelectionSort(numbers, MAXNUMBER);
+  //BubbleSort(numbers, MAXNUMBER);
+  //SelectionSort(numbers, MAXNUMBER);
+  QuickSort(numbers, 0, MAXNUMBER - 1);
 
-    time(&end);
-    elapsed = difftime(end, beg);
+  time(&end);
+  elapsed = difftime(end, beg);
 
-    cout << "time elapsed in seconds" << std::endl;
-    cout << elapsed << std::endl;
+  cout << "time elapsed in seconds" << std::endl;
+  cout << elapsed << std::endl;
 
-    //PrintArray(numbers, MAXNUMBER);
+  //PrintArray(numbers, MAXNUMBER);
 
-    return 0;
+  return 0;
 }
 
-void BubbleSort(int *number, int n)
+void BubbleSort(int *array, int n)
 {
-    int temp = 0;
-    for(int i = n; i > 0; --i)
+  int temp = 0;
+  for(int i = n; i > 0; --i)
     {
-        for(int j = 0; j < i-1; ++j)
+      for(int j = 0; j < i-1; ++j)
         {
-            if(number[j] > number[j+1])
+	  if(array[j] > array[j+1])
             {
-                std::swap(number[j], number[j+1]);
+	      std::swap(array[j], array[j+1]);
             }
         }
     }
 }
 
-void SelectionSort(int *number, int n)
+void SelectionSort(int *array, int n)
 {
-    for(int j = 0; j < n; ++j)
+  for(int j = 0; j < n; ++j)
     {
-        int min = j;
+      int min = j;
 
-        for(int i = j; i < n; ++i)
+      for(int i = j; i < n; ++i)
         {
-            if(number[min] > number[i])
+	  if(array[min] > array[i])
             {
-                min = i;
+	      min = i;
             }
         }
 
-        std::swap(number[j], number[min]);
+      std::swap(array[j], array[min]);
     }
 }
 
-int partition(int *number, int l, int r)
+int partition(int *array, int left, int right)
 {
-    int i = l -1, j = r; int v = number[r];
-    for (;;)
+  int i = left-1, j = right, pivot = array[right];
+
+  for (;;)
     {
-      while (number[++i] < v) ;
-      while (number[--j] > v) if(j == l) break;
+      while (array[++i] < pivot) ;
+      while (array[--j] > pivot) if(j == left) break;
+
       if(i >= j) break;
-      std::swap(number[i], number[j]);
+      std::swap(array[i], array[j]);
     }
 
-    std::swap(number[i], number[r]);
-    return i;
+  std::swap(array[i], array[right]);
+  return i;
 }
 
-void QuickSort(int *number, int l, int r)
+void QuickSort(int *array, int left, int right)
 {
-    int i;
-    if (r <= 1) return;
-    i = partition(number, l, r);
-    QuickSort(number, l, i-1);
-    QuickSort(number, i+1, r);
+  if (right <= left) return;
+  
+  int border = partition(array, left, right);
+  QuickSort(array, left, border-1);
+  QuickSort(array, border+1, right);
 }
