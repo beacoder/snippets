@@ -10,6 +10,7 @@ using namespace std;
 void BubbleSort(int *array, int n);
 void SelectionSort(int *array, int n);
 void QuickSort(int *array, int l, int r);
+int BinarySearch(int *array, int n, int value);
 
 void PrintArray(int *array, int n)
 {
@@ -28,9 +29,9 @@ int main(void)
 
   int numbers[MAXNUMBER];
   for(int i = 0; i < MAXNUMBER; ++i)
-    {
+  {
       numbers[i] = rand();
-    }
+  }
 
   time_t beg, end; 
   double elapsed;
@@ -39,6 +40,7 @@ int main(void)
   //BubbleSort(numbers, MAXNUMBER);
   //SelectionSort(numbers, MAXNUMBER);
   QuickSort(numbers, 0, MAXNUMBER - 1);
+  int result = BinarySearch(numbers, MAXNUMBER, 100);
 
   time(&end);
   elapsed = difftime(end, beg);
@@ -117,4 +119,27 @@ void QuickSort(int *array, int left, int right)
   int border = partition(array, left, right);
   QuickSort(array, left, border-1);
   QuickSort(array, border+1, right);
+}
+
+int BinarySearch(int *array, int n, int value)
+{
+    int mid = 0, left = 0, right = n-1;
+
+    while(left <= right)
+    {
+        mid = (left + right)/2;
+
+        if(array[mid] < value)
+        {
+            left = mid + 1;
+        }
+        else if(array[mid] > value)
+        {
+            right = mid - 1;
+        }
+        else
+            return mid;
+    }
+
+    return -1;
 }
