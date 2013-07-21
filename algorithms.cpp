@@ -14,9 +14,9 @@ int BinarySearch(int *array, int n, int value);
 
 void PrintArray(int *array, int n)
 {
-  for(int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
-      cout << array[i] << std::string(" ");
+        cout << array[i] << std::string(" ");
     }
 
   cout << std::endl;
@@ -57,32 +57,32 @@ void BubbleSort(int *array, int n)
 {
   int temp = 0;
   for(int i = n; i > 0; --i)
-    {
+  {
       for(int j = 0; j < i-1; ++j)
-        {
-	  if(array[j] > array[j+1])
-            {
-	      std::swap(array[j], array[j+1]);
-            }
-        }
-    }
+      {
+          if(array[j] > array[j+1])
+          {
+              std::swap(array[j], array[j+1]);
+          }
+      }
+  }
 }
 
 void SelectionSort(int *array, int n)
 {
-  for(int j = 0; j < n; ++j)
+    for(int j = 0; j < n; ++j)
     {
-      int min = j;
+        int min = j;
 
-      for(int i = j; i < n; ++i)
+        for(int i = j; i < n; ++i)
         {
-	  if(array[min] > array[i])
+            if(array[min] > array[i])
             {
-	      min = i;
+                min = i;
             }
         }
 
-      std::swap(array[j], array[min]);
+        std::swap(array[j], array[min]);
     }
 }
 
@@ -91,12 +91,12 @@ int partition(int *array, int left, int right)
   int i = left-1, j = right, pivot = array[right];
 
   for (;;)
-    {
+  {
       // find the first one which is bigger than pivot
       while (array[++i] < pivot) ;
 
       // find the first one which is smaller than pivot
-      while (array[--j] > pivot) if(j == left) break;
+      while (array[--j] > pivot) if(left == j) break;
 
       // if the bigger one is on the right of the smaller one,
       // then we don't have to swap them
@@ -104,7 +104,7 @@ int partition(int *array, int left, int right)
 
       // swap the bigger one with the smaller one
       std::swap(array[i], array[j]);
-    }
+  }
 
   // at last, we find the right final position for pivot in the array
   std::swap(array[i], array[right]);
@@ -113,7 +113,7 @@ int partition(int *array, int left, int right)
 
 void QuickSort(int *array, int left, int right)
 {
-  if (right <= left) return;
+  if (left >= right) return;
 
   // divide and conquer
   int border = partition(array, left, right);
