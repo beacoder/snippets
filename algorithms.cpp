@@ -170,7 +170,7 @@ int BinarySearch(int *array, int n, int value)
     return -1;
 }
 
-// 正序构造单链表
+// create single list with same order as array's
 PNode CreateSingleList(int *array, int n)
 {
   PNode head, pre;
@@ -201,7 +201,7 @@ PNode CreateSingleList(int *array, int n)
   return head;
 }
 
-// "尾插法" 逆序单链表
+// tail insert method to reverse the single list
 PNode ReverseSingleList(PNode head)
 {
   if(NULL == head)
@@ -211,7 +211,6 @@ PNode ReverseSingleList(PNode head)
   cur = head;
   new_head = NULL;
 
-  // tail insert
   while(NULL != cur)
   {
     next = cur->next;
