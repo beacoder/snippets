@@ -10,6 +10,7 @@ using namespace std;
 void PrintArray(int *array, int n);
 void BubbleSort(int *array, int n);
 void SelectionSort(int *array, int n);
+void InsertionSort(int *array, int n);
 void QuickSort(int *array, int l, int r);
 int BinarySearch(int *array, int n, int value);
 
@@ -48,6 +49,7 @@ int main(void)
 
   //BubbleSort(numbers, MAXNUMBER);
   //SelectionSort(numbers, MAXNUMBER);
+  //InsertionSort(numbers, MAXNUMBER);
   QuickSort(numbers, 0, MAXNUMBER - 1);
   int result = BinarySearch(numbers, MAXNUMBER, 100);
 
@@ -110,6 +112,28 @@ void SelectionSort(int *array, int n)
 
         std::swap(array[j], array[min]);
     }
+}
+
+void InsertionSort(int *array, int n)
+{
+  int j, pivot;
+  
+  for(int i = 1; i < n; ++i)
+  {
+    pivot = array[i];
+
+    // find the first element smaller than pivot,
+    // starting from array[i-1]
+    j = i - 1;
+    while ((0 <= j) && (array[j] > pivot))
+    {
+      array[j+1] = array[j];
+      --j;
+    }
+
+    // right position for pivot
+    array[j+1] = pivot;
+  }
 }
 
 int partition(int *array, int left, int right)
