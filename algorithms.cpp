@@ -157,6 +157,7 @@ int partition(int *array, int left, int right)
   }
 
   // at last, we find the right final position for pivot in the array
+  // left is smaller than pivot and right is bigger than pivot
   std::swap(array[i], array[right]);
   return i;
 }
