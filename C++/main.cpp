@@ -1,4 +1,8 @@
-// g++ -g -Wall -I/usr/include/boost -L/usr/lib main.cpp -ldl -lboost_thread -o mainTest
+/*
+ * gcc compile command is :
+ * g++ -g -Wall -I/usr/include/boost -L/usr/lib main.cpp -ldl -lboost_thread -o mainTest
+ *
+*/
 
 #include <dlfcn.h>
 #include <stdlib.h>

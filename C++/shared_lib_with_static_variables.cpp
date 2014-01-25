@@ -1,5 +1,8 @@
-// step1: gcc -c -Wall -fpic shared_lib_with_static_variables.cpp
-// step2: gcc -shared -o libshared_lib_with_static_variables.so shared_lib_with_static_variables.o
+/* 
+ * step1: gcc -c -Wall -fpic shared_lib_with_static_variables.cpp
+ * step2: gcc -shared -o libshared_lib_with_static_variables.so shared_lib_with_static_variables.o
+ * 
+*/
 
 #ifndef foo_h__
 #define foo_h__

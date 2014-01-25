@@ -1,5 +1,5 @@
-/** gcc compile command is :
- *
+/** 
+ * gcc compile command is :
  * g++ -g -Wall -I/usr/include/boost -L/usr/lib multi-thread-test.cpp -lboost_thread -o test 
 */
 
