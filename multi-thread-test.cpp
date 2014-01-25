@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     boost::thread t1(threadfunc1);
     boost::thread t2(threadfunc2);
     
-    // join threads, make sure no memory leak
+    // join threads, make sure no memory leaks
     t1.join();
     t2.join();
     
