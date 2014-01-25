@@ -1,6 +1,6 @@
 #!/usr/bin/lua
 
-require("msleep")
+require("sleep4lua")
 p = print
 sf = string.format
 

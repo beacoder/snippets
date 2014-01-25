@@ -1,6 +1,6 @@
 /*
  * sleep() function for lua to use
- * gcc -shared -fPIC -o msleep.so -I/usr/local/include -llua msleep.c
+ * gcc -shared -fPIC -o sleep4lua.so -I/usr/local/include -llua sleep4lua.c
  *
 */
 
@@ -15,15 +15,19 @@ static int msleep_c(lua_State *L){
 	return 0;                  /* No items returned */
 }
 
-/* Can't name this sleep(), it conflicts with sleep() in unistd.h */
 static int sleep_c(lua_State *L){
 	long secs = lua_tointeger(L, -1);
 	sleep(secs);
 	return 0;                  /* No items returned */
 }
 
+/**
+ * luaopen_sleep4lua must contain the shared library name "sleep4lua"
+ * so that require("sleep4lua") will load sleep4lua.so
+ */
+
 /* Register both functions */
-int luaopen_msleep(lua_State *L){
+int luaopen_sleep4lua(lua_State *L){
 	lua_register( L, "msleep", msleep_c);  
 	lua_register(L, "sleep", sleep_c);
 	return 0;
