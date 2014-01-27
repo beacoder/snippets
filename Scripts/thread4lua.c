@@ -19,7 +19,7 @@ static int thread_join_c(lua_State *L)
   void* status;
   if (pthread_join(thread, &status))
   {
-    lua_pushnumber(L, (int)status);
+    lua_pushnumber(L, (long)status);
   }
   return 1;                  /* number of results to be returned  */
 }
