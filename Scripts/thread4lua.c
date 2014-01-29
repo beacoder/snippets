@@ -15,7 +15,7 @@ static int thread_join_c(lua_State *L)
   /* -1 refers to the element at the stack top
    *  1 refers to the element at the stack bottom
    */
-  pthread_t thread = lua_tonumber(L, -1);
+  pthread_t thread = lua_tonumber(L, 1);
   void* status;
   if (pthread_join(thread, &status))
   {
