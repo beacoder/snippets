@@ -11,6 +11,9 @@
 
 static int msleep_c(lua_State *L)
 {
+  /* -1 refers to the element at the stack top
+   *  1 refers to the element at the stack bottom
+   */
   long msecs = lua_tointeger(L, -1);
   usleep(1000*msecs);
   return 0;                  /* No items returned */
