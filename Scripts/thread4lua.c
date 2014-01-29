@@ -31,8 +31,7 @@ static int thread_create_c(lua_State *L)
    */
   pthread_t thread;  
   void* proc = lua_topointer(L, 1);
-  int arg  = lua_tonumber(L, 2);  
-  if (pthread_create(&thread, NULL, (void *(*) (void *))proc, &arg))
+  if (pthread_create(&thread, NULL, (void *(*) (void *))proc, NULL))
   {
     lua_pushnumber(L, thread);
   }
