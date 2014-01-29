@@ -30,7 +30,14 @@ static int thread_create_c(lua_State *L)
    *  1 refers to the element at the stack bottom
    */
   pthread_t thread;  
-  void* proc = lua_topointer(L, 1);
+  void* proc = (void*)lua_topointer(L, 1);
+  if (NULL == proc)
+  {
+    lua_pushstring(L, "Invalid function.");
+    lua_error(L);
+    return 1;    
+  }
+  
   if (pthread_create(&thread, NULL, (void *(*) (void *))proc, NULL))
   {
     lua_pushnumber(L, thread);
