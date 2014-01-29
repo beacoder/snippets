@@ -30,7 +30,7 @@ static int thread_create_c(lua_State *L)
    *  1 refers to the element at the stack bottom
    */
   pthread_t thread;  
-  lua_CFunction proc = lua_tocfunction(L, 1);
+  void* proc = lua_topointer(L, 1);
   int arg  = lua_tonumber(L, 2);  
   if (pthread_create(&thread, NULL, (void *(*) (void *))proc, &arg))
   {
