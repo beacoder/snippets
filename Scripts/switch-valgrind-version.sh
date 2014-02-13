@@ -1,3 +1,5 @@
+#!/bin/ksh
+
 # remove valgrind 3.9
 rpm -e --nodeps --allmatches valgrind-3.9.0-1.el5 valgrind-devel-3.9.0-1.el5
 
