@@ -1,5 +1,7 @@
 #!/bin/ksh
 
+#demonstrate how to change and restore umask
+
 #umask value => file permission
 #0022 => "666-22" => "644" => rw-r--r--
 #0002 => "666-2" => "664" => rw-rw-r--
