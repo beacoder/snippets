@@ -1,3 +1,8 @@
+/** 
+ * gcc compile command is :
+ * g++ -g -Wall algorithms.cpp -o algorithms
+*/
+
 #include <iostream>
 #include <vector>
 #include <assert.h>
@@ -51,7 +56,7 @@ int main(void)
   //SelectionSort(numbers, MAXNUMBER);
   //InsertionSort(numbers, MAXNUMBER);
   QuickSort(numbers, 0, MAXNUMBER - 1);
-  int result = BinarySearch(numbers, MAXNUMBER, 100);
+  BinarySearch(numbers, MAXNUMBER, 100);
 
   time(&end);
   elapsed = difftime(end, beg);
@@ -83,7 +88,6 @@ int main(void)
 
 void BubbleSort(int *array, int n)
 {
-  int temp = 0;
   for(int i = n; i > 0; --i)
   {
       for(int j = 0; j < i-1; ++j)
