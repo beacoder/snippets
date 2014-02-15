@@ -1,6 +1,6 @@
 /*
  * gcc compile command is :
- * g++ -g -Wall -I/usr/include/boost -L/usr/lib main.cpp -ldl -lboost_thread -o mainTest
+ * g++ -g -Wall -I/usr/include/boost -L/usr/lib static-variables-test.cpp -ldl -lboost_thread -o static-variables-test
  *
 */
 
