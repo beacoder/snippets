@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 
 #demonstrate how to change and restore umask
 
