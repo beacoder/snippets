@@ -2,7 +2,7 @@
  * check the invocation order of constructor, destruct-or.
  *
  * gcc compile command is :
- * g++ -g -Wall ConstructorAndDestructor.cpp -o InvocationOrder
+ * g++ -g -Wall InvocationOrder.cpp -o InvocationOrder
  *
  */
 
