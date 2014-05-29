@@ -1,17 +1,5 @@
 Code Design:
 
-SMCFunctionalTest {
-- doRun
-+ startTest {
-// prevent background execution
-HsmTestSynchronizer().acquireExecution
-}
-+ waitTestDonw {
-// enable background execution
-HsmTestSynchronizer().releaseExecution
-}
-}
-
 HsmSMCTest {
 
 + ADBRSetup {
@@ -22,60 +10,27 @@ HsmSMCTest {
 resultArea->setTestDoneListener(new DefaultTestDoneListener(HsmSites))
 }
 
-doExecute {
-  runFunctionalTest {
-+ SMCFunctionalTest::startTest
-+ // prevent background execution
-+ HsmTest::ADBRSetup
-+ SMC_ARM ...
-+ SMCFunctionalTest::waitTestDone
-  }
-}
-
 }
 
 + DefaultTestDoneListener {
 
   DefaultTestDoneListener {
-  // for Non-SMC
-  HsmTest*
-}
-  DefaultTestDoneListener {
-  // for SMC
-  HsmSite*
+  // for SMC and Non-SMC
+  std::map<int ,HsmSite*> sites
 }
 
   testDone {
-
-  ? HsmTest* HsmSite*
-  <
-  // Non-SMC
-  HsmTest::uploadResults
-  >
-  <
   // later we'll break this down into several services
   // could extract a method in HsmSite
-  HsmSite::uploadResults
-  >
-}
-}
 
-HsmTestSynchronizer {
-+ ::acquireExecution {
-  pthread_mutex_lock(&mMutex)
-}
-+ ::releaseExecution {
-  pthread_mutex_unlock(&mMutex)
-}
+  // In Non-SMC mode, check if we need to re-execution this
+  while (re-execution) {
+  HsmSite::generateSiteResults
+  }
 
-+ pthread_mutex_t ::mMutex
-}
-
-HsmSite {
-+ uploadResults {
-  generateSiteResults
-  generateFailCountResults
-  generateRaResults
+  // when we finished multiple execution
+  HsmSite::generateFailCountResults
+  HsmSite::generateRaResults
 }
 
 }
@@ -87,9 +42,38 @@ ResultAreasCenter {
 
 }
 
+HsmPattern {
+
++ QueryAddressBasedResult {
+  ? HsmSiteInfo::mADBRResultIsReady
+  <
+    NULL
+  >
+  <
+    resultArea->waitAddressBasedResultAvailable
+    HsmSiteInfo::mADBRResultIsReady = true
+  >
+}
+
+  judgeAndLog {
++ QueryAddressBasedResult
+}
+
+  generateBitmapFile {
++ QueryAddressBasedResult
+}
+
+}
+
 HsmTest {
 + std::string mResultArea
 + bool mADBRResultIsReady
+
+  execute {
++ startTest
++ waitTestDone
++ checkReExecution
+  }
 
 + startTest {
   preExecute
@@ -120,37 +104,6 @@ HsmTest {
   setXMode()
 }
 
-judgeAndLog {
-+ QueryAddressBasedResult
-}
-
-generateBitmapFile {
-+ QueryAddressBasedResult
-}
-
-+ QueryAddressBasedResult {
-  ? mADBRResultIsReady
-  <
-    NULL
-  >
-  <
-  resultArea->waitAddressBasedResultAvailable
-  >
-}
-
-+ uploadResults {
-  generateSiteResults
-  ? doneMultiExecution
-  <
-  generateFailCountResults
-  generateRaResults
-  >
-  <
-  // only execute generateFailCountResults && generateRaResults
-  // after doneMultiExecution
-  >
-}
-
 }
 
 ResultArea {
@@ -162,15 +115,15 @@ ResultArea {
 }
 
 + setTestDoneListener
-+ unsetTestDoneListener
+
++ startTest {
+  acquireExecution
+  ::startTest
+}
 
 + waitTestDone {
-
-  // wait for Functional-Test completion
-  HsmTestSynchronizer().acquireExecution
-  HsmTestSynchronizer().releaseExecution
-
-+ onTestDone
+  ::waitTestDone
+  releaseExecution
 }
 
 + onTestDone {
@@ -178,7 +131,21 @@ ResultArea {
 }
 
 + waitAddressBasedResultAvailable {
-  waitTestDone
+
+  // wait for Functional-Test completion
+  acquireExecution
+  releaseExecution
+
+  onTestDone
 }
+
++ acquireExecution {
+  pthread_mutex_lock(&mMutex)
+}
++ releaseExecution {
+  pthread_mutex_unlock(&mMutex)
+}
+
++ pthread_mutex_t ::mMutex
 
 }
