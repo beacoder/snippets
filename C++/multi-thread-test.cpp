@@ -3,10 +3,10 @@
  * g++ -g -Wall -I/usr/include/boost -L/usr/lib -lboost_thread multi-thread-test.cpp -o test 
 */
 
-#include "boost/shared_ptr.hpp"
+#include <boost/shared_ptr.hpp>
 #include <iostream>
-#include "boost/bind.hpp"
-#include "boost/thread.hpp"
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
 
 using namespace std;
 
