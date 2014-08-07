@@ -1,3 +1,11 @@
+/*
+ * provide a simple cache utility.
+ *
+ * gcc compile command is :
+ * 
+ *
+ */
+ 
 #include <map>
 #include <stdexcept>
 #include <sstream>
