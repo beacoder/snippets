@@ -11,6 +11,7 @@ struct Rectangle
 };
 
 // 算法：
+// see @http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
 // A与B不相交的情况包括四种情况:
 // Cond1. If A's left edge is to the right of the B's right edge, - then A is Totally to right Of B
 // Cond2. If A's right edge is to the left of the B's left edge, - then A is Totally to left Of B
