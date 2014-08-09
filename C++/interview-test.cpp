@@ -3,70 +3,33 @@
 
 struct Rectangle
 {
-  // Coordinates of bottom left corner
-  int x, y;
-  int height, width;
+  // upper and left corner
+  int x1, y1;
+  
+  // right and down corner
+  int x2, y2;
 };
 
 // 算法：
-// 经过分析得出结论：
-// 两个矩形重叠的条件是其中一个矩形至少有一个顶点落在另一个矩形的内部
-// 且只需要判断一个矩形有点在另一个的内部，此时意味着另一个矩形的顶点也在这个矩形的内部
+// A与B不相交的情况包括四种情况:
+// Cond1. If A's left edge is to the right of the B's right edge, - then A is Totally to right Of B
+// Cond2. If A's right edge is to the left of the B's left edge, - then A is Totally to left Of B
+// Cond3. If A's top edge is below B's bottom edge, - then A is Totally below B
+// Cond4. If A's bottom edge is above B's top edge, - then A is Totally above B
 
-bool RectanglesOverlap(const Rectangle &r1, const Rectangle &r2)
-{
-  // 第一个矩形的顶点
-  std::pair<int, int> pt11,pt12,pt13,pt14;
-  // 第二个矩形的顶点
-  std::pair<int, int> pt11,pt12,pt13,pt14;
+// A与B相交需要满足
+// A's Left Edge to left of B's right edge, and
+// A's right edge to right of B's left edge, and
+// A's top above B's bottom, and
+// A's bottom below B's Top
 
-  pt11.first = r1.x;
-  pt11.second = r1.y;
-
-  pt12.first = r1.x;
-  pt12.second = r1.y + r1.height;
-
-  pt13.first = r1.x + r1.width;
-  pt13.second = r1.y + r1.height;
-
-  pt14.first = r1.x + r1.width;
-  pt14.second = r1.y;
-
-  // 判断r1的顶点是否落在r2内部, r1顶点在r2内部就意味着r2的顶点也在r1内部
-  if ((pt11.first >= r2.x) &&
-      (pt11.first <= r2.x+r2.width) &&
-      (pt11.second >= r2.y) &&
-      (pt11.second <= r2.y+r2.height))
+if (A.x1 < B.x2 && 
+    A.x2 > B.x1 && 
+    A.y1 < B.y2 && 
+    A.y > B.y1) 
     {
-      return true;
+    	A intersect with B.
     }
-
-  if ((pt12.first >= r2.x) &&
-      (pt12.first <= r2.x+r2.width) &&
-      (pt12.second >= r2.y) &&
-      (pt12.second <= r2.y+r2.height))
-    {
-      return true;
-    }
-
-  if ((pt13.first >= r2.x) &&
-      (pt13.first <= r2.x+r2.width) &&
-      (pt13.second >= r2.y) &&
-      (pt13.second <= r2.y+r2.height))
-    {
-      return true;
-    }
-
-  if ((pt14.first >= r2.x) &&
-      (pt14.first <= r2.x+r2.width) &&
-      (pt14.second >= r2.y) &&
-      (pt14.second <= r2.y+r2.height))
-    {
-      return true;
-    }
-
-  return false;
-}
 
 //2.从左边到右打印第n层的二叉树节点的信息
 
