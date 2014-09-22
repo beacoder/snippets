@@ -33,7 +33,7 @@ int main()
   Derived d;
 }
 
-// Output:
+// C++ Output:
 
 // Base::Base()
 // Base::virt()        // ← Not Derived::virt()
@@ -42,7 +42,7 @@ int main()
 // Derived::~Derived()
 // Base::~Base()       // ← Not Derived::~Derived()
 
-// In Java, Output:
+// Java Output:
 
 // Base::Base()
 // Derived::virt()
