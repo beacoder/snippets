@@ -33,6 +33,7 @@ int main()
   Derived d;
 }
 
+// Never Call Virtual Functions during Construction or Destruction - Effective C++
 // C++ Output:
 
 // Base::Base()
