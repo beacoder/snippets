@@ -41,3 +41,12 @@ int main()
 // Derived::virt()
 // Derived::~Derived()
 // Base::~Base()       // ← Not Derived::~Derived()
+
+// In Java, Output:
+
+// Base::Base()
+// Derived::virt()
+// Derived::Derived()
+// Derived::virt()
+// Derived::~Derived()
+// Derived::~Derived()
