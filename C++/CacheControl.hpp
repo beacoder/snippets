@@ -275,3 +275,7 @@ InstrumentCache<T*, KeyT>::~InstrumentCache()
   }
   m_data.clear();
 }
+
+// use case:
+// typedef InstrumentCache<Object*, std::string> ObjectPtrCache;
+// typedef InstrumentCache<Object, std::string> ObjectCache;
