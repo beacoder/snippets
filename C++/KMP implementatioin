@@ -27,7 +27,7 @@ int *compute_prefix_function(char *pattern, int psize)
 {
 	int k = -1;
 	int i = 1;
-	int *pi = malloc(sizeof(int)*psize);
+	int *pi = (int*)malloc(sizeof(int)*psize);
 	if (!pi)
 		return NULL;
 
