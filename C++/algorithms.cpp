@@ -19,24 +19,6 @@ void InsertionSort(int *array, int n);
 void QuickSort(int *array, int l, int r);
 int BinarySearch(int *array, int n, int value);
 
-// define single list
-struct _Node
-{
-  int     data;
-  _Node * next;
-
-  ~_Node()
-  {
-    cout << data << " is freed !" << std::endl;
-  }
-};
-typedef struct _Node Node, * PNode;
-
-void PrintSingleList(PNode head);
-PNode CreateSingleList(int *array, int n);
-PNode ReverseSingleList(PNode head);
-void FreeSingleList(PNode head);
-
 int main(void)
 {
   // init rand function
@@ -64,24 +46,8 @@ int main(void)
   cout << "Sort and Search" << std::endl << std::endl;
   cout << "sort " << MAXNUMBER << " numbers" << std::endl;
   cout << "time elapsed in " << elapsed << " seconds" << std::endl;
-  //PrintArray(numbers, MAXNUMBER);
 
   cout << std::endl << std::endl;
-  
-  // single list
-  int list[10] = {1,2,3,4,5,6,7,8,9,10};
-  PNode head = CreateSingleList(list, 10);
-
-  cout << "single list operation" << std::endl << std::endl;
-  cout << "list before reverse" << std::endl;
-  PrintSingleList(head);
-
-  cout << "list after reverse" << std::endl;
-  PNode new_head = ReverseSingleList(head);
-  PrintSingleList(new_head);
-
-  cout << std::endl << "free the heap space occupied by the list" << std::endl;
-  FreeSingleList(new_head);
   
   return 0;
 }
@@ -197,94 +163,4 @@ int BinarySearch(int *array, int n, int value)
     }
 
     return -1;
-}
-
-// create single list with same order as array's
-PNode CreateSingleList(int *array, int n)
-{
-  PNode head, pre;
-  head = pre = NULL;
-  
-  for(int i = 0; i < n; ++i)
-  {
-    Node* pNode = new Node();
-    pNode->data = array[i];
-
-    // head Node
-    if(NULL == pre)
-    {
-      pre = pNode;
-      head = pNode;
-    }
-    else
-    {
-      pre->next = pNode;
-      pre = pNode;
-    }
-  }
-
-  // tail Node
-  if(NULL != pre)
-    pre->next = NULL;
-  
-  return head;
-}
-
-// tail insert method to reverse the single list
-PNode ReverseSingleList(PNode head)
-{
-  if(NULL == head)
-    return NULL;
-
-  PNode cur,next,new_head;
-  cur = head;
-  new_head = NULL;
-
-  while(NULL != cur)
-  {
-    next = cur->next;
-    
-    cur->next = new_head;
-    new_head = cur;
-
-    cur = next;
-  }
-
-  return new_head;
-}
-
-void PrintSingleList(PNode head)
-{
-  PNode cur = head;
-  
-  while(NULL != cur)
-  {
-    cout << cur->data << " -> ";
-    cur = cur->next;
-  }
-
-  cout << "NULL" << std::endl;
-}
-
-void PrintArray(int *array, int n)
-{
-  for(int i = 0; i < n; ++i)
-  {
-    cout << array[i] << std::string(" ");
-  }
-
-  cout << std::endl;
-}
-
-void FreeSingleList(PNode head)
-{
-  PNode cur = head;
-  PNode temp = NULL;
-  
-  while(NULL != cur)
-  {
-    temp = cur;
-    cur = cur->next;
-    delete temp;
-  }
 }
