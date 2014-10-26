@@ -12,7 +12,6 @@
 using namespace std;
 #define MAXNUMBER 50000
 
-void PrintArray(int *array, int n);
 void BubbleSort(int *array, int n);
 void SelectionSort(int *array, int n);
 void InsertionSort(int *array, int n);
