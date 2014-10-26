@@ -49,32 +49,31 @@ void BubbleSort(int *array, int n)
 {
   for(int i = n; i > 0; --i)
   {
-      for(int j = 0; j < i-1; ++j)
+    for(int j = 0; j < i-1; ++j)
+    {
+      if(array[j] > array[j+1])
       {
-          if(array[j] > array[j+1])
-          {
-              std::swap(array[j], array[j+1]);
-          }
+        std::swap(array[j], array[j+1]);
       }
+    }
   }
 }
 
 void SelectionSort(int *array, int n)
 {
-    for(int j = 0; j < n; ++j)
+  for(int j = 0; j < n; ++j)
+  {
+    int min = j;
+    for(int i = j; i < n; ++i)
     {
-        int min = j;
-
-        for(int i = j; i < n; ++i)
-        {
-            if(array[min] > array[i])
-            {
-                min = i;
-            }
-        }
-
-        std::swap(array[j], array[min]);
+      if(array[min] > array[i])
+      {
+        min = i;
+      }
     }
+
+    std::swap(array[j], array[min]);
+  }
 }
 
 void InsertionSort(int *array, int n)
@@ -105,18 +104,18 @@ int partition(int *array, int left, int right)
 
   for (;;)
   {
-      // find the first one which is bigger than pivot
-      while (array[++i] < pivot) ;
+    // find the first one which is bigger than pivot
+    while (array[++i] < pivot) ;
 
-      // find the first one which is smaller than pivot
-      while (array[--j] > pivot) if(left == j) break;
+    // find the first one which is smaller than pivot
+    while (array[--j] > pivot) if(left == j) break;
 
-      // if the bigger one is on the right of the smaller one,
-      // then we don't have to swap them
-      if(i >= j) break;
+    // if the bigger one is on the right of the smaller one,
+    // then we don't have to swap them
+    if(i >= j) break;
 
-      // swap the bigger one with the smaller one
-      std::swap(array[i], array[j]);
+    // swap the bigger one with the smaller one
+    std::swap(array[i], array[j]);
   }
 
   // at last, we find the right final position for pivot in the array
@@ -137,23 +136,19 @@ void QuickSort(int *array, int left, int right)
 
 int BinarySearch(int *array, int n, int value)
 {
-    int mid = 0, left = 0, right = n-1;
+  int mid = 0, left = 0, right = n-1;
 
-    while(left <= right)
-    {
-        mid = (left + right)/2;
+  while(left <= right)
+  {
+    mid = (left + right)/2;
 
-        if(array[mid] < value)
-        {
-            left = mid + 1;
-        }
-        else if(array[mid] > value)
-        {
-            right = mid - 1;
-        }
-        else
-            return mid;
-    }
+    if(array[mid] < value)
+      left = mid + 1;
+    else if(array[mid] > value)
+      right = mid - 1;
+    else
+      return mid;
+  }
 
-    return -1;
+  return -1;
 }
