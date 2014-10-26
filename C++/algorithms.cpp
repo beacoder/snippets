@@ -4,8 +4,6 @@
 */
 
 #include <iostream>
-#include <vector>
-#include <assert.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -25,9 +23,7 @@ int main(void)
 
   int numbers[MAXNUMBER];
   for(int i = 0; i < MAXNUMBER; ++i)
-  {
-      numbers[i] = rand();
-  }
+    numbers[i] = rand();
 
   time_t beg, end; 
   double elapsed;
@@ -42,11 +38,9 @@ int main(void)
   time(&end);
   elapsed = difftime(end, beg);
 
-  cout << "Sort and Search" << std::endl << std::endl;
-  cout << "sort " << MAXNUMBER << " numbers" << std::endl;
-  cout << "time elapsed in " << elapsed << " seconds" << std::endl;
-
-  cout << std::endl << std::endl;
+  cout << "Sort and Search\n\n";
+  cout << "sort " << MAXNUMBER << " numbers\n";
+  cout << "time elapsed in " << elapsed << " seconds\n\n" << std::endl;
   
   return 0;
 }
