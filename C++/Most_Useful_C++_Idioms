@@ -3,3 +3,5 @@ Following is a list of most useful c++ idioms
 0.RAII => Resource Acquisition Is Initialization
 
 1.Pimpl => Pointer To Implementation
+
+2.Checked delete => Increase safety of delete expression
