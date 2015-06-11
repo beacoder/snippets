@@ -1,4 +1,5 @@
 Following is a list of most useful c++ idioms
+@see http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms
 
 0.RAII => Resource Acquisition Is Initialization
 
