@@ -1,7 +1,7 @@
 Following is a list of most useful c++ idioms
 @see http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms
 
-0.virtual function => From an OO perspective, it is the single most important feature of C++
+0.virtual function => Letting old code call new code at runtime
 
 1.RAII => Resource Acquisition Is Initialization
 
