@@ -1,7 +1,7 @@
 Following is a list of most useful c++ idioms
 @see http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms
 
-0.virtual function => makes C++ Object-Oriented, which in turn help make systems extensible and adaptable.
+0.use virtual functions => makes C++ Object-Oriented, which in turn help make systems extensible and adaptable
 
 1.RAII => Resource Acquisition Is Initialization
 
