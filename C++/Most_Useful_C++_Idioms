@@ -3,7 +3,7 @@ Following is a list of most useful c++ idioms
 
 0.virtual functions => Letting old code call new code at runtime
 
-1.templates => Letting old code call new code at compile time
+1.templates         => Letting old code call new code at compile time
 
 2.RAII => Resource Acquisition Is Initialization
 
