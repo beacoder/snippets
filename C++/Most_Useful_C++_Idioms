@@ -1,12 +1,8 @@
 Following is a list of most useful c++ idioms
 @see http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms
 
-0.virtual functions => Letting old code call new code at runtime
+0.RAII => Resource Acquisition Is Initialization
 
-1.templates         => Letting old code call new code at compile time
+1.Pimpl => Pointer To Implementation
 
-2.RAII => Resource Acquisition Is Initialization
-
-3.Pimpl => Pointer To Implementation
-
-4.Checked delete => Increase safety of delete expression
+2.Checked delete => Increase safety of delete expression
