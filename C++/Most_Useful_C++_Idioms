@@ -1,8 +1,12 @@
 Following is a list of most useful c++ idioms
 @see http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms
 
-0.RAII => Resource Acquisition Is Initialization
+0.Interface Class       => Separating an interface of a class from its implementation
 
-1.Pimpl => Pointer To Implementation
+1.Non-Virtual Interface => Template Method Pattern
 
-2.Checked delete => Increase safety of delete expression
+2.RAII                  => Resource Acquisition Is Initialization
+
+3.Pimpl                 => Pointer To Implementation
+
+4.Checked delete        => Increase safety of delete expression
