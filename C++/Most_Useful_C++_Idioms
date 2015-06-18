@@ -10,3 +10,5 @@ Following is a list of most useful c++ idioms
 3.Pimpl                 => Pointer To Implementation
 
 4.Checked delete        => Increase safety of delete expression
+
+5.Virtual Constructor   => Creating an object or it's copy without knowing its concrete type
