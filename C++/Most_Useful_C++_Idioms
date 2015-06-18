@@ -3,12 +3,10 @@ Following is a list of most useful c++ idioms
 
 0.Interface Class       => Separating an interface of a class from its implementation
 
-1.Non-Virtual Interface => Template Method Pattern
+1.RAII                  => Resource Acquisition Is Initialization
 
-2.RAII                  => Resource Acquisition Is Initialization
+2.Pimpl                 => Pointer To Implementation
 
-3.Pimpl                 => Pointer To Implementation
+3.Checked delete        => Increase safety of delete expression
 
-4.Checked delete        => Increase safety of delete expression
-
-5.Virtual Constructor   => Creating an object or it's copy without knowing its concrete type
+4.Virtual Constructor   => Creating an object or it's copy without knowing its concrete type
