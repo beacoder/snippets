@@ -122,8 +122,7 @@ T& InstrumentCache<T, KeyT>::retrieve(int site) const
   if (it == m_data.end())
   {
     std::stringstream errstream;
-    errstream << "Error: fail to retrieve to cache of site " << site << "." << endl
-              << __PRETTY_FUNCTION__ << endl;
+    errstream << "Error: fail to retrieve to cache of site " << site << "." << endl;
     throw std::runtime_error(errstream.str());
   }
   
@@ -256,8 +255,7 @@ T* InstrumentCache<T*, KeyT>::retrieve(int site) const
   if (it == m_data.end())
   {
     std::stringstream errstream;
-    errstream << "Error: fail to retrieve to cache of site " << site << "." << endl
-              << __PRETTY_FUNCTION__ << endl;
+    errstream << "Error: fail to retrieve to cache of site " << site << "." << endl;
     throw std::runtime_error(errstream.str());
   }
 
