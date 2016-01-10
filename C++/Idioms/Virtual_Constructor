@@ -1,5 +1,3 @@
-Virtual_Constructor     => Creating an object or it's copy without knowing its concrete type
-
 #include <memory>
 class Employee
 {
