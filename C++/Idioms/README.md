@@ -1,5 +1,4 @@
 most useful c++ idioms
-
 =========
 
 @see http://en.wikibooks.org/wiki/More_C++_Idioms
