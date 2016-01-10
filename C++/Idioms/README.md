@@ -2,7 +2,7 @@
 
 @see [More_C++_Idioms] (http://en.wikibooks.org/wiki/More_C++_Idioms)
 
-## Interface_Class
+## 0.Interface_Class
   Separating an interface of a class from its implementation
   Invoke implementation of an abstraction/class using runtime polymorphism.
 ## RAII
