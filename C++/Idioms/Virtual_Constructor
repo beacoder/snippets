@@ -1,0 +1,27 @@
+Virtual_Constructor     => Creating an object or it's copy without knowing its concrete type
+
+#include <memory>
+class Employee
+{
+  public:
+    typedef std::shared_ptr<Employee> Ptr;
+    virtual ~Employee () {}                     // Native support for polymorphic destruction.
+    virtual Ptr create () const = 0;            // Virtual constructor (creation)
+    virtual Ptr clone () const = 0;             // Virtual constructor (copying)
+};
+
+class Manager : public Employee                 // "is-a" relationship
+{
+  public:
+    Manager () {}                               // Default constructor
+    Manager (Manager const &) {}                // Copy constructor
+    virtual ~Manager () {}
+    Ptr create () const                         // Virtual constructor (creation)
+    {
+      return Ptr(new Manager());
+    }
+    Ptr clone () const                          // Virtual constructor (copying)
+    {
+      return Ptr(new Manager (*this));
+    }
+};
