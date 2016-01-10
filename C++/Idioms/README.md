@@ -1,8 +1,7 @@
-most useful c++ idioms
+Most Useful C++ Idioms
 =========
 
 @see http://en.wikibooks.org/wiki/More_C++_Idioms
-
 =========
 
 0.Interface_Class         => Separating an interface of a class from its implementation
