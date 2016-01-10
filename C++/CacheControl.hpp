@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <boost/thread/mutex.hpp>
+#include <memory>
 
 using std::endl;
 /**
@@ -275,5 +276,7 @@ InstrumentCache<T*, KeyT>::~InstrumentCache()
 }
 
 // use case:
-// typedef InstrumentCache<Object*, std::string> ObjectPtrCache;
-// typedef InstrumentCache<Object, std::string> ObjectCache;
+// typedef Object* ObjectPtr;
+// typedef InstrumentCache<ObjectPtr, std::string>    ObjectPtrCache;
+// typedef std::shared_ptr<Object> SharedObject;
+// typedef InstrumentCache<SharedObject, std::string> SharedObjectCache;
