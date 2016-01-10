@@ -16,6 +16,10 @@ To provide basic exception safety guarantee
 ```
 Pointer To Implementation
 ```
+## Construct_On_First_Use
+```
+Ensure that an object is initialized before its first use, e.g: Singleton pattern
+```
 ## Virtual_Constructor
 ```
 Creating an object or it's copy without knowing its concrete type
