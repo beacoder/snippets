@@ -1,5 +1,3 @@
-Checked_delete          => Increase safety of delete expression
-
 template<class T> 
 inline void checked_delete(T * x)
 {
@@ -7,6 +5,7 @@ inline void checked_delete(T * x)
     (void) sizeof(type_must_be_complete);
     delete x;
 }
+
 template<class T> 
 struct checked_deleter : std::unary_function <T *, void>
 {
