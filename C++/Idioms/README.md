@@ -2,9 +2,11 @@
 
 @see [More_C++_Idioms] (http://en.wikibooks.org/wiki/More_C++_Idioms)
 
-## 0.Interface_Class
+## Interface_Class
+```
   Separating an interface of a class from its implementation
   Invoke implementation of an abstraction/class using runtime polymorphism.
+```
 ## RAII
 ```
 To guarantee release of resource(s) at the end of a scope
