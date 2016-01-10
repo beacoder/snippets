@@ -8,6 +8,7 @@ class NonCopyable
    NonCopyable (NonCopyable const &); // private copy constructor
    NonCopyable & operator = (NonCopyable const &); // private assignment operator
 };
+
 template <class T>
 class AutoDelete : NonCopyable
 {
@@ -43,6 +44,7 @@ void foo ()
   // No need to call delete here.
   // Destructor of safe_del will delete memory
 }
+
 void X::bar()
 {
   ScopedLock safe_lock(l); // Lock will be released certainly
