@@ -1,0 +1,36 @@
+Interface_Class         => Separating an interface of a class from its implementation
+                           Invoke implementation of an abstraction/class using runtime polymorphism.
+
+class shape   // An interface class
+{
+  public:
+    virtual ~shape();
+    virtual void move_x(int x) = 0;
+    virtual void move_y(int y) = 0;
+    virtual void draw() = 0;
+};
+
+class line : public shape
+{
+  public:
+    virtual ~line();
+    virtual void move_x(int x); // implements move_x
+    virtual void move_y(int y); // implements move_y
+    virtual void draw(); // implements draw
+  private:
+    point end_point_1, end_point_2;
+};
+
+int main (void)
+{
+  std::vector<shape *> shapes;
+  //  Fill up shapes vector somehow.
+  for (vector<shape *>::iterator iter (shapes.begin());
+       iter != shapes.end();
+       ++iter)
+  {
+    (*iter)->draw();
+  }
+  //  Clean up shapes vector. (Normally we would use something like boost::shared_ptr to automate cleanup,
+  //  this is for illustration only)
+}
