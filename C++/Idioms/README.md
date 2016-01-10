@@ -1,5 +1,10 @@
-Following is a list of most useful c++ idioms
+most useful c++ idioms
+
+=========
+
 @see http://en.wikibooks.org/wiki/More_C++_Idioms
+
+=========
 
 0.Interface_Class         => Separating an interface of a class from its implementation
                              Invoke implementation of an abstraction/class using runtime polymorphism.
