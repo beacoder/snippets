@@ -1,5 +1,3 @@
-Copy-and-swap           => Create an exception safe implementation of overloaded assignment operator
-
 class String
 {
     char * str;
