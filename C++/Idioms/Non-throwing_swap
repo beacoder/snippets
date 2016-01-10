@@ -1,6 +1,3 @@
-Non-throwing_swap =>  To implement an exception safe and efficient swap operation.
-                      To provide uniform interface to it to facilitate generic programming.
-
 class UserDefined 
 {
     String str;
