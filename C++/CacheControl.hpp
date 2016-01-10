@@ -12,7 +12,6 @@
 #include <boost/thread/mutex.hpp>
 #include <memory>
 
-using std::endl;
 /**
  * Cache
  */
@@ -123,7 +122,7 @@ T& InstrumentCache<T, KeyT>::retrieve(int site) const
   if (it == m_data.end())
   {
     std::stringstream errstream;
-    errstream << "Error: fail to retrieve to cache of site " << site << "." << endl;
+    errstream << "Error: fail to retrieve to cache of site " << site << "." << std::endl;
     throw std::runtime_error(errstream.str());
   }
   
@@ -256,7 +255,7 @@ T* InstrumentCache<T*, KeyT>::retrieve(int site) const
   if (it == m_data.end())
   {
     std::stringstream errstream;
-    errstream << "Error: fail to retrieve to cache of site " << site << "." << endl;
+    errstream << "Error: fail to retrieve to cache of site " << site << "." << std::endl;
     throw std::runtime_error(errstream.str());
   }
 
