@@ -1,6 +1,6 @@
 # Most Useful C++ Idioms
 
-@see http://en.wikibooks.org/wiki/More_C++_Idioms
+@see [More_C++_Idioms] (http://en.wikibooks.org/wiki/More_C++_Idioms)
 
 ## Interface_Class
 ```
