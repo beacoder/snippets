@@ -1,6 +1,3 @@
-Interface_Class         => Separating an interface of a class from its implementation
-                           Invoke implementation of an abstraction/class using runtime polymorphism.
-
 class shape   // An interface class
 {
   public:
