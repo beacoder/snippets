@@ -1,6 +1,3 @@
-RAII                    => To guarantee release of resource(s) at the end of a scope
-                           To provide basic exception safety guarantee
-
 //  Private copy constructor and copy assignment ensure classes derived 
 //  from class NonCopyable cannot be copied.
 class NonCopyable 
