@@ -10,40 +10,48 @@ class CountDownLatch : boost::noncopyable
 {
  public:
 
-  explicit  CountDownLatch(int count)
-            : mutex_(),
-            condition_(mutex_),
-            count_(count)
-  {
-  }
+  explicit  CountDownLatch(int count);
 
-  void wait()
-  {
-    std::lock_guard lock(mutex_);
-    while (count_ > 0)
-    {
-      condition_.wait();
-    }
-  }
+  void wait();
 
-  void countDown()
-  {
-    std::lock_guard lock(mutex_);
-    --count_;
-    if (count_ == 0)
-    {
-      condition_.notifyAll();
-    }
-  }
+  void countDown();
 
-  int getCount() const
-  {
-    std::lock_guard lock(mutex_);
-    return count_;
-  }
+  int getCount() const;
 
  private:
   mutable std::mutex      mutex_;
   std::condition_variable condition_;
   int count_;
 };
+
+CountDownLatch::CountDownLatch(int count)
+  : mutex_(),
+  condition_(mutex_),
+  count_(count)
+{
+}
+
+void CountDownLatch::wait()
+{
+  std::lock_guard lock(mutex_);
+  while (count_ > 0)
+  {
+    condition_.wait();
+  }
+}
+
+void CountDownLatch::countDown()
+{
+  std::lock_guard lock(mutex_);
+  --count_;
+  if (count_ == 0)
+  {
+    condition_.notifyAll();
+  }
+}
+
+int CountDownLatch::getCount() const
+{
+  std::lock_guard lock(mutex_);
+  return count_;
+}
