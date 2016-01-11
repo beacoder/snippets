@@ -1,6 +1,6 @@
 /**
  * gcc compile command is :
- * g++ -g -Wall -I/usr/include/boost -L/usr/lib -lboost_thread multi_thread_test.cpp -o test
+ * g++ -g -Wall -I/usr/include/boost -L/usr/lib -lboost_thread bind_function.cpp -o test
  */
 
 #include <boost/shared_ptr.hpp>
