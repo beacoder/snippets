@@ -1,5 +1,5 @@
 /*
- * @note Modified from chenshuo's "muduo/base/BlockingQueue.h"
+ * @note Modified from chenshuo's "muduo/base/CountDownLatch.h"
  */
 
 #include <mutex>
