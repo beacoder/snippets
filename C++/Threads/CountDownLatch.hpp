@@ -19,7 +19,7 @@ class CountDownLatch : boost::noncopyable
 
   void wait()
   {
-    MutexLockGuard lock(mutex_);
+    std::lock_guard lock(mutex_);
     while (count_ > 0)
     {
       condition_.wait();
@@ -28,7 +28,7 @@ class CountDownLatch : boost::noncopyable
 
   void countDown()
   {
-    MutexLockGuard lock(mutex_);
+    std::lock_guard lock(mutex_);
     --count_;
     if (count_ == 0)
     {
@@ -38,12 +38,12 @@ class CountDownLatch : boost::noncopyable
 
   int getCount() const
   {
-    MutexLockGuard lock(mutex_);
+    std::lock_guard lock(mutex_);
     return count_;
   }
 
  private:
-  mutable MutexLock mutex_;
-  Condition condition_;
+  mutable std::mutex      mutex_;
+  std::condition_variable condition_;
   int count_;
 };
