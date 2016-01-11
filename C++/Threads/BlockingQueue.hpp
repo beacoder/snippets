@@ -1,4 +1,7 @@
-@note Modified from chenshuo's "muduo/base/BlockingQueue.h"
+
+/*
+ * @note Modified from chenshuo's "muduo/base/BlockingQueue.h"
+ */
 
 #include <mutex>
 #include <condition_variable>
