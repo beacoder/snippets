@@ -1,6 +1,6 @@
 /**
  * gcc compile command is :
- * g++ -g -Wall -I/usr/include/boost -L/usr/lib -lboost_thread condition_variable_test.cpp -o test
+ * g++ -g -Wall -I/usr/include/boost -L/usr/lib -lboost_thread condition_variable.cpp -o test
  */
 
 #include <iostream>
