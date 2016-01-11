@@ -7,33 +7,33 @@
   Separating an interface of a class from its implementation
   Invoke implementation of an abstraction/class using runtime polymorphism.
 ```
-### RAII
+#### RAII
 ```
 To guarantee release of resource(s) at the end of a scope
 To provide basic exception safety guarantee
 ```
-## Pimpl
+#### Pimpl
 ```
 Pointer To Implementation
 ```
-## Construct_On_First_Use
+#### Construct_On_First_Use
 ```
 Ensure that an object is initialized before its first use, e.g: Singleton pattern
 ```
-## Virtual_Constructor
+#### Virtual_Constructor
 ```
 Creating an object or it's copy without knowing its concrete type
 ```
-## Non-throwing_swap
+#### Non-throwing_swap
 ```
 To implement an exception safe and efficient swap operation.
 To provide uniform interface to it to facilitate generic programming.
 ```
-## Copy-and-swap
+#### Copy-and-swap
 ```
 Create an exception safe implementation of overloaded assignment operator
 ```
-## Checked_delete
+#### Checked_delete
 ```
 Increase safety of delete expression
 ```
