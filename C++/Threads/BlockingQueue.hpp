@@ -20,7 +20,7 @@ class BlockingQueue : boost::noncopyable
   {
   }
 
-  void push(const T& x)
+  void put(const T& x)
   {
     std::lock_guard lock(mutex_);
     queue_.push_back(x);
@@ -28,7 +28,7 @@ class BlockingQueue : boost::noncopyable
     // http://www.domaigne.com/blog/computing/condvars-signal-with-mutex-locked-or-not/
   }
 
-  T pop()
+  T take()
   {
     std::lock_guard lock(mutex_);
     // always use a while-loop, due to spurious wakeup
