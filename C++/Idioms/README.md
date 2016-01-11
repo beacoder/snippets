@@ -14,7 +14,7 @@ To provide basic exception safety guarantee
 ```
 #### Pimpl
 ```
-Changing private member variables of a class does not require recompiling classes that depend on it, thus make times are faster, and theFragileBinaryInterfaceProblem is reduced.
+Changing private member variables of a class does not require recompiling classes that depend on it
 The header file does not need to #include classes that are used 'by value' in private member variables, thus compile times are faster.
 ```
 #### Construct_On_First_Use
