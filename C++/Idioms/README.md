@@ -15,7 +15,7 @@ To provide basic exception safety guarantee
 #### Pimpl/Handle-Body
 ```
 Changing private member variables of a class does not require recompiling classes that depend on it
-The header file does not need to #include classes that are used 'by value' in private member variables, thus compile times are faster.
+The header file does not need to #include classes that are used 'by value' in private member variables
 ```
 #### Construct_On_First_Use
 ```
