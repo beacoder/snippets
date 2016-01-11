@@ -1,7 +1,9 @@
+/*
+ * @note Modified from chenshuo's "muduo/base/BlockingQueue.h"
+ */
 
-#include <muduo/base/Condition.h>
-#include <muduo/base/Mutex.h>
-
+#include <mutex>
+#include <condition_variable>
 #include <boost/noncopyable.hpp>
 
 class CountDownLatch : boost::noncopyable
