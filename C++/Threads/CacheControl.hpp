@@ -1,9 +1,5 @@
 /*
- * provide a simple cache utility.
- *
- * gcc compile command is :
- * 
- *
+ * provide a simple thread-safe cache utility
  */
  
 #include <map>
