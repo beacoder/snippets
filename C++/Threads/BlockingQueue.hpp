@@ -15,7 +15,7 @@ class BlockingQueue : boost::noncopyable
  public:
   BlockingQueue()
     : mutex_(),
-      notEmpty_(mutex_),
+      condition_(mutex_),
       queue_()
   {
   }
@@ -24,7 +24,7 @@ class BlockingQueue : boost::noncopyable
   {
     std::lock_guard lock(mutex_);
     queue_.push_back(x);
-    notEmpty_.notify(); // wait morphing saves us
+    condition_.notify(); // wait morphing saves us
     // http://www.domaigne.com/blog/computing/condvars-signal-with-mutex-locked-or-not/
   }
 
@@ -34,7 +34,7 @@ class BlockingQueue : boost::noncopyable
     // always use a while-loop, due to spurious wakeup
     while (queue_.empty())
     {
-      notEmpty_.wait();
+      condition_.wait();
     }
     assert(!queue_.empty());
     T front(queue_.front());
@@ -56,6 +56,6 @@ class BlockingQueue : boost::noncopyable
 
  private:
   mutable std::mutex      mutex_;
-  std::condition_variable notEmpty_;
+  std::condition_variable condition_;
   std::deque<T>           queue_;
 };
