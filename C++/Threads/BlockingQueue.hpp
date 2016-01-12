@@ -13,13 +13,6 @@ template<typename T>
 class BlockingQueue : boost::noncopyable
 {
  public:
-  BlockingQueue()
-    : mutex_(),
-      condition_(mutex_),
-      queue_()
-  {
-  }
-
   void put(const T& x)
   {
     std::lock_guard lock(mutex_);
