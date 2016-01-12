@@ -1,10 +1,7 @@
-/*
- * @note Modified from chenshuo's "muduo/base/CountDownLatch.h"
- */
-
-#include <mutex>
-#include <condition_variable>
 #include <boost/noncopyable.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition_variable.hpp>
+#include <boost/thread/locks.hpp>
 
 class CountDownLatch : boost::noncopyable
 {
@@ -19,21 +16,21 @@ class CountDownLatch : boost::noncopyable
   int getCount() const;
 
  private:
-  mutable std::mutex      mutex_;
-  std::condition_variable condition_;
+  mutable boost::mutex      mutex_;
+  boost::condition_variable condition_;
   int count_;
 };
 
 CountDownLatch::CountDownLatch(int count)
   : mutex_(),
-  condition_(mutex_),
+  condition_(),
   count_(count)
 {
 }
 
 void CountDownLatch::wait()
 {
-  std::lock_guard lock(mutex_);
+  boost::lock_guard lock(mutex_);
   while (count_ > 0)
   {
     condition_.wait();
@@ -42,7 +39,7 @@ void CountDownLatch::wait()
 
 void CountDownLatch::countDown()
 {
-  std::lock_guard lock(mutex_);
+  boost::lock_guard lock(mutex_);
   --count_;
   if (count_ == 0)
   {
@@ -52,6 +49,6 @@ void CountDownLatch::countDown()
 
 int CountDownLatch::getCount() const
 {
-  std::lock_guard lock(mutex_);
+  boost::lock_guard lock(mutex_);
   return count_;
 }
