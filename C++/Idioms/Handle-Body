@@ -13,6 +13,7 @@ private:
 /* private.h */
 #include "public.h"
 #include <iostream>
+
 class Book::BookImpl
 {
 public:
