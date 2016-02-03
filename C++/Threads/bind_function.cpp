@@ -47,7 +47,7 @@ struct functor {
 
 int main(int argc, char *argv[]) {
 
-  ResourceType rs (std::make_shared<Shared_Obj>());
+  ResourceType rs = boost::make_shared<Shared_Obj>();
 
   std::cout << "ref_count is  " << rs.use_count() << std::endl;
 
