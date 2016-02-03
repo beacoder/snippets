@@ -35,7 +35,7 @@ void fun2 (ResourceType rs)
 }
 
 struct functor {
-  void operator()(const ResourceType& rs)
+  void operator()(const ResourceType& rs) const
   {
     std::cout << "functor is called !" << std::endl;
     std::cout << "ref_count is  " << rs.use_count() << std::endl;
@@ -57,8 +57,7 @@ int main(int argc, char *argv[]) {
   std::cout << "ref_count is  " << rs.use_count() << std::endl;
 
   functor fun;
-  boost::function0<void> threadfunc3 =
-      boost::bind(&functor::operator(), &fun, boost::cref(rs));
+  boost::function0<void> threadfunc3 = boost::bind(&functor::operator(), &fun, boost::cref(rs));
 
   std::cout << "ref_count is  " << rs.use_count() << std::endl;
 
