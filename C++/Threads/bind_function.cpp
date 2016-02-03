@@ -10,7 +10,10 @@
 
 using namespace std;
 
-struct Shared_Obj {
+class Shared_Obj {
+ public:
+  typedef boost::shared_ptr<Shared_Obj> Ptr;
+ 
   Shared_Obj() {
     std::cout << "Shared_Obj is constructed !" << std::endl;
   }
@@ -20,7 +23,7 @@ struct Shared_Obj {
   }
 };
 
-typedef boost::shared_ptr<Shared_Obj> ResourceType;
+typedef Shared_Obj::Ptr ResourceType;
 
 void fun1 (ResourceType rs)
 {
@@ -44,7 +47,7 @@ struct functor {
 
 int main(int argc, char *argv[]) {
 
-  ResourceType rs (new Shared_Obj());
+  ResourceType rs (std::make_shared<Shared_Obj>());
 
   std::cout << "ref_count is  " << rs.use_count() << std::endl;
 
