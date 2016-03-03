@@ -7,7 +7,7 @@ Resource Management.
 ```
 #### Thread
 ```
-Thead Management.
+Portable C++ multi-threading.
 ```
 #### Lexical Cast
 ```
@@ -19,11 +19,11 @@ Function objects.
 ```
 #### Optional
 ```
-An optional object may or may not contain a value of the underlying type.
+A value-semantic, type-safe wrapper for representing 'optional' (or 'nullable') objects of a given type.
 ```
 #### Tuple
 ```
-Ease definition of functions returning multiple values with different types.
+Tuple is a data object containing other objects as elements. These element objects may be of different types.
 ```
 #### Tokenizer
 ```
