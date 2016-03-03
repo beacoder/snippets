@@ -1,40 +1,35 @@
-# Most Useful C++ Idioms
+#  Frequently Used Parts of Boost
 
-@see [More_C++_Idioms] (http://en.wikibooks.org/wiki/More_C++_Idioms)
 
-#### Interface_Class
+#### Smart Ptr
 ```
-  Separating an interface of a class from its implementation
-  Invoke implementation of an abstraction/class using runtime polymorphism.
+Resource Management.
 ```
-#### RAII
+#### Thread
 ```
-To guarantee release of resource(s) at the end of a scope
-To provide basic exception safety guarantee
+Thead Management.
 ```
-#### Handle-Body/Pimpl
+#### Lexical Cast
 ```
-Changing private member variables of a class does not require recompiling classes that depend on it
-The header file does not need to #include classes that are used 'by value' in private member variables
+General literal text conversions.
 ```
-#### Construct_On_First_Use
+#### Bind && Function
 ```
-Ensure that an object is initialized before its first use, e.g: Singleton pattern
+Function objects.
 ```
-#### Virtual_Constructor
+#### Optional
 ```
-Creating an object or it's copy without knowing its concrete type
+An optional object may or may not contain a value of the underlying type.
 ```
-#### Non-throwing_swap
+#### Tuple
 ```
-To implement an exception safe and efficient swap operation.
-To provide uniform interface to it to facilitate generic programming.
+Ease definition of functions returning multiple values with different types.
 ```
-#### Copy-and-swap
+#### Tokenizer
 ```
-Create an exception safe implementation of overloaded assignment operator
+Break of a string or other character sequence into a series of tokens
 ```
-#### Checked_delete
+#### Filesystem
 ```
-Increase safety of delete expression
+Provides portable facilities to query and manipulate paths, files, and directories.
 ```
