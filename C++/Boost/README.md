@@ -39,3 +39,7 @@ Provides portable facilities to query and manipulate paths, files, and directori
 Provides atomic data types and operations on these data types, 
 as well as memory ordering constraints required for coordinating multiple threads through atomic variables.
 ```
+#### Algorithm
+```
+A collection of useful generic algorithms.
+```
