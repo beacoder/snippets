@@ -33,3 +33,8 @@ Break of a string or other character sequence into a series of tokens
 ```
 Provides portable facilities to query and manipulate paths, files, and directories.
 ```
+#### Atomic
+```
+Provides atomic data types and operations on these data types, 
+as well as memory ordering constraints required for coordinating multiple threads through atomic variables.
+```
