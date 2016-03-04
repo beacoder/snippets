@@ -24,11 +24,11 @@ A value-semantic, type-safe wrapper for representing 'optional' (or 'nullable') 
 ```
 #### Tuple
 ```
-Tuple is a data object containing other objects as elements. These element objects may be of different types.
+Tuple is an object capable to hold a collection of elements. Each element can be of a different type.
 ```
 #### Tokenizer
 ```
-Break of a string or other character sequence into a series of tokens
+Break of a string or other character sequence into a series of tokens.
 ```
 #### Filesystem
 ```
