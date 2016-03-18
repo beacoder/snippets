@@ -34,7 +34,3 @@ To provide uniform interface to it to facilitate generic programming.
 ```
 Create an exception safe implementation of overloaded assignment operator
 ```
-#### Checked_delete
-```
-Increase safety of delete expression
-```
