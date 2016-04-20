@@ -1,33 +1,67 @@
-class shape   // An interface class
+class Shape   // An interface class
 {
   public:
-    virtual ~shape();
+    virtual ~Shape();
     virtual void move_x(int x) = 0;
     virtual void move_y(int y) = 0;
     virtual void draw() = 0;
+
+    // Factory Method
+    static Shape *getShape(int choice);
 };
 
-class line : public shape
+Shape *Shape::getShape(std::string choice)
+{
+    if ("Line" == choice)
+    {
+        return new Line();
+    }
+    else if ("Curve" == choice)
+    {
+        return new Curve();
+    }
+    else
+    {
+        return NullObject();
+    }
+}
+
+
+class Line : public Shape
 {
   public:
-    virtual ~line();
+    virtual ~Line();
     virtual void move_x(int x); // implements move_x
     virtual void move_y(int y); // implements move_y
     virtual void draw(); // implements draw
+
   private:
     point end_point_1, end_point_2;
 };
 
+class Curve : public Shape
+{
+  public:
+    virtual ~Curve();
+    virtual void move_x(int x); // implements move_x
+    virtual void move_y(int y); // implements move_y
+    virtual void draw(); // implements draw
+
+  private:
+    point  end_point_1, end_point_2;
+    doulbe angle;
+};
+
+
 int main (void)
 {
-  std::vector<shape *> shapes;
-  //  Fill up shapes vector somehow.
-  for (vector<shape *>::iterator iter (shapes.begin());
-       iter != shapes.end();
-       ++iter)
-  {
-    (*iter)->draw();
-  }
-  //  Clean up shapes vector. (Normally we would use something like boost::shared_ptr to automate cleanup,
-  //  this is for illustration only)
+    typedef std::shared_ptr<Shape> ShapePtr;
+    std::vector<ShapePtr> vShapes;
+    vShapes.push_back(std::make_shared(Shape::getShape("Line")));
+    vShapes.push_back(std::make_shared(Shape::getShape("Curve")));
+
+    for (std::vector<ShapePtr>::iterator iter(vShapes.begin()); iter != vShapes.end(); ++iter)
+    {
+        iter->draw();
+    }
 }
