@@ -60,8 +60,5 @@ int main (void)
     vShapes.push_back(std::make_shared(Shape::getShape("Line")));
     vShapes.push_back(std::make_shared(Shape::getShape("Curve")));
 
-    for (std::vector<ShapePtr>::iterator iter(vShapes.begin()); iter != vShapes.end(); ++iter)
-    {
-        iter->draw();
-    }
+    std::for_each(vShapes.begin(), vShapes.end(), [](std::vector<ShapePtr>::iterator iter) { iter->draw(); });
 }
