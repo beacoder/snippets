@@ -7,7 +7,7 @@ class Shape   // An interface class
     virtual void draw() = 0;
 
     // Factory Method
-    static Shape *getShape(int choice);
+    static Shape *getShape(std::string choice);
 };
 
 Shape *Shape::getShape(std::string choice)
