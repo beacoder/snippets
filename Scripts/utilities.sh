@@ -1,6 +1,14 @@
 #!/bin/bash
 
-#demonstrate how to change and restore umask
+# trap interrupt signals
+clean_up () {
+	echo CLEAN UP!!
+}
+
+trap "echo TRAP!!; exit" SIGTERM SIGINT SIGHUP
+trap "clean_up;exit"     SIGTERM SIGINT SIGHUP
+
+# change and restore umask
 
 #umask value => file permission
 #0022 => "666-22" => "644" => rw-r--r--
