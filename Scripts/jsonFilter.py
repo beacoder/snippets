@@ -6,8 +6,8 @@ import json
 import sys
 
 def usage():
-  sample ="""Filter only application/framework json:
-e.g: ./jsonFilter.py -f /repo/ehumche/epg__0/build/Linux_x86_64/compile_commands.json -t /git/ehumche/epg__0/application,/git/ehumche/epg__0/framework -o out.json
+  sample ="""Filter only json which contains application/framework:
+e.g: ./jsonFilter.py -f /repo/build/Linux_x86_64/compile_commands.json -t /git/application,/git/framework -o out.json
   """
   print sample
   return
