@@ -1,4 +1,4 @@
 workspace
 =========
 
-personal scripts
+scripts for personal usage
