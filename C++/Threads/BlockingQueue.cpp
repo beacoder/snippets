@@ -1,6 +1,6 @@
 /**
  * gcc compile command is :
- * g++ -g -Wall BlockingQueue.hpp.cpp -o BlockingQueue
+ * g++ -g -Wall BlockingQueue.cpp -o BlockingQueue
  */
 
 #include <iostream>           // std::cout
