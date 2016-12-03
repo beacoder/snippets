@@ -1,3 +1,8 @@
+/**
+ * gcc compile command is :
+ * g++ -g -Wall BlockingQueue.hpp.cpp -o BlockingQueue
+ */
+
 #include <iostream>           // std::cout
 #include <string>             // std::string
 #include <deque>              // std::deque
