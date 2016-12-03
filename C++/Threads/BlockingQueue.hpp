@@ -1,31 +1,39 @@
-#include <boost/noncopyable.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition_variable.hpp>
-#include <boost/thread/locks.hpp>
-#include <deque>
-#include <assert.h>
+#include <iostream>           // std::cout
+#include <string>             // std::string
+#include <deque>              // std::deque
+#include <thread>             // std::thread
+#include <mutex>              // std::mutex, std::unique_lock
+#include <condition_variable> // std::condition_variable
 
 template<typename T>
-class BlockingQueue : boost::noncopyable
+class BlockingQueue
 {
+  BlockingQueue(const BlockingQueue&);
+  BlockingQueue& operator=(const BlockingQueue&);
+
  public:
+  explicit BlockingQueue()
+    : mutex_(),
+      condition_(),
+      queue_()
+  {
+  }
+
   void put(const T& x)
   {
-    boost::lock_guard lock(mutex_);
+    std::unique_lock<std::mutex> lock(mutex_);
     queue_.push_back(x);
-    condition_.notify(); // wait morphing saves us
-    // http://www.domaigne.com/blog/computing/condvars-signal-with-mutex-locked-or-not/
+    condition_.notify_one();
   }
 
   T take()
   {
-    boost::lock_guard lock(mutex_);
-    // always use a while-loop, due to spurious wakeup
+    std::unique_lock<std::mutex> lock(mutex_);
     while (queue_.empty())
     {
-      condition_.wait();
+      condition_.wait(lock);
     }
-    assert(!queue_.empty());
+
     T front(queue_.front());
     queue_.pop_front();
     return front;
@@ -33,18 +41,31 @@ class BlockingQueue : boost::noncopyable
 
   size_t size() const
   {
-    boost::lock_guard lock(mutex_);
+    std::unique_lock<std::mutex> lock(mutex_);
     return queue_.size();
   }
-  
+
   bool empty() const
   {
-    boost::lock_guard lock(mutex_);
+    std::unique_lock<std::mutex> lock(mutex_);
     return queue_.empty();
   }
 
  private:
-  mutable boost::mutex      mutex_;
-  boost::condition_variable condition_;
-  std::deque<T>             queue_;
+  mutable std::mutex      mutex_;
+  std::condition_variable condition_;
+  std::deque<T>           queue_;
 };
+
+int main(int argc, char *argv[])
+{
+    BlockingQueue<std::string> queue;
+
+    queue.put("Hello");
+    queue.put("World");
+
+    std::cout << queue.take() << std::endl;
+    std::cout << queue.take() << std::endl;
+
+    return 0;
+}
