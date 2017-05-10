@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""This script is used for filtering jason."""
 
 import re
 import argparse
