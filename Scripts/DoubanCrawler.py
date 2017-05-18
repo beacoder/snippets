@@ -66,7 +66,7 @@ class DoubanMovie(object):
         "Get the movie year."
         return self._movie_year
 
-def test():
+def crawl():
     """Start crawling."""
     # Crawl douban movie
     rsp  = requests.get("https://movie.douban.com")
@@ -77,4 +77,4 @@ def test():
         print(movie.__repr__())
 
 if __name__ == '__main__' :
-    test()
+    crawl()
