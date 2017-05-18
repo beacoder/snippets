@@ -7,14 +7,15 @@ import requests
 
 
 # Pattern for matching douban movies
-_DOUBAN_MOVIES_PATTERN = re.compile(r'href="(https?://\S+/subject/\d+/)\S*"')
+_DOUBAN_MOVIES_PATTERN = re.compile(
+    r'href="(https?://\S+/subject/\d+/)\S*"')
 
 def str_to_utf8(in_string):
     "Convert string to utf-8 encoding."
     ret_string = u' '.join(in_string).encode('utf-8').strip()
     return ret_string
 
-def remove_duplicates_from_list(seq):
+def remove_duplicates(seq):
     "Remove duplicate items from a list."
     seq = list(set(seq))
     return seq
@@ -28,10 +29,12 @@ class DoubanMovie(object):
         r'<strong class="ll rating_num" property="v:average">(.*)</strong>')
 
     # Pattern for matching douban movie name
-    _DOUBAN_MOVIE_NAME_PATTERN    = re.compile(r'<span property="v:itemreviewed">(.*)</span>')
+    _DOUBAN_MOVIE_NAME_PATTERN    = re.compile(
+        r'<span property="v:itemreviewed">(.*)</span>')
 
     # Pattern for matching year of douban movie
-    _DOUBAN_MOVIE_YEAR_PATTERN    = re.compile(r'<span class="year">(.*)</span>')
+    _DOUBAN_MOVIE_YEAR_PATTERN    = re.compile(
+        r'<span class="year">(.*)</span>')
 
     def __init__(self, url):
         self._rating_num = ""
@@ -70,10 +73,10 @@ def crawl():
     """Start crawling."""
     # Crawl douban movie
     rsp  = requests.get("https://movie.douban.com")
-    urls = remove_duplicates_from_list(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
+    urls = remove_duplicates(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
 
-    for l in urls:
-        movie = DoubanMovie(l)
+    for movie_site in urls:
+        movie = DoubanMovie(movie_site)
         print(movie.__repr__())
 
 if __name__ == '__main__' :
