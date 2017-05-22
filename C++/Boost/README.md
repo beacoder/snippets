@@ -43,3 +43,7 @@ as well as memory ordering constraints required for coordinating multiple thread
 ```
 A collection of useful generic algorithms.
 ```
+#### Assign
+```
+Filling containers with constant or generated data has never been easier.
+```
