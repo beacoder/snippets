@@ -2,9 +2,10 @@
 
 """Minimal crawler to crawl high rated movies from douban.com"""
 
-#1 crawl movies on douban
-#2 save data into sqlite
-#3 push the latest movies to cell phone
+#1 [Done]  crawl movies on douban
+#2 [Doing] add delays, don't blacklisted by douban
+#3 [Todo]  save data into sqlite
+#4 [Todo]  push the latest movies to cell phone
 
 import re
 import requests
