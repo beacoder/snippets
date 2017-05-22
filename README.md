@@ -1,4 +1,4 @@
 workspace
 =========
 
-scripts for personal use.
+c++ and script snippets.
