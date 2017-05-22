@@ -79,24 +79,27 @@ class DoubanMovie(object):
     # Pattern for matching year of douban movie
     _DOUBAN_MOVIE_YEAR_PATTERN    = re.compile(r'<span class="year">(.*)</span>')
 
-    def __init__(self, url):
+    def __init__(self, text):
         self._movie_rate = ""
         self._movie_name = ""
         self._movie_year = ""
-        self._parse_movie(url)
+        self._parse_movie(text)
+        self._error_happened = False
 
-    def _parse_movie(self, url):
-        with requests.Session() as s:
-            rsp = s.get(url).text
-            try:
-                self._movie_rate = (re.findall(DoubanMovie._DOUBAN_MOVIE_RATE_PATTERN, rsp))[0]
-                self._movie_name = (re.findall(DoubanMovie._DOUBAN_MOVIE_NAME_PATTERN, rsp))[0]
-                self._movie_year = (re.findall(DoubanMovie._DOUBAN_MOVIE_YEAR_PATTERN, rsp))[0]
-            except BaseException, e:
-                print e
+    def _parse_movie(self, text):
+        try:
+            self._movie_rate = (re.findall(DoubanMovie._DOUBAN_MOVIE_RATE_PATTERN, text))[0]
+            self._movie_name = (re.findall(DoubanMovie._DOUBAN_MOVIE_NAME_PATTERN, text))[0]
+            self._movie_year = (re.findall(DoubanMovie._DOUBAN_MOVIE_YEAR_PATTERN, text))[0]
+        except BaseException, e:
+            self._error_happened = True
+            print e
 
     def __repr__(self):
-        return ("Rate of %s%s is %s \n" % (self._movie_name, self._movie_year, self._movie_rate))
+        if not self._error_happened:
+            return ("Rate of %s%s is %s \n" % (self._movie_name, self._movie_year, self._movie_rate))
+        else:
+            return "\n"
 
     @property
     def movie_rate(self):
@@ -124,11 +127,15 @@ def bfs_crawl(seed):
 
     with requests.Session() as s:
         while not q.isEmpty():
-            urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, s.get(q.deque()).text))
+            rsp = s.get(q.deque())
+            urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
+
+            movie = DoubanMovie(rsp.text)
+            print(movie.__repr__())
+
             for url in urls:
                 q.enqueue(url)
-                movie = DoubanMovie(url)
-                print(movie.__repr__())
+    pass
 
 
 if __name__ == '__main__' :
