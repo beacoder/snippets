@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"Minimal crawler to crawl high rated movies from douban.com"
+"""Minimal crawler to crawl high rated movies from douban.com"""
 
 import re
 import requests
