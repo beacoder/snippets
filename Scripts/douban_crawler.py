@@ -2,6 +2,10 @@
 
 """Minimal crawler to crawl high rated movies from douban.com"""
 
+#1 crawl movies on douban
+#2 save data into sqlite
+#3 push the latest movies to cell phone
+
 import re
 import requests
 from collections import deque
