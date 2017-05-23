@@ -10,6 +10,7 @@
 import re
 import requests
 from collections import deque
+import time
 
 
 # Pattern for matching douban movies
@@ -132,6 +133,7 @@ def bfs_crawl(seed):
 
     with requests.Session() as s:
         while not q.isEmpty():
+            time.sleep(3.0)
             rsp = s.get(q.deque())
             urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
 
