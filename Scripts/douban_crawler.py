@@ -131,17 +131,16 @@ def bfs_crawl(seed):
     q = Queue()
     q.enqueue(seed)
 
-    with requests.Session() as s:
-        while not q.isEmpty():
-            time.sleep(3.0)
-            rsp = s.get(q.deque())
-            urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
+    while not q.isEmpty():
+        rsp = requests.get(q.deque())
+        time.sleep(1)
+        urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
 
-            movie = DoubanMovie(rsp.text)
-            print(movie.__repr__())
+        movie = DoubanMovie(rsp.text)
+        print(movie.__repr__())
 
-            for url in urls:
-                q.enqueue(url)
+        for url in urls:
+            q.enqueue(url)
     pass
 
 
