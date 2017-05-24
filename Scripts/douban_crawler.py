@@ -11,6 +11,7 @@ import re
 import requests
 from collections import deque
 import time
+import sqlite3
 
 
 # Pattern for matching douban movies
@@ -140,12 +141,13 @@ class DoubanMovie(object):
     # Pattern for matching year of douban movie
     _DOUBAN_MOVIE_YEAR_PATTERN    = re.compile(r'<span class="year">(.*)</span>')
 
-    def __init__(self, text):
-        self._movie_rate = ""
-        self._movie_name = ""
-        self._movie_year = ""
-        self._parse_movie(text)
+    def __init__(self, text, url):
+        self._movie_rate     = ""
+        self._movie_name     = ""
+        self._movie_year     = ""
         self._error_happened = False
+        self._movie_address  = url
+        self._parse_movie(text)
 
     def _parse_movie(self, text):
         try:
