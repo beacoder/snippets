@@ -4,8 +4,9 @@
 
 #1 [Done]  crawl movies on douban
 #2 [Done]  add delays, don't blacklisted by douban
-#3 [Todo]  save data into sqlite
-#4 [Todo]  push the latest movies to cell phone
+#3 [Done]  save data into sqlite
+#4 [Todo]  fix chinese character encoding problem
+#5 [Todo]  push the latest movies to cell phone
 
 import re
 import requests
@@ -161,11 +162,11 @@ class DoubanMovie(object):
     def __repr__(self):
         if not self._error_happened:
             return ("Rate of %s%s is %s \n" % (self._movie_name, self._movie_year, self._movie_rate))
-        
+
     @property
     def movie_item(self):
         "Proper format to be serialized to db."
-        return (self._movie_name, self.movie_year, self.movie_rate, self._movie_address)        
+        return (self._movie_name, self.movie_year, self.movie_rate, self._movie_address)
 
     @property
     def movie_rate(self):
@@ -200,7 +201,7 @@ def bfs_crawl(seed):
         movie = DoubanMovie(rsp.text, url)
         save_movie(movie.movie_item)
         print(movie.__repr__())
-        
+
         for url in urls:
             q.enqueue(url)
     pass
