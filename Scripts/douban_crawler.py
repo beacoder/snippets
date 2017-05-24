@@ -22,6 +22,10 @@ _DOUBAN_MOVIE_SEED     = "https://movie.douban.com"
 
 _CRAWLED_SITES         = set()
 
+_HELP_STRING           ="""Usage:
+start()       -> start crawling
+dump_movies() -> show movies in DB"""
+
 _db_conn               = None
 
 
@@ -218,3 +222,4 @@ def start():
 
 if __name__ == '__main__' :
     prepare_movie_db()
+    print _HELP_STRING
