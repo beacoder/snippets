@@ -20,6 +20,61 @@ _DOUBAN_MOVIE_SEED     = "https://movie.douban.com"
 
 _CRAWLED_SITES         = set()
 
+_db_conn               = None
+
+
+class MovieDBError(Exception):
+    """Error happend when accessing movie database."""
+    pass
+
+
+def connect_db(db = 'movies.db'):
+    global _db_conn
+    assert(_db_conn is None)
+    _db_conn = sqlite3.connect(db)
+
+
+def close_db():
+    global _db_conn
+    assert(_db_conn is not None)
+    _db_conn.close()
+    _db_conn = None
+
+
+def find_table(table = ('movies',)):
+    assert(_db_conn is not None)
+    c   = _db_conn.cursor()
+    return (c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", table).fetchall())
+
+
+def create_table():
+    assert(False == bool(find_table()))
+    _db_conn.execute('''CREATE TABLE movies (name text, year text, rate real, address text)''')
+    _db_conn.commit()
+
+
+# @return: list of movies or a []
+def find_movie(movie_name):
+    assert(_db_conn is not None)
+    c = _db_conn.cursor()
+    return c.execute('SELECT * FROM movies WHERE name=?', name).fetchall()
+
+
+# @param movie: ('movie_name', '2017', '9.2', 'http://wwww...')
+def save_movie(movie):
+    assert(_db_conn is not None)
+    c = _db_conn.cursor()
+    c.execute('INSERT INTO movies VALUES (?,?,?,?)', movie)
+    _db_conn.commit()
+
+
+def dump_movies():
+    assert(_db_conn is not None)
+    c = _db_conn.cursor()
+    for row in c.execute('SELECT * FROM movies ORDER BY name'):
+       print row
+
+
 def str_to_utf8(in_string):
     "Convert string to utf-8 encoding."
     ret_string = u' '.join(in_string).encode('utf-8').strip()
@@ -104,8 +159,11 @@ class DoubanMovie(object):
     def __repr__(self):
         if not self._error_happened:
             return ("Rate of %s%s is %s \n" % (self._movie_name, self._movie_year, self._movie_rate))
-        else:
-            return "\n"
+        
+    @property
+    def movie_item(self):
+        "Proper format to be serialized to db."
+        return (self._movie_name, self.movie_year, self.movie_rate, self._movie_address)        
 
     @property
     def movie_rate(self):
@@ -132,17 +190,28 @@ def bfs_crawl(seed):
     q.enqueue(seed)
 
     while not q.isEmpty():
-        rsp = requests.get(q.deque())
         time.sleep(1)
+        url = q.deque()
+        rsp = requests.get(url)
         urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
 
-        movie = DoubanMovie(rsp.text)
+        movie = DoubanMovie(rsp.text, url)
+        save_movie(movie.movie_item)
         print(movie.__repr__())
-
+        
         for url in urls:
             q.enqueue(url)
     pass
 
 
-if __name__ == '__main__' :
+def prepare_movie_db():
+    connect_db()
+    if (False == bool(find_table())):
+        create_table()
+
+
+def start():
     bfs_crawl(_DOUBAN_MOVIE_SEED)
+
+if __name__ == '__main__' :
+    prepare_movie_db()
