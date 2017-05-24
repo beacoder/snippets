@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Minimal crawler to crawl high rated movies from douban.com"""
+"""Minimal crawler to crawl high rated movies from movie.douban.com"""
 
 #1 [Done]  crawl movies on douban
 #2 [Done]  add delays, don't blacklisted by douban
@@ -25,7 +25,7 @@ def str_to_utf8(in_string):
     ret_string = u' '.join(in_string).encode('utf-8').strip()
     return ret_string
 
-class _Base_For_Queue_And_Stack:
+class _QueueAndStackBase(object):
     """Base class for Queue and Stack."""
     def __init__(self):
         self.items = deque()
@@ -40,7 +40,7 @@ class _Base_For_Queue_And_Stack:
         return len(self.items)
 
 
-class Queue(_Base_For_Queue_And_Stack):
+class Queue(_QueueAndStackBase):
     """FIFO Container."""
     def next(self):
         try:
@@ -55,7 +55,7 @@ class Queue(_Base_For_Queue_And_Stack):
         return self.items.popleft()
 
 
-class Stack(_Base_For_Queue_And_Stack):
+class Stack(_QueueAndStackBase):
     """LIFO Container."""
     def next(self):
         try:
@@ -123,7 +123,7 @@ class DoubanMovie(object):
         return self._movie_year
 
 
-# Normally, BFS will be a good idea for web crawling.
+# BFS stratege to do web crawling.
 # @see http://stackoverflow.com/questions/20579169/dfs-vs-bfs-in-web-crawler-design
 def bfs_crawl(seed):
     """Breadth First Crawling."""
