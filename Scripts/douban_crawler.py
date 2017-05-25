@@ -38,6 +38,7 @@ def connect_db(db = 'movies.db'):
     global _db_conn
     assert(_db_conn is None)
     _db_conn = sqlite3.connect(db)
+    _db_conn.text_factory = str
 
 
 def close_db():
@@ -78,13 +79,23 @@ def dump_movies():
     assert(_db_conn is not None)
     c = _db_conn.cursor()
     for row in c.execute('SELECT * FROM movies ORDER BY name'):
-       print row
+       print row[0].decode('utf-8'), row[1], row[2], row[3]
 
 
-def str_to_utf8(in_string):
+# Follow this rule
+#1 always use unicode in application
+#2 encode it with 'utf-8' only when writing file/database/socket
+#3 decode it with 'utf-8' when reading it back
+def encode_with_utf8(in_string):
     "Convert string to utf-8 encoding."
-    ret_string = u' '.join(in_string).encode('utf-8').strip()
+    if isinstance(in_string, str):
+        ret_string = u' '.join(in_string).encode('utf-8').strip()
+    elif isinstance(in_string, unicode):
+        ret_string = in_string.encode('utf-8')
+    else:
+        print "not a string"
     return ret_string
+
 
 class _QueueAndStackBase(object):
     """Base class for Queue and Stack."""
@@ -170,7 +181,7 @@ class DoubanMovie(object):
     @property
     def movie_item(self):
         "Proper format to be serialized to db."
-        return (self._movie_name, self.movie_year, self.movie_rate, self._movie_address)
+        return [encode_with_utf8(item) for item in (self._movie_name, self.movie_year, self.movie_rate, self._movie_address)]
 
     @property
     def movie_rate(self):
