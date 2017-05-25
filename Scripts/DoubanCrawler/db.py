@@ -1,87 +1,68 @@
-"""Utilities facilities include encoding, stack, queue.
+"""Database facilities.
 
-* encode_with_utf8  convert to unicode and encode with utf-8
-* Stack             LIFO Container.
-* Queue             FIFO Container.
-
+Sqlite used to store movies.
 """
 
+#1 [Todo]   Each DB could have only one connection available
+
 # public symbols
-__all__ = ["encode_with_utf8", "Queue", "Stack"]
+__all__ = ["connect_db", "close_db", "find_table", "create_table",
+           "find_movie", "save_movie", "dump_movies"]
 
-from collections import deque
-
-
-################################################################################
-### Rule for encoding
-################################################################################
-#1 always use unicode in application
-#2 encode it with 'utf-8' only when writing to file/database/socket
-#3 decode it with 'utf-8' when reading it back
-################################################################################
-def encode_with_utf8(in_string):
-    "Convert string to utf-8 encoding."
-    if isinstance(in_string, str):
-        ret_string = u' '.join(in_string).encode('utf-8').strip()
-    elif isinstance(in_string, unicode):
-        ret_string = in_string.encode('utf-8')
-    else:
-        pass
-    return ret_string
+import sqlite3
 
 
-################################################################################
-### _QueueAndStackBase
-################################################################################
-class _QueueAndStackBase(object):
-    """Base class for Queue and Stack."""
-    def __init__(self):
-        self.items = deque()
-
-    def isEmpty(self):
-        return (len(self.items) == 0)
-
-    def __iter__(self):
-        return self
-
-    def size(self):
-        return len(self.items)
+_db_conn = None
 
 
-################################################################################
-### Queue
-################################################################################
-class Queue(_QueueAndStackBase):
-    """FIFO Container."""
-    def next(self):
-        try:
-            return self.deque()
-        except IndexError:
-            raise StopIteration
-
-    def enqueue(self, item):
-        self.items.append(item)
-
-    def deque(self):
-        return self.items.popleft()
+class MovieDBError(Exception):
+    """Error happend when accessing movie database."""
+    pass
 
 
-################################################################################
-### Stack
-################################################################################
-class Stack(_QueueAndStackBase):
-    """LIFO Container."""
-    def next(self):
-        try:
-            return self.pop()
-        except IndexError:
-            raise StopIteration
+def connect_db(db = 'movies.db'):
+    global _db_conn
+    assert(_db_conn is None)
+    _db_conn = sqlite3.connect(db)
+    _db_conn.text_factory = str
 
-    def push(self, item):
-        self.items.append(item)
 
-    def pop(self):
-        return self.items.pop()
+def close_db():
+    global _db_conn
+    assert(_db_conn is not None)
+    _db_conn.close()
+    _db_conn = None
 
-    def peek(self):
-        return self.items[len(self.items)-1]
+
+def find_table(table = ('movies',)):
+    assert(_db_conn is not None)
+    c   = _db_conn.cursor()
+    return (c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", table).fetchall())
+
+
+def create_table():
+    assert(False == bool(find_table()))
+    _db_conn.execute('''CREATE TABLE movies (name text, year text, rate real, address text)''')
+    _db_conn.commit()
+
+
+# @return: list of movies or a []
+def find_movie(movie_name):
+    assert(_db_conn is not None)
+    c = _db_conn.cursor()
+    return c.execute('SELECT * FROM movies WHERE name=?', name).fetchall()
+
+
+# @param movie: ('movie_name', '2017', '9.2', 'http://wwww...')
+def save_movie(movie):
+    assert(_db_conn is not None)
+    c = _db_conn.cursor()
+    c.execute('INSERT INTO movies VALUES (?,?,?,?)', movie)
+    _db_conn.commit()
+
+
+def dump_movies():
+    assert(_db_conn is not None)
+    c = _db_conn.cursor()
+    for row in c.execute('SELECT * FROM movies ORDER BY name'):
+       print row[0].decode('utf-8'), row[1], row[2], row[3]
