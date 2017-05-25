@@ -5,7 +5,7 @@
 #1 [Done]  crawl movies on douban
 #2 [Done]  add delays, don't blacklisted by douban
 #3 [Done]  save data into sqlite
-#4 [Todo]  fix chinese character encoding problem
+#4 [Done]  fix chinese character encoding problem
 #5 [Todo]  push the latest movies to cell phone
 
 import re
