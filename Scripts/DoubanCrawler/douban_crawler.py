@@ -7,6 +7,7 @@
 #3 [Done]  save data into sqlite
 #4 [Done]  fix chinese character encoding problem
 #5 [Todo]  push the latest movies to cell phone
+#6 [Todo]  add logging to log errors
 
 from utils import Queue, encode_with_utf8
 from db import *
@@ -93,9 +94,12 @@ def bfs_crawl(seed):
     while not q.isEmpty():
         time.sleep(1)
         url = q.deque()
-        rsp = requests.get(url)
+        try:
+            rsp = requests.get(url)
+        except Exception as e:
+            print e
+            continue
         urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
-
         movie = DoubanMovie(rsp.text, url)
         save_movie(movie.movie_item)
         print(movie.__repr__())
