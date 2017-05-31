@@ -9,6 +9,7 @@
 #5 [Todo]  push the latest movies to cell phone
 #6 [Todo]  add logging to log errors
 
+from utils import *
 from db import *
 
 import re
