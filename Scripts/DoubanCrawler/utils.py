@@ -13,7 +13,7 @@ from collections import deque
 
 
 ################################################################################
-### Rule for encoding
+### Rules for encoding
 ################################################################################
 #1 always use unicode in application
 #2 encode it with 'utf-8' only when writing to file/database/socket
@@ -27,6 +27,14 @@ def encode_with_utf8(in_string):
         ret_string = in_string.encode('utf-8')
     else:
         pass
+    return ret_string
+
+def decode_with_utf8(in_string):
+    "Decode string with utf-8 encoding."
+
+    ret_string = in_string.decode('utf-8')
+    if isinstance(ret_string, str):
+        ret_string = u' '.join(ret_string).strip()
     return ret_string
 
 
