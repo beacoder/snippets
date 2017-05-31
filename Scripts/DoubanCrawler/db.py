@@ -9,7 +9,7 @@ Sqlite used to store movies.
 __all__ = ["connect_db", "close_db", "find_table", "create_table",
            "find_movie", "save_movie", "dump_movies"]
 
-import utils
+from utils import *
 import sqlite3
 
 
