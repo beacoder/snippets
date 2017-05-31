@@ -9,6 +9,7 @@ Sqlite used to store movies.
 __all__ = ["connect_db", "close_db", "find_table", "create_table",
            "find_movie", "save_movie", "dump_movies"]
 
+import utils
 import sqlite3
 
 
@@ -65,4 +66,4 @@ def dump_movies():
     assert(_db_conn is not None)
     c = _db_conn.cursor()
     for row in c.execute('SELECT * FROM movies ORDER BY name'):
-       print row[0].decode('utf-8'), row[1], row[2], row[3]
+       print decode_with_utf8(row[0]), row[1], row[2], row[3]
