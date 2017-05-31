@@ -7,7 +7,7 @@
 """
 
 # public symbols
-__all__ = ["encode_with_utf8", "Queue", "Stack"]
+__all__ = ["encode_with_utf8", "decode_with_utf8", "Queue", "Stack"]
 
 from collections import deque
 
