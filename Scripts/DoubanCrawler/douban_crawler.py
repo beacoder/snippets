@@ -9,7 +9,6 @@
 #5 [Todo]  push the latest movies to cell phone
 #6 [Todo]  add logging to log errors
 
-from utils import Queue, encode_with_utf8
 from db import *
 
 import re
