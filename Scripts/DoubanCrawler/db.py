@@ -3,7 +3,8 @@
 Sqlite used to store movies.
 """
 
-#1 [Todo]   Each DB could have only one connection available
+#History#
+#1 [Done] (2017-05-26) Add DB operation.
 
 # public symbols
 __all__ = ["connect_db", "close_db", "find_table", "create_table",

@@ -6,6 +6,10 @@
 
 """
 
+#History#
+#1 [Done] (2017-05-26) Add queue, stack, encoding
+#2 [Done] (2017-05-31) Add decoding
+
 # public symbols
 __all__ = ["encode_with_utf8", "decode_with_utf8", "Queue", "Stack"]
 
