@@ -6,7 +6,7 @@
 #2 [Done]  add delays, don't blacklisted by douban
 #3 [Done]  save data into sqlite
 #4 [Done]  fix chinese character encoding problem
-#5 [Todo]  push the latest movies to cell phone
+#5 [Todo]  2017-06-01 push the latest movies to cell phone
 #6 [Todo]  add logging to log errors
 
 from utils import *
