@@ -9,11 +9,25 @@
 #History#
 #1 [Done] (2017-05-26) Add queue, stack, encoding
 #2 [Done] (2017-05-31) Add decoding
+#3 [Done] (2017-06-02) Add send mail
 
 # public symbols
-__all__ = ["encode_with_utf8", "decode_with_utf8", "Queue", "Stack"]
+__all__ = ["encode_with_utf8", "decode_with_utf8", "Queue", "Stack", "send_mail"]
 
 from collections import deque
+from subprocess import Popen, PIPE
+from email.mime.text import MIMEText
+
+
+################################################################################
+### send_mail
+################################################################################
+def send_mail(address, subject, content):
+    "Send mail."
+    mail = '/bin/mail'
+    args = [mail, "-s", subject, address]
+    p = Popen(args, stdin=PIPE)
+    p.communicate(content)
 
 
 ################################################################################
