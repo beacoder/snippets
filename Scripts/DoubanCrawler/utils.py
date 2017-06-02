@@ -17,6 +17,7 @@ __all__ = ["encode_with_utf8", "decode_with_utf8", "Queue", "Stack", "send_mail"
 from collections import deque
 from subprocess import Popen, PIPE
 from email.mime.text import MIMEText
+import os
 
 
 ################################################################################
@@ -24,7 +25,17 @@ from email.mime.text import MIMEText
 ################################################################################
 def send_mail(address, subject, content):
     "Send mail."
-    process = Popen(['/bin/mail', '-s', subject, address], stdin=PIPE)
+    mail_app1 = '/bin/mail'
+    mail_app2 = '/usr/bin/mail'
+
+    if os.path.isfile(mail_app1):
+        mail_app = mail_app1
+    elif os.path.isfile(mail_app2):
+        mail_app = mail_app2
+    else:
+        raise OSError("Failed to find mail application.")
+
+    process = Popen([mail_app, '-s', subject, address], stdin=PIPE)
     process.communicate(content)
 
 
