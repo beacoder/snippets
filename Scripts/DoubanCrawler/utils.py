@@ -24,10 +24,8 @@ from email.mime.text import MIMEText
 ################################################################################
 def send_mail(address, subject, content):
     "Send mail."
-    mail = '/bin/mail'
-    args = [mail, "-s", subject, address]
-    p = Popen(args, stdin=PIPE)
-    p.communicate(content)
+    process = Popen(['/bin/mail', '-s', subject, address], stdin=PIPE)
+    process.communicate(content)
 
 
 ################################################################################
