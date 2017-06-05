@@ -128,7 +128,7 @@ def bfs_crawl(seed):
 
 def prepare_movie_db():
     connect_db()
-    if (False == bool(find_table())):
+    if not find_table():
         create_table()
 
 
