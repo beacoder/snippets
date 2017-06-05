@@ -7,8 +7,9 @@
 #2 [Done] (2017-05-23) add delays, don't blacklisted by douban
 #3 [Done] (2017-05-25) save data into sqlite
 #4 [Done] (2017-05-25) fix chinese character encoding problem
-#5 [Todo] (2017-06-01) push the latest movies to cell phone
-#6 [Todo]              add logging to log errors
+#5 [Done] (2017-06-06) only save movies which doesn't exist in DB
+#6 [Todo]              push the latest movies to cell phone
+#7 [Todo]              add logging to log errors
 
 from utils import *
 from db import *
@@ -42,10 +43,14 @@ class DoubanMovie(object):
     # Pattern for matching year of douban movie
     _DOUBAN_MOVIE_YEAR_PATTERN    = re.compile(r'<span class="year">(.*)</span>')
 
+    # Pattern for matching id of douban movie
+    _DOUBAN_MOVIE_ID_PATTERN      = re.compile(r'/subject/(\d+)/')
+
     def __init__(self, text, url):
         self._movie_rate     = ""
         self._movie_name     = ""
         self._movie_year     = ""
+        self._movie_id       = ""
         self._error_happened = False
         self._movie_address  = url
         self._parse_movie(text)
@@ -55,6 +60,7 @@ class DoubanMovie(object):
             self._movie_rate = (re.findall(DoubanMovie._DOUBAN_MOVIE_RATE_PATTERN, text))[0]
             self._movie_name = (re.findall(DoubanMovie._DOUBAN_MOVIE_NAME_PATTERN, text))[0]
             self._movie_year = (re.findall(DoubanMovie._DOUBAN_MOVIE_YEAR_PATTERN, text))[0]
+            self._movie_id   = (re.findall(DoubanMovie._DOUBAN_MOVIE_ID_PATTERN, text))[0]
         except BaseException, e:
             self._error_happened = True
             print e
@@ -66,7 +72,8 @@ class DoubanMovie(object):
     @property
     def movie_item(self):
         "Proper format to be serialized to db."
-        return [encode_with_utf8(item) for item in (self._movie_name, self.movie_year, self.movie_rate, self._movie_address)]
+        return [encode_with_utf8(item) for item in
+                (self._movie_id, self._movie_name, self.movie_year, self.movie_rate, self._movie_address)]
 
     @property
     def movie_rate(self):
@@ -83,6 +90,11 @@ class DoubanMovie(object):
         "Get the movie year."
         return self._movie_year
 
+    @property
+    def movie_id(self):
+        "Get the movie id."
+        return self._movie_id
+
 
 # BFS stratege to do web crawling.
 # @see http://stackoverflow.com/questions/20579169/dfs-vs-bfs-in-web-crawler-design
@@ -95,18 +107,22 @@ def bfs_crawl(seed):
     while not q.isEmpty():
         time.sleep(1)
         url = q.deque()
+
         try:
             rsp = requests.get(url)
         except Exception as e:
             print e
             continue
+
         urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
         movie = DoubanMovie(rsp.text, url)
-        save_movie(movie.movie_item)
-        print(movie.__repr__())
 
-        for url in urls:
-            q.enqueue(url)
+        if not find_movie(movie):
+            print(movie.__repr__())
+            save_movie(movie.movie_item)
+
+            for url in urls:
+                q.enqueue(url)
     pass
 
 
