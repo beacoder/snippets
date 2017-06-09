@@ -8,8 +8,10 @@
 #3 [Done] (2017-05-25) save data into sqlite
 #4 [Done] (2017-05-25) fix chinese character encoding problem
 #5 [Done] (2017-06-06) only save movies which doesn't exist in DB
-#6 [Todo]              push the latest movies to cell phone
-#7 [Todo]              add logging to log errors
+#6 [Done]              separate crawler into two scripts, one for gathering data,
+#                      the other for querying gathered data
+#7 [Todo]              push the latest movies to cell phone
+#8 [Todo]              add logging to log errors
 
 from utils import *
 from db import *
