@@ -6,6 +6,7 @@ Sqlite used to store movies.
 #History#
 #1 [Done] (2017-05-26) Add DB operation.
 #2 [Done] (2017-06-06) Add column id in table movies.
+#3 [TODO]              Use SQLAlchemy as ORM, instead of using raw sql.
 
 # public symbols
 __all__ = ["connect_db", "close_db", "find_table", "create_table",
