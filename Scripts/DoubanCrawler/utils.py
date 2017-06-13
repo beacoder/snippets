@@ -1,6 +1,8 @@
 """Utilities facilities include encoding, stack, queue.
 
+* send_mail         send mail
 * encode_with_utf8  convert to unicode and encode with utf-8
+* decode_with_utf8  decode with utf-8 and convert to unicode
 * Stack             LIFO Container.
 * Queue             FIFO Container.
 
@@ -12,7 +14,7 @@
 #3 [Done] (2017-06-02) Add send mail
 
 # public symbols
-__all__ = ["encode_with_utf8", "decode_with_utf8", "Queue", "Stack", "send_mail"]
+__all__ = ["send_mail", "encode_with_utf8", "decode_with_utf8", "Queue", "Stack"]
 
 from collections import deque
 from subprocess import Popen, PIPE
@@ -58,7 +60,6 @@ def encode_with_utf8(in_string):
 
 def decode_with_utf8(in_string):
     "Decode string with utf-8 encoding."
-
     ret_string = in_string.decode('utf-8')
     if isinstance(ret_string, str):
         ret_string = u' '.join(ret_string).strip()

@@ -13,8 +13,9 @@
 #7 [Todo]              push the latest movies to cell phone
 #8 [Todo]              add logging to log errors
 
-from utils import *
-from db import *
+from utils import Queue, encode_with_utf8
+from db import connect_db, find_movie, save_movie, dump_movies
+from db import Movie
 
 import re
 import requests
@@ -22,80 +23,25 @@ import time
 
 
 # Pattern for matching douban movies
-_DOUBAN_MOVIES_PATTERN = re.compile(r'href="(https?://\S+/subject/\d+/)\S*"')
+_DOUBAN_MOVIES_PATTERN     = re.compile(r'href="(https?://\S+/subject/\d+/)\S*"')
 
-_DOUBAN_MOVIE_SEED     = "https://movie.douban.com"
+# Pattern for matching rating numble against douban movie
+_DOUBAN_MOVIE_RATE_PATTERN = re.compile(r'<strong class="ll rating_num" property="v:average">(.*)</strong>')
 
-_CRAWLED_SITES         = set()
+# Pattern for matching douban movie name
+_DOUBAN_MOVIE_NAME_PATTERN = re.compile(r'<span property="v:itemreviewed">(.*)</span>')
 
-_HELP_STRING           ="""Usage:
+# Pattern for matching year of douban movie
+_DOUBAN_MOVIE_YEAR_PATTERN = re.compile(r'<span class="year">(.*)</span>')
+
+# Pattern for matching id of douban movie
+_DOUBAN_MOVIE_ID_PATTERN   = re.compile(r'/subject/(\d+)/')
+
+_DOUBAN_MOVIE_SEED         = "https://movie.douban.com"
+
+_HELP_STRING               ="""Usage:
 start()       -> start crawling
 dump_movies() -> show movies in DB"""
-
-
-class DoubanMovie(object):
-    """Represent a movie from movie.douban.com"""
-
-    # Pattern for matching rating numble against douban movie
-    _DOUBAN_MOVIE_RATE_PATTERN = re.compile(r'<strong class="ll rating_num" property="v:average">(.*)</strong>')
-
-    # Pattern for matching douban movie name
-    _DOUBAN_MOVIE_NAME_PATTERN    = re.compile(r'<span property="v:itemreviewed">(.*)</span>')
-
-    # Pattern for matching year of douban movie
-    _DOUBAN_MOVIE_YEAR_PATTERN    = re.compile(r'<span class="year">(.*)</span>')
-
-    # Pattern for matching id of douban movie
-    _DOUBAN_MOVIE_ID_PATTERN      = re.compile(r'/subject/(\d+)/')
-
-    def __init__(self, text, url):
-        self._movie_rate     = ""
-        self._movie_name     = ""
-        self._movie_year     = ""
-        self._movie_id       = ""
-        self._error_happened = False
-        self._movie_address  = url
-        self._parse_movie(text)
-
-    def _parse_movie(self, text):
-        try:
-            self._movie_rate = (re.findall(DoubanMovie._DOUBAN_MOVIE_RATE_PATTERN, text))[0]
-            self._movie_name = (re.findall(DoubanMovie._DOUBAN_MOVIE_NAME_PATTERN, text))[0]
-            self._movie_year = (re.findall(DoubanMovie._DOUBAN_MOVIE_YEAR_PATTERN, text))[0]
-            self._movie_id   = (re.findall(DoubanMovie._DOUBAN_MOVIE_ID_PATTERN, text))[0]
-        except BaseException, e:
-            self._error_happened = True
-            print e
-
-    def __repr__(self):
-        if not self._error_happened:
-            return ("Rate of %s%s is %s \n" % (self._movie_name, self._movie_year, self._movie_rate))
-
-    @property
-    def movie_item(self):
-        "Proper format to be serialized to db."
-        return [encode_with_utf8(item) for item in
-                (self._movie_id, self._movie_name, self.movie_year, self.movie_rate, self._movie_address)]
-
-    @property
-    def movie_rate(self):
-        "Get the movie rate."
-        return self._movie_rate
-
-    @property
-    def movie_name(self):
-        "Get the movie name."
-        return self._movie_name
-
-    @property
-    def movie_year(self):
-        "Get the movie year."
-        return self._movie_year
-
-    @property
-    def movie_id(self):
-        "Get the movie id."
-        return self._movie_id
 
 
 # BFS stratege to do web crawling.
@@ -116,27 +62,34 @@ def bfs_crawl(seed):
             print e
             continue
 
-        urls = set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text))
-        movie = DoubanMovie(rsp.text, url)
+        for site in set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text)):
+            q.enqueue(site)
 
-        if not find_movie(movie):
-            print(movie.__repr__())
-            save_movie(movie.movie_item)
+        id=name=year=rate=address = None
+        error_happened            = False
 
-            for url in urls:
-                q.enqueue(url)
+        try:
+            rate    = float((re.findall(_DOUBAN_MOVIE_RATE_PATTERN, rsp.text))[0])
+            #name    = encode_with_utf8((re.findall(_DOUBAN_MOVIE_NAME_PATTERN, rsp.text))[0])
+            name    = (re.findall(_DOUBAN_MOVIE_NAME_PATTERN, rsp.text))[0]
+            year    = (re.findall(_DOUBAN_MOVIE_YEAR_PATTERN, rsp.text))[0]
+            id      = (re.findall(_DOUBAN_MOVIE_ID_PATTERN,   rsp.text))[0]
+            address = url
+        except BaseException, e:
+            error_happened = True
+            print e
+
+        if not error_happened:
+            movie = Movie(id=int(id), name=name, year=year, rate=rate, address=address)
+            if find_movie(movie) is None:
+                print(movie.__repr__())
+                #save_movie(movie)
     pass
-
-
-def prepare_movie_db():
-    connect_db()
-    if not find_table():
-        create_table()
 
 
 def start():
     bfs_crawl(_DOUBAN_MOVIE_SEED)
 
 if __name__ == '__main__' :
-    prepare_movie_db()
+    connect_db()
     print _HELP_STRING
