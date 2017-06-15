@@ -68,9 +68,9 @@ def bfs_crawl(seed):
         error_happened            = False
 
         try:
-            id      = int((re.findall(_DOUBAN_MOVIE_ID_PATTERN,   rsp.text))[0])
-            name    = (re.findall(_DOUBAN_MOVIE_NAME_PATTERN, rsp.text))[0]
-            year    = (re.findall(_DOUBAN_MOVIE_YEAR_PATTERN, rsp.text))[0]
+            id      = int((re.findall(_DOUBAN_MOVIE_ID_PATTERN,     rsp.text))[0])
+            name    = (re.findall(_DOUBAN_MOVIE_NAME_PATTERN,       rsp.text))[0]
+            year    = (re.findall(_DOUBAN_MOVIE_YEAR_PATTERN,       rsp.text))[0]
             rate    = float((re.findall(_DOUBAN_MOVIE_RATE_PATTERN, rsp.text))[0])
             address = url
         except BaseException, e:
