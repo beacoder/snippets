@@ -8,18 +8,18 @@
 #3 [Done] (2017-05-25) save data into sqlite
 #4 [Done] (2017-05-25) fix chinese character encoding problem
 #5 [Done] (2017-06-06) only save movies which doesn't exist in DB
-#6 [Done]              separate crawler into two scripts, one for gathering data,
+#6 [Done] (2017-06-16) extract breadth_first_search function
+#7 [TODO]              separate crawler into two scripts, one for gathering data,
 #                      the other for querying gathered data
-#7 [Todo]              push the latest movies to cell phone
-#8 [Todo]              add logging to log errors
+#8 [Todo]              push the latest movies to cell phone
+#9 [Todo]              add logging to log errors
 
-from utils import Queue
+from utils import breadth_first_search
 from db import connect_db, find_movie, save_movie, dump_movies
 from db import Movie
 
 import re
 import requests
-import time
 
 
 # Pattern for matching douban movies
@@ -44,49 +44,41 @@ start()       -> start crawling
 dump_movies() -> show movies in DB"""
 
 
-# BFS stratege to do web crawling.
 # @see http://stackoverflow.com/questions/20579169/dfs-vs-bfs-in-web-crawler-design
-def bfs_crawl(seed):
-    """Breadth First Crawling."""
+@breadth_first_search(1)
+def crawl(seed):
+    """Funciton to crawl.
+Given a seed, and return found sites.
+    """
+    try:
+        response = requests.get(seed).text
+    except Exception as e:
+        return ()
 
-    q = Queue()
-    q.enqueue(seed)
+    id=name=year=rate=address = None
+    error_happened            = False
 
-    while not q.isEmpty():
-        time.sleep(1)
-        url = q.deque()
+    try:
+        id      = int((re.findall(_DOUBAN_MOVIE_ID_PATTERN,     response))[0])
+        name    = (re.findall(_DOUBAN_MOVIE_NAME_PATTERN,       response))[0]
+        year    = (re.findall(_DOUBAN_MOVIE_YEAR_PATTERN,       response))[0]
+        rate    = float((re.findall(_DOUBAN_MOVIE_RATE_PATTERN, response))[0])
+        address = seed
+    except BaseException, e:
+        error_happened = True
 
-        try:
-            rsp = requests.get(url)
-        except Exception as e:
-            continue
+    if not error_happened:
+        movie = Movie(id=id, name=name, year=year, rate=rate, address=address)
+        if find_movie(movie) is None:
+            print(movie.__repr__())
+            save_movie(movie)
 
-        for site in set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text)):
-            q.enqueue(site)
-
-        id=name=year=rate=address = None
-        error_happened            = False
-
-        try:
-            id      = int((re.findall(_DOUBAN_MOVIE_ID_PATTERN,     rsp.text))[0])
-            name    = (re.findall(_DOUBAN_MOVIE_NAME_PATTERN,       rsp.text))[0]
-            year    = (re.findall(_DOUBAN_MOVIE_YEAR_PATTERN,       rsp.text))[0]
-            rate    = float((re.findall(_DOUBAN_MOVIE_RATE_PATTERN, rsp.text))[0])
-            address = url
-        except BaseException, e:
-            error_happened = True
-
-        if not error_happened:
-            movie = Movie(id=id, name=name, year=year,
-                          rate=rate, address=address)
-            if find_movie(movie) is None:
-                print(movie.__repr__())
-                save_movie(movie)
-    pass
+    return set(re.findall(_DOUBAN_MOVIES_PATTERN, response))
 
 
 def start():
-    bfs_crawl(_DOUBAN_MOVIE_SEED)
+    crawl(_DOUBAN_MOVIE_SEED)
+
 
 if __name__ == '__main__' :
     connect_db()

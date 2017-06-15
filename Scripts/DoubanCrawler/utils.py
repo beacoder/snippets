@@ -1,10 +1,11 @@
 """Utilities facilities include encoding, stack, queue.
 
-* send_mail         send mail
-* encode_with_utf8  convert to unicode and encode with utf-8
-* decode_with_utf8  decode with utf-8 and convert to unicode
-* Stack             LIFO Container.
-* Queue             FIFO Container.
+* send_mail            send mail
+* encode_with_utf8     convert to unicode and encode with utf-8
+* decode_with_utf8     decode with utf-8 and convert to unicode
+* Stack                LIFO Container.
+* Queue                FIFO Container.
+* breadth_first_search breadth first searching.
 
 """
 
@@ -12,14 +13,17 @@
 #1 [Done] (2017-05-26) Add queue, stack, encoding
 #2 [Done] (2017-05-31) Add decoding
 #3 [Done] (2017-06-02) Add send mail
+#4 [Done] (2017-06-16) Add breadth_first_search
 
 # public symbols
-__all__ = ["send_mail", "encode_with_utf8", "decode_with_utf8", "Queue", "Stack"]
+__all__ = ["send_mail", "encode_with_utf8", "decode_with_utf8", "Queue", "Stack",
+           "breadth_first_search"]
 
 from collections import deque
 from subprocess import Popen, PIPE
 from email.mime.text import MIMEText
 import os
+import time
 
 
 ################################################################################
@@ -121,3 +125,25 @@ class Stack(_QueueAndStackBase):
 
     def peek(self):
         return self.items[len(self.items)-1]
+
+
+################################################################################
+### breadth first search
+################################################################################
+def breadth_first_search(interval):
+    """Breadth First Searching.
+interval: time interval between searching action.
+        """
+    def real_decorator(function):
+        def wrapper(*args, **kwargs):
+            q = Queue()
+            q.enqueue(*args)
+            while not q.isEmpty():
+                if isinstance(interval, int) and (interval>0):
+                    time.sleep(interval)
+                else:
+                    time.sleep(1)
+                for node in function(q.deque(), **kwargs):
+                    q.enqueue(node)
+        return wrapper
+    return real_decorator
