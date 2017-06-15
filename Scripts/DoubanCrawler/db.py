@@ -7,13 +7,12 @@ Sqlite used to store movies.
 #1 [Done] (2017-05-26) Add DB operation.
 #2 [Done] (2017-06-06) Add column id in table movies.
 #3 [Done] (2017-06-13) Use SQLAlchemy as ORM, instead of using raw sql.
-#4 [TODO]              Fix encoding error when save movie to db
+#4 [Done] (2017-06-15) Fix encoding error when save movie to db
 
 # public symbols
 __all__ = ["Movie", "connect_db", "close_db", "find_movie",
            "save_movie", "dump_movies"]
 
-from utils import decode_with_utf8
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -34,9 +33,9 @@ class Movie(Base):
     address  = Column(String(50))
 
     def __repr__(self):
-        return "<Moive(name='%s', year='%s', rate='%s')>" % (
-            # decode_with_utf8(self.name), self.year, self.rate)
-            self.name, self.year, self.rate)
+        return "<Moive(name='%s', year='%s', rate='%s', address='%s')>" % (
+            self.name, self.year, self.rate, self.address)
+    pass
 
 
 def connect_db():
@@ -67,5 +66,5 @@ def save_movie(movie):
 def dump_movies():
     session = Session()
     for movie in session.query(Movie).order_by(Movie.id):
-        print(movie)
+        print(movie.__repr__())
     pass

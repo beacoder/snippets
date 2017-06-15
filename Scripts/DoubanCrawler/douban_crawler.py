@@ -13,7 +13,7 @@
 #7 [Todo]              push the latest movies to cell phone
 #8 [Todo]              add logging to log errors
 
-from utils import Queue, encode_with_utf8
+from utils import Queue
 from db import connect_db, find_movie, save_movie, dump_movies
 from db import Movie
 
@@ -59,7 +59,6 @@ def bfs_crawl(seed):
         try:
             rsp = requests.get(url)
         except Exception as e:
-            print e
             continue
 
         for site in set(re.findall(_DOUBAN_MOVIES_PATTERN, rsp.text)):
@@ -69,21 +68,20 @@ def bfs_crawl(seed):
         error_happened            = False
 
         try:
-            rate    = float((re.findall(_DOUBAN_MOVIE_RATE_PATTERN, rsp.text))[0])
-            #name    = encode_with_utf8((re.findall(_DOUBAN_MOVIE_NAME_PATTERN, rsp.text))[0])
+            id      = int((re.findall(_DOUBAN_MOVIE_ID_PATTERN,   rsp.text))[0])
             name    = (re.findall(_DOUBAN_MOVIE_NAME_PATTERN, rsp.text))[0]
             year    = (re.findall(_DOUBAN_MOVIE_YEAR_PATTERN, rsp.text))[0]
-            id      = (re.findall(_DOUBAN_MOVIE_ID_PATTERN,   rsp.text))[0]
+            rate    = float((re.findall(_DOUBAN_MOVIE_RATE_PATTERN, rsp.text))[0])
             address = url
         except BaseException, e:
             error_happened = True
-            print e
 
         if not error_happened:
-            movie = Movie(id=int(id), name=name, year=year, rate=rate, address=address)
+            movie = Movie(id=id, name=name, year=year,
+                          rate=rate, address=address)
             if find_movie(movie) is None:
                 print(movie.__repr__())
-                #save_movie(movie)
+                save_movie(movie)
     pass
 
 
