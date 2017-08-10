@@ -3,7 +3,8 @@
 class Employee
 {
   public:
-    typedef std::shared_ptr<Employee> Ptr;
+    using Ptr = std::shared_ptr<Employee>;
+
     virtual ~Employee () {}                     // Native support for polymorphic destruction.
     virtual Ptr create () const = 0;            // Virtual constructor (creation)
     virtual Ptr clone () const = 0;             // Virtual constructor (copying)
