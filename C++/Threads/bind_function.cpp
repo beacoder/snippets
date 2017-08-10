@@ -3,8 +3,7 @@
  * g++ -g -Wall -I/usr/include/boost -L/usr/lib -lboost_thread bind_function.cpp -o test
  */
 
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
@@ -13,7 +12,7 @@ using namespace std;
 
 class Shared_Obj {
  public:
-  typedef boost::shared_ptr<Shared_Obj> Ptr;
+  using Ptr = std::shared_ptr<Shared_Obj> ;
  
   Shared_Obj() {
     std::cout << "Shared_Obj is constructed !" << std::endl;
@@ -24,7 +23,7 @@ class Shared_Obj {
   }
 };
 
-typedef Shared_Obj::Ptr ResourceType;
+using ResourceType = Shared_Obj::Ptr;
 
 void fun1 (ResourceType rs)
 {
