@@ -24,12 +24,12 @@ Ensure that an object is initialized before its first use, e.g: Singleton patter
 ```
 Creating an object or it's copy without knowing its concrete type
 ```
-#### Non-throwing_swap
+#### Non_throwing_swap
 ```
 To implement an exception safe and efficient swap operation.
 To provide uniform interface to it to facilitate generic programming.
 ```
-#### Copy-and-swap
+#### Copy_and_swap
 ```
 Create an exception safe implementation of overloaded assignment operator
 ```
