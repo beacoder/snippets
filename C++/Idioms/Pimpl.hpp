@@ -5,6 +5,7 @@ public:
   Book();
   ~Book();
   void print();
+
 private:
   class BookImpl;
   BookImpl* m_p;
@@ -18,6 +19,7 @@ class Book::BookImpl
 {
 public:
   void print();
+
 private:
   std::string  m_Contents;
   std::string  m_Title;
