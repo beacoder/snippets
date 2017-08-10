@@ -2,8 +2,8 @@ template <class T>
 class AutoDelete
 {
   public:
-    AutoDelete           (T * p = 0) : ptr_(p) {}
-    ~AutoDelete          () throw() { delete ptr_; }
+    AutoDelete           (T* p = 0) : ptr_(p) {}
+    ~AutoDelete          () noexcept          { delete ptr_; }
 
     // NonCopyable
     AutoDelete           (const AutoDelete&) = delete;
@@ -17,8 +17,8 @@ class AutoDelete
 class ScopedLock
 {
   public:
-    ScopedLock (Lock & l) : lock_(l) { lock_.acquire(); }
-    ~ScopedLock () throw () { lock_.release(); }
+    ScopedLock           (Lock& l) : lock_(l) { lock_.acquire(); }
+    ~ScopedLock          () noexcept          { lock_.release(); }
 
     // NonCopyable
     ScopedLock           (const ScopedLock&) = delete;
