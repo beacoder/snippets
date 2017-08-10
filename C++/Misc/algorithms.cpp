@@ -10,7 +10,9 @@
 
 using namespace std;
 
-// constexpr will be evaluated in compile time.
+// constexpr => evaluated in compile time.
+// constexpr functions will be evaluated at compile time when all its arguments are constant expressions
+// and the result is used in a constant expression as well.
 constexpr uint32_t MAXNUMBER = 50000;
 
 void BubbleSort(int *array, int n);
