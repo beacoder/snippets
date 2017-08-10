@@ -1,4 +1,5 @@
-class Shape   // An interface class
+// An interface class
+class Shape
 {
   public:
     virtual ~Shape();
