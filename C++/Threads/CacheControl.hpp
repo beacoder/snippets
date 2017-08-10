@@ -56,7 +56,7 @@ InstrumentCache<T, KeyT> *InstrumentCache<T, KeyT>::getCache(const KeyT &tag)
 {
   boost::mutex::scoped_lock lock(mGuard);
 
-  CacheType *pCache = NULL;
+  CacheType *pCache = nullptr;
 
   typename CacheReposity::iterator it = m_cache_map.find(tag);;
   if (it == m_cache_map.end())
