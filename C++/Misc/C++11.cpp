@@ -1,4 +1,5 @@
 #include <functional>
+#include <iostream>
 
 // combine std::bind(), variadic templates, and perfect forwarding
 
@@ -44,3 +45,35 @@ auto f1 = [sum = a + b](auto arg) { f(42, arg, sum); };
 // perfect forwarding
 auto f1 = std::bind(f, 42, std::forward<Args>(args)...);
 auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg)); };
+
+
+// variadic template recursive function
+
+template <typename...> struct SumTs;
+template <typename T1> struct SumTs<T1> { typedef T1 type; };
+
+template <typename T1, typename... Ts>
+struct SumTs<T1, Ts...>
+{
+  typedef typename SumTs<Ts...>::type rhs_t;
+  typedef decltype(std::declval<T1>() + std::declval<rhs_t>()) type;
+};
+
+//now the sum function
+template <typename T>
+T sum(const T& v)
+{
+  return v;
+}
+
+template <typename T1, typename... Ts>
+auto sum(const T1& v1, const Ts&... rest) 
+  -> typename SumTs<T1,Ts...>::type //instead of the decltype
+{
+  return v1 + sum(rest... );
+}
+
+int main()
+{
+  std::cout << sum(1,2,3,4,5);    
+}
