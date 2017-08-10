@@ -6,9 +6,12 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+#include <stdint.h>
 
 using namespace std;
-#define MAXNUMBER 50000
+
+// constexpr will be evaluated in compile time.
+constexpr uint32_t MAXNUMBER = 50000;
 
 void BubbleSort(int *array, int n);
 void SelectionSort(int *array, int n);
