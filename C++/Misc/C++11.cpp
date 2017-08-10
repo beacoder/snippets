@@ -1,7 +1,7 @@
 #include <functional>
 #include <iostream>
 
-// combine std::bind(), variadic templates, and perfect forwarding
+/// combine std::bind(), variadic templates, and perfect forwarding
 
 void third_party(int n, std::function<void(int)> f)
 {
@@ -32,7 +32,7 @@ int main()
 }
 
 
-// std::bind() vs lambdas in C++14
+/// std::bind() vs lambdas in C++14
 
 // move and capture varaibles
 auto f1 = std::bind(f, 42, _1, std::move(v));
@@ -47,7 +47,7 @@ auto f1 = std::bind(f, 42, std::forward<Args>(args)...);
 auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg)); };
 
 
-// variadic template recursive function
+/// variadic template recursive function
 
 template <typename...> struct SumTs;
 template <typename T1> struct SumTs<T1> { typedef T1 type; };
