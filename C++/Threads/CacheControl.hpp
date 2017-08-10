@@ -26,9 +26,9 @@ public:
   virtual ~InstrumentCache();
 
 private:
-  typedef InstrumentCache<T, KeyT> CacheType;
-  typedef std::map<KeyT, InstrumentCache<T, KeyT>* > CacheReposity;
-  typedef std::map<int, T> CacheMap;
+  using CacheType     = InstrumentCache<T, KeyT>;
+  using CacheReposity = std::map<KeyT, InstrumentCache<T, KeyT>* >;
+  using CacheMap      = std::map<int, T>;
 
   InstrumentCache();
 
