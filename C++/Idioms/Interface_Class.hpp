@@ -56,7 +56,8 @@ class Curve : public Shape
 
 int main (void)
 {
-    typedef std::shared_ptr<Shape> ShapePtr;
+    using ShapePtr = std::shared_ptr<Shape>;
+
     std::vector<ShapePtr> vShapes;
     vShapes.push_back(std::make_shared(Shape::getShape("Line")));
     vShapes.push_back(std::make_shared(Shape::getShape("Curve")));
