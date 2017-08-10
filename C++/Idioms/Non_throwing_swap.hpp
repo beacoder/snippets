@@ -12,7 +12,7 @@ class UserDefined
 
 namespace std
 {
-  // add full specializations version into std namespace.
+  // add full-specialization-version swap into std namespace.
   template <>
   void swap (UserDefined& u1, UserDefined& u2) noexcept
   {
@@ -36,7 +36,7 @@ class Myclass
 
 namespace std
 {
-   // add full specializations version into std namespace.
+   // add full-specialization-version swap into std namespace.
    template <> 
    void swap (Myclass& m1, Myclass& m2) noexcept
    {
