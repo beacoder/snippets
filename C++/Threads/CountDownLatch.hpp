@@ -1,4 +1,3 @@
-#include <boost/noncopyable.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
 #include <boost/thread/locks.hpp>
@@ -6,6 +5,10 @@
 class CountDownLatch : boost::noncopyable
 {
  public:
+
+  // NonCopyable
+  CountDownLatch           (const CountDownLatch&) = delete;
+  CountDownLatch& operator=(const CountDownLatch&) = delete;
 
   explicit  CountDownLatch(int count);
 
