@@ -12,7 +12,7 @@ public:
         // Old resources are released with the destruction of the temporary above
         return *this;
     }
-    void swap(String & s) throw() // Also see non-throwing swap idiom
+    void swap(String & s) noexcept // Also see non-throwing swap idiom
     {
         std::swap(this->str, s.str);
     }
