@@ -9,7 +9,8 @@ struct Foo {
  }
 };
 
-// If the object has a destructor with non-trivial semantics, local static object is used instead of dynamic allocation as given below.
+// If the object has a destructor with non-trivial semantics, 
+// local static object is used instead of dynamic allocation as given below.
 // Construct on first use using local static
 struct Foo {
   Foo () {
