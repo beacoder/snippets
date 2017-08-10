@@ -1,26 +1,29 @@
-//  Private copy constructor and copy assignment ensure classes derived 
-//  from class NonCopyable cannot be copied.
-class NonCopyable 
-{
-   NonCopyable (NonCopyable const &); // private copy constructor
-   NonCopyable & operator = (NonCopyable const &); // private assignment operator
-};
-
 template <class T>
-class AutoDelete : NonCopyable
+class AutoDelete
 {
   public:
-    AutoDelete (T * p = 0) : ptr_(p) {}
-    ~AutoDelete () throw() { delete ptr_; } 
+    AutoDelete           (T * p = 0) : ptr_(p) {}
+    ~AutoDelete          () throw() { delete ptr_; }
+
+    // NonCopyable
+    AutoDelete           (const AutoDelete&) = delete;
+    AutoDelete& operator=(const AutoDelete&) = delete;
+
   private:
     T *ptr_;
 };
 
-class ScopedLock : NonCopyable// Scoped Lock idiom
+// Scoped Lock idiom
+class ScopedLock
 {
   public:
     ScopedLock (Lock & l) : lock_(l) { lock_.acquire(); }
-    ~ScopedLock () throw () { lock_.release(); } 
+    ~ScopedLock () throw () { lock_.release(); }
+
+    // NonCopyable
+    ScopedLock           (const ScopedLock&) = delete;
+    ScopedLock& operator=(const ScopedLock&) = delete;
+
   private:
     Lock& lock_;
 };
