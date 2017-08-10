@@ -151,7 +151,7 @@ public:
 private:
   using CacheType     = InstrumentCache<T*, KeyT>;
   using CacheReposity = std::map<KeyT, InstrumentCache<T*, KeyT>* >;
-  using CacheMap      =std::map<int, T*>;
+  using CacheMap      = std::map<int, T*>;
 
   InstrumentCache();  
 
@@ -271,7 +271,7 @@ InstrumentCache<T*, KeyT>::~InstrumentCache()
 }
 
 // use case:
-// typedef Object* ObjectPtr;
-// typedef InstrumentCache<ObjectPtr, std::string>    ObjectPtrCache;
-// typedef std::shared_ptr<Object> SharedObject;
-// typedef InstrumentCache<SharedObject, std::string> SharedObjectCache;
+// using ObjectPtr         = Object*;
+// using ObjectPtrCache    = InstrumentCache<ObjectPtr, std::string>;
+// using SharedObject      = std::shared_ptr<Object>;
+// using SharedObjectCache = InstrumentCache<SharedObject, std::string>;
