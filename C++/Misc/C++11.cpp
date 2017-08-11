@@ -34,6 +34,9 @@ int main()
 
 /// std::bind() vs lambdas in C++14
 
+// capture apply only to non-static local variables (including parameters) visible in
+// the scope where the lambda is created.
+
 // move and capture varaibles
 auto f1 = std::bind(f, 42, _1, std::move(v));
 auto f1 = [v = std::move(v)](auto arg) { f(42, arg, std::move(v)); };
