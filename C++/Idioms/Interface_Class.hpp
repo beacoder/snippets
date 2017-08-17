@@ -56,16 +56,19 @@ class Curve : public Shape
 
 int main (void)
 {
-    using ShapePtr = std::shared_ptr<Shape>;
+  using ShapePtr = std::shared_ptr<Shape>;
 
-    std::vector<ShapePtr> vShapes;
-    vShapes.emplace_back(std::make_shared(Shape::getShape("Line")));
-    vShapes.emplace_back(std::make_shared(Shape::getShape("Curve")));
+  std::vector<ShapePtr> vShapes;
+  vShapes.emplace_back(std::make_shared(Shape::getShape("Line")));
+  vShapes.emplace_back(std::make_shared(Shape::getShape("Curve")));
   
-    auto drawer = [](const ShapePtr& shape) { shape->draw(); };
-    
+  auto drawer = [&vShapes]()
+  { 
     for (const auto& shape : vShapes)
     {
-      drawer(shape);
+      shape->drawer();
     }
+  };
+    
+  drawer();
 }
