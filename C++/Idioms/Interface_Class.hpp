@@ -59,8 +59,13 @@ int main (void)
     using ShapePtr = std::shared_ptr<Shape>;
 
     std::vector<ShapePtr> vShapes;
-    vShapes.push_back(std::make_shared(Shape::getShape("Line")));
-    vShapes.push_back(std::make_shared(Shape::getShape("Curve")));
-
-    std::for_each(vShapes.begin(), vShapes.end(), [](std::vector<ShapePtr>::iterator& iter) { iter->draw(); });
+    vShapes.emplace_back(std::make_shared(Shape::getShape("Line")));
+    vShapes.emplace_back(std::make_shared(Shape::getShape("Curve")));
+  
+    auto drawer = [](const ShapePtr& shape) { shape->draw(); };
+    
+    for (const auto& shape : vShapes)
+    {
+      drawer(shape);
+    }
 }
