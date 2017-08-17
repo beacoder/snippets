@@ -54,31 +54,17 @@ auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg)); };
 
 /// variadic template recursive function
 
-template <typename...> struct SumTs;
-template <typename T1> struct SumTs<T1> { typedef T1 type; };
-
-template <typename T1, typename... Ts>
-struct SumTs<T1, Ts...>
-{
-  typedef typename SumTs<Ts...>::type rhs_t;
-  typedef decltype(std::declval<T1>() + std::declval<rhs_t>()) type;
-};
-
-//now the sum function
-template <typename T>
-T sum(const T& v)
-{
+template<typename T>
+T adder(T v) {
   return v;
 }
 
-template <typename T1, typename... Ts>
-auto sum(const T1& v1, const Ts&... rest) 
-  -> typename SumTs<T1,Ts...>::type //instead of the decltype
-{
-  return v1 + sum(rest... );
+template<typename T, typename... Args>
+T adder(T first, Args... args) {
+  return first + adder(args...);
 }
 
 int main()
 {
-  std::cout << sum(1,2,3,4,5);    
+  std::cout << adder(1,2,3,4,5);    
 }
