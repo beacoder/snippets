@@ -49,7 +49,7 @@ auto f1 = [sum = a + b](auto arg) { f(42, arg, sum); };
 
 // perfect forwarding
 auto f1 = std::bind(f, 42, std::forward<Args>(args)...);
-auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg)); };
+auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg)...); };
 
 
 /// variadic template recursive function
