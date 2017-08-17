@@ -77,10 +77,9 @@ void InstrumentCache<T, KeyT>::releaseCache()
 {
   boost::mutex::scoped_lock lock(mGuard);
 
-  for (typename CacheReposity::iterator it = m_cache_map.begin();
-       it != m_cache_map.end(); ++it)
+  for (const auto& cache : m_cache_map)
   {
-    CacheType *pCache = it->second;
+    CacheType *pCache = cache.second;
     delete pCache;
   }
 
@@ -261,10 +260,9 @@ T* InstrumentCache<T*, KeyT>::retrieve(int site) const
 template<class T, class KeyT>
 InstrumentCache<T*, KeyT>::~InstrumentCache()
 {
-  for (typename CacheMap::iterator it = m_data.begin();
-       it != m_data.end(); ++it)
+  for (const auto& data : m_data)
   {
-    T *pData = it->second;
+    T *pData = data.second;
     delete pData;
   }
   m_data.clear();
