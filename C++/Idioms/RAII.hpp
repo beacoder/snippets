@@ -50,7 +50,8 @@ void X::bar()
   ScopedLock safe_lock(l); // Lock will be released certainly
   if (...)
     if (...)
-      throw "ERROR"; 
+      throw "ERROR";
+
   // No need to call release here.
   // Destructor of safe_lock will release the lock
 }
