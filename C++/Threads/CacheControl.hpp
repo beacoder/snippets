@@ -12,7 +12,7 @@
  * Cache
  */
 template<class T, class KeyT>
-class InstrumentCache 
+class InstrumentCache final
 {
 public:
   static InstrumentCache<T, KeyT> *getCache(const KeyT &tag);
@@ -134,7 +134,7 @@ InstrumentCache<T, KeyT>::~InstrumentCache()
  * Partial Specialization for Pointer Type
  */
 template<class T, class KeyT>
-class InstrumentCache <T*, KeyT>
+class InstrumentCache <T*, KeyT> final
 {  
 public:
   static InstrumentCache<T*, KeyT> *getCache(const KeyT &tag);    
