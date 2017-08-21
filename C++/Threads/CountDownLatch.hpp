@@ -2,7 +2,7 @@
 #include <boost/thread/condition_variable.hpp>
 #include <boost/thread/locks.hpp>
 
-class CountDownLatch : boost::noncopyable
+class CountDownLatch
 {
  public:
 
