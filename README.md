@@ -1,4 +1,4 @@
-workspace
+snippets
 =========
 
 c++ and script snippets.
