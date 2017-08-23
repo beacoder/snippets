@@ -14,7 +14,7 @@ public:
 
     void swap(String& s) noexcept // Also see non-throwing swap idiom
     {
-        std::swap(this->str, s.str);
+        std::swap(str, s.str);
     }
     
 private:
