@@ -11,7 +11,6 @@ def usage():
 e.g: ./jsonFilter.py -f /repo/build/Linux_x86_64/compile_commands.json -t /git/application,/git/framework -o out.json
   """
   print sample
-  return
 
 def doMatch(json_obj, filters):
   fileStr = json_obj.get('file')
@@ -36,23 +35,24 @@ def doFilter(input_json, filters, output_json):
 
   # Show json
   # print output_json
-
-  return
+  pass
 
 def createParser():
   p = argparse.ArgumentParser()
   p.add_argument("-f")
   p.add_argument("-t")
   p.add_argument("-o")
-  args = p.parse_args()
-  return args
+
+  return p.parse_args()
 
 def main():
   args = createParser()
+
   if args.f and args.o and args.t:
     doFilter(args.f, args.t.split(","), args.o)
   else:
     usage()
+
   sys.exit(0)
 
 if __name__ == "__main__":
