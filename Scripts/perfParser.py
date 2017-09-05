@@ -8,11 +8,48 @@ import json
 import sys
 import pdb
 
-nested_dict = lambda: defaultdict(nested_dict)
-
+# nested_dict = lambda: defaultdict(nested_dict)
 # nd = nested_dict()
 # nd["a","b","c"] = 'local'
 # assert nd["a"]["b"]["c"] == 'local'
+
+def nested_dict():
+    """return a nested_dict."""
+
+    children    = defaultdict(nested_dict)
+    children[0] = 0
+    return children
+
+
+class ParserTree(object):
+    """Used to store parsed perf data."""
+
+    def __init__(self):
+        """used nested_dict as a tree."""
+
+        self._data_ = nested_dict()
+        pass
+
+
+    def insert(self, keys, value):
+        """insert tree data.
+e.g: ParseTree.insert([1,2,3], 1) => ParseTree[1][2][3] = 1."""
+
+        ptr = self._data_
+        for key in keys.split(";"):
+            ptr = ptr[key]
+            ptr[0] += value
+        ptr = value;
+        pass
+
+    @breadth_first_search(1)
+    def __repr__(self):
+        """show the tree data."""
+        # use queue strucuture to iterate.
+        pass
+
+    pass
+
 
 def usage():
     """usage information"""
