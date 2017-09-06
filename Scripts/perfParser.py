@@ -60,21 +60,22 @@ e.g: ./perfParser.py -f out.txt -o statistics
     print sample
 
 
-def doParseLine(line):
-    (call_chain, times) = line.split(" ")
-    print call_chain
-    print times
+def doParseLine(line, tree):
+    (keys, value) = line.rsplit(" ", 1)
+    print keys
+    print value
 
-    d = {}
-    for key in reversed(call_chain.split(";")):
-        d = {key: d}
+    tree.insert(keys, int(value))
+    pass
 
 
 def doParseFile(input_file, output_file):
+    tree = ParserTree()
+    with open(input_file) as f:
+        for line in f:
+            doParse(line, tree)
+    pass
 
-  with open(input_file) as f:
-    for line in f:
-        doParse(line)
 
   # Filter python objects with list comprehensions
   # output_dict = [x for x in input_dict if doMatch(x, filters)]
