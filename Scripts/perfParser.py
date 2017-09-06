@@ -37,9 +37,8 @@ e.g: ParseTree.insert([1,2,3], 1) => ParseTree[1][2][3] = 1."""
 
         ptr = self._data_
         for key in keys.split(";"):
-            ptr = ptr[key]
+            ptr    =  ptr[key]
             ptr[0] += value
-        ptr = value;
         pass
 
     @breadth_first_search(1)
