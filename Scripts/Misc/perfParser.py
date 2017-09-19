@@ -64,7 +64,7 @@ def process_func_with_subfunc(raw_data):
     print
     return result
     
-    def count_pencentage(raw_data, outFile):
+def count_pencentage(raw_data, outFile):
 
     threshold_1  = 0.00
     threshold_2  = 0.00
