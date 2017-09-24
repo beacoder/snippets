@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import select
-from event_demux import EventDemux
+from demux import Demux
 
 
-class KqueueDemux(EventDemux):
+class KqueueDemux(Demux):
 
     MAX_EVENTS = 1024
 
@@ -50,7 +50,7 @@ class KqueueDemux(EventDemux):
         return results.items()
 
     def close(self):
-        """close this EventDemux."""
+        """close this Demux."""
 
         self._kqueue.close()
 

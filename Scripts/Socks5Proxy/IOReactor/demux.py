@@ -11,7 +11,7 @@ POLL_HUP  = 0x10
 POLL_NVAL = 0x20
 
 
-class EventDemux(object):
+class Demux(object):
     __metaclass__ = ABCMeta
 
     def __init__(self):
@@ -38,7 +38,7 @@ class EventDemux(object):
 
     @abstractmethod
     def close(self):
-        """stop this EventDemux."""
+        """stop this Demux."""
 
         raise NotImplementedError("subclasses must override close()!")
 

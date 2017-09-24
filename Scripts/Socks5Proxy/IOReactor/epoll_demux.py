@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import select
-from event_demux import EventDemux
+from demux import Demux
 
 
-class EpollDemux(EventDemux):
+class EpollDemux(Demux):
 
     def __init__(self):
         # epoll exits in linux, unix.
@@ -27,7 +27,7 @@ class EpollDemux(EventDemux):
         return [(fd, event) for fd, event in events]
 
     def close(self):
-        """close this EventDemux."""
+        """close this Demux."""
 
         self._epoll.close()
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import select
-from event_demux import EventDemux
+from demux import Demux
 from collections import defaultdict
 
 
-class SelectDemux(EventDemux):
+class SelectDemux(Demux):
 
     def __init__(self):
         self._r_list = set()
@@ -44,7 +44,7 @@ class SelectDemux(EventDemux):
         return results.items()
 
     def close(self):
-        """close this EventDemux."""
+        """close this Demux."""
 
         pass
 
