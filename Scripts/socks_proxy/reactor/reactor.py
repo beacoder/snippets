@@ -9,13 +9,13 @@ class Reactor(object):
     def __init__(self, demux=None):
         if demux is None:
             if hasattr(select, 'epoll'):
-                from demux.epoll import EpollDemux
+                from demux.epoll_demux import EpollDemux
                 self._demux = EpollDemux()
             elif hasattr(select, 'kqueue'):
-                from demux.kqueue import KqueueDemux
+                from demux.kqueue_demux import KqueueDemux
                 self._demux = KqueueDemux()
             elif hasattr(select, 'select'):
-                from demux.select import SelectDemux
+                from demux.select_demux import SelectDemux
                 self._demux = SelectDemux()
             else:
                 raise Exception('can not find any available functions in select package')
