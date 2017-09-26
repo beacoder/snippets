@@ -2,18 +2,11 @@
 
 """use this echo server to test socket funciton."""
 
+
 import socket
 from reactor.reactor import Reactor
 from reactor.event_handler import EventHandler
-
 from reactor.demux.demux import POLL_IN
-
-r = Reactor()
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((socket.gethostname(), 10010))
-s.listen(10)
 
 
 class SocketReader(EventHandler):
@@ -25,10 +18,11 @@ class SocketReader(EventHandler):
     def handle_input(self, sock, fd):
         data = sock.recv(4096)
         if data:
-            print data
+            print data.__repr__()
         pass
 
     pass
+
 
 class SocketAcceptor(EventHandler):
     """Accept socket connection from client."""
@@ -44,5 +38,20 @@ class SocketAcceptor(EventHandler):
     pass
 
 
-r.register_handler(s, POLL_IN, SocketAcceptor())
-r.handle_events()
+def test():
+    global r, s
+    r = Reactor()
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((socket.gethostname(), 10010))
+    s.listen(10)
+
+    r.register_handler(s, POLL_IN, SocketAcceptor())
+    r.handle_events()
+
+    pass
+
+
+if __name__=='__main__':
+    test()
