@@ -18,7 +18,9 @@ class SocketReader(EventHandler):
     def handle_input(self, sock, fd):
         data = sock.recv(4096)
         if data:
+            print "Recved data from connection {0}".format(sock.getpeername())
             print data.__repr__()
+            print
         pass
 
     pass
@@ -32,7 +34,8 @@ class SocketAcceptor(EventHandler):
             (c, addr) = sock.accept()
             c.setblocking(False)
             r.register_handler(c, POLL_IN, SocketReader())
-            print "recved one connection from {0}".format(addr)
+            print "Accepted one connection from address {0}".format(addr)
+            print
         pass
 
     pass
