@@ -19,6 +19,7 @@ import logging
 TIMEOUT_PRECISION = 10
 
 
+# from shadowsocks
 class Reactor(object):
 
     def __init__(self, demux=None):
