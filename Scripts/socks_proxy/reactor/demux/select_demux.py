@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import select
-from demux import Demux
+from demux import *
 from collections import defaultdict
 
 
@@ -22,14 +22,14 @@ class SelectDemux(Demux):
         if event & POLL_ERR:
             self._x_list.add(fd)
 
-    def unregister_event(self, fd, event):
+    def unregister_event(self, fd):
         """unregister event for monitoring. """
 
-        if event & POLL_IN:
+        if fd in self._r_list:
             self._r_list.remove(fd)
-        if event & POLL_OUT:
+        if fd in self._w_list:
             self._w_list.remove(fd)
-        if event & POLL_ERR:
+        if fd in self._x_list:
             self._x_list.remove(fd)
 
     def wait_for_ready(self, timeout=None):

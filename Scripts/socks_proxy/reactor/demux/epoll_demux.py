@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import select
-from demux import Demux
+from demux import *
 
 
 class EpollDemux(Demux):
@@ -15,7 +15,7 @@ class EpollDemux(Demux):
 
         self._epoll.register(fd, event)
 
-    def unregister_event(self, fd, event):
+    def unregister_event(self, fd):
         """unregister event for monitoring."""
 
         self._epoll.unregister(fd)

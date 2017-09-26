@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import select
-from demux import Demux
+from collections import defaultdict
+from demux import *
 
 
 class KqueueDemux(Demux):
@@ -16,21 +17,26 @@ class KqueueDemux(Demux):
     def register_event(self, fd, event):
         """register event for monitoring. """
 
+        events = []
         if event & POLL_IN:
-            select.kevent(fd, select.KQ_FILTER_READ, select.KQ_EV_ADD)
+            events.append(select.kevent(fd, select.KQ_FILTER_READ, select.KQ_EV_ADD))
         if event & POLL_OUT:
-            select.kevent(fd, select.KQ_FILTER_WRITE, select.KQ_EV_ADD)
+            events.append(select.kevent(fd, select.KQ_FILTER_WRITE, select.KQ_EV_ADD))
+        for e in events:
+            self._kqueue.control([e], 0)
 
         self._fds[fd] = event
-        self._kqueue.control([event], 0)
 
-    def unregister_event(self, fd, event):
+    def unregister_event(self, fd):
         """unregister event for monitoring. """
 
+        events = []
         if event & POLL_IN:
-            select.kevent(fd, select.KQ_FILTER_READ, select.KQ_EV_DELETE)
+            events.append(select.kevent(fd, select.KQ_FILTER_READ, select.KQ_EV_DELETE))
         if event & POLL_OUT:
-            select.kevent(fd, select.KQ_FILTER_WRITE, select.KQ_EV_DELETE)
+            events.append(select.kevent(fd, select.KQ_FILTER_WRITE, select.KQ_EV_DELETE))
+        for e in events:
+            self._kqueue.control([e], 0)
 
         del self._fds[fd]
 

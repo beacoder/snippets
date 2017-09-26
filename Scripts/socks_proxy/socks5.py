@@ -30,23 +30,23 @@ class Log:
 	ERROR="[ERROR:]"
 	def write(self,message,level):
 		pass
-		
+
 class SimpleLog(Log):
 	import sys
 	def __init__(self,output=sys.stdout):
 		self.__output=output
 		self.show_log=True
-		
+
 	def write(self,message,level=Log.INFO):
 		if self.show_log:
 			self.__output.write("%s\t%s\n" %(level,message))
-			
+
 def getLogger(output=sys.stdout):
 	global _LOGGER
 	if not _LOGGER:
 		_LOGGER=SimpleLog(output)
 	return _LOGGER
-		
+
 
 class SocketTransform(Thread):
 	def __init__(self,src,dest_ip,dest_port,bind=False):
@@ -170,5 +170,3 @@ if __name__=='__main__':
 		create_server(ip,port)
 	except Exception,e:
 		getLogger().write("Error on create server:"+e.message,Log.ERROR)
-
-

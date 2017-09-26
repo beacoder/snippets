@@ -3,6 +3,9 @@
 from abc import ABCMeta, abstractmethod
 
 
+__all__ = ['Demux', 'POLL_NULL', 'POLL_IN', 'POLL_OUT', 'POLL_ERR',
+           'POLL_HUP', 'POLL_NVAL']
+
 POLL_NULL = 0x00
 POLL_IN   = 0x01
 POLL_OUT  = 0x04
@@ -24,7 +27,7 @@ class Demux(object):
         raise NotImplementedError("subclasses must override register_event()!")
 
     @abstractmethod
-    def unregister_event(self, fd, event):
+    def unregister_event(self, fd):
         """unregister event for monitoring."""
 
         raise NotImplementedError("subclasses must override unregister_event()!")
