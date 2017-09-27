@@ -1,0 +1,74 @@
+#!/usr/bin/expect -f
+
+# this script is used to download log files from PSC borad
+# to your currently directory
+
+set timeout 300
+
+#set ip [lindex $argv 0]
+set node epg572-2
+
+#set user [lindex $argv 1]
+set user ***
+
+#set password [lindex $argv 2]
+set lab_pwd ********
+
+match_max 1000
+
+
+# login to the node (RP)
+spawn ssh "$user\@$node"
+# expect "*assword:"
+# send "$lab_pwd\r";
+expect "\[local\]"
+
+# enter shell mode
+send   "start sh\r"
+expect "bash"
+
+# change dir to /md
+send   "cd /md\r"
+expect "bash"
+
+set psc_ip     127.3.0.1
+set board_user ******
+set board_pwd  ******
+set logfile    capture.cap
+
+# sftp to PSC board
+send   "sftp $board_user\@$psc_ip\r"
+expect "assword:"
+
+send   "$board_pwd\r"
+expect "sftp>"
+
+# download log to RP from PSC
+send   "cd /md\r"
+expect "sftp>"
+
+send   "get $logfile\r"
+expect "sftp>"
+
+send   "bye\r"
+expect "bash"
+
+# back to lab environment
+send   "exit\r"
+expect "\[local\]"
+send   "exit\r"
+expect "ehumche"
+
+# sftp to board (RP)
+spawn sftp "$user\@$node"
+expect "sftp>"
+
+# download log to lab from RP
+send   "cd /md\r"
+expect "sftp>"
+
+send   "get $logfile\r"
+expect "sftp>"
+
+send   "bye\r"
+expect "bash"
