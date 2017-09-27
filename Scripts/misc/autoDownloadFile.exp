@@ -48,7 +48,7 @@ expect "sftp>"
 send   "cd /md\r"
 expect "sftp>"
 
-send   "get $logfile\r"
+send   "mget $logfile\r"
 expect "sftp>"
 
 send   "bye\r"
@@ -68,7 +68,7 @@ expect "sftp>"
 send   "cd /md\r"
 expect "sftp>"
 
-send   "get $logfile\r"
+send   "mget $logfile\r"
 expect "sftp>"
 
 send   "bye\r"
