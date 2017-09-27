@@ -2,20 +2,19 @@
 
 # this script is used to download log files from PSC borad
 # to your currently directory
+# parameters: node, psc, file1, file2...
 
 set timeout 300
 
-#set ip [lindex $argv 0]
-set node epg572-2
+#set node epg572-2
+set node [lindex $argv 0]
 
-#set user [lindex $argv 1]
 set user ***
-
-#set password [lindex $argv 2]
 set lab_pwd ********
 
 match_max 1000
 
+# main-flow #
 
 # login to the node (RP)
 spawn ssh "$user\@$node"
@@ -31,10 +30,12 @@ expect "bash"
 send   "cd /md\r"
 expect "bash"
 
-set psc_ip     127.3.0.1
+#set psc_ip     127.3.3.1
+set psc_ip     [lindex $argv 1]
 set board_user ******
 set board_pwd  ******
-set logfile    capture.cap
+#set logfile    ctx_udp_ssc_ok.cap
+set logfile    [lrange $argv 2 end]
 
 # sftp to PSC board
 send   "sftp $board_user\@$psc_ip\r"
