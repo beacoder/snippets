@@ -169,6 +169,7 @@ int main(int argc, char *argv[])
 // Base is constructed !
 // Member is constructed !
 // Child 1 is constructed !
+
 // Child 1 is destructed !
 // Member is destructed !
 // Base is destructed !
