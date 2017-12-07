@@ -154,3 +154,30 @@ int main(int argc, char *argv[])
 // 2. 如果子类定义了构造方法，不论是无参数还是带参数，都会隐式的首先调用父类无参数的构造方法，然后执行自己的构造方法。
 // 3. 如果父类只定义了有参数的构造方法，则子类必须显式的首先调用父类有参数的构造方法，然后执行自己的构造方法。
 // 4. 子类析构时首先执行自己的析构方法，然后隐式的调用父类的析构方法。
+
+// C++ Output:
+
+// BaseMember is constructed !
+// Base is constructed !
+// Member is constructed !
+// Child is constructed !
+// BaseMember is constructed !
+// Base is constructed !
+// Member is constructed !
+// Child is copy constructed !
+// BaseMember is constructed !
+// Base is constructed !
+// Member is constructed !
+// Child 1 is constructed !
+// Child 1 is destructed !
+// Member is destructed !
+// Base is destructed !
+// BaseMember is destructed !
+// Child 0 is destructed !
+// Member is destructed !
+// Base is destructed !
+// BaseMember is destructed !
+// Child is destructed !
+// Member is destructed !
+// Base is destructed !
+// BaseMember is destructed !
