@@ -1,4 +1,4 @@
 depot
 =========
 
-project for learning <Agile Web Developement with Rails>
+project for learning 'Agile Web Developement with Rails'
