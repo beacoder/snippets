@@ -6,6 +6,7 @@
 ```
   Separating an interface of a class from its implementation
   Invoke implementation of an abstraction/class using runtime polymorphism.
+  Make unit testing easier.
 ```
 #### RAII
 ```
