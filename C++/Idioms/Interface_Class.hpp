@@ -1,17 +1,17 @@
 // An interface class
-class Shape
+class IShape
 {
   public:
-    virtual ~Shape();
+    virtual ~IShape();
     virtual void move_x(int x) = 0;
     virtual void move_y(int y) = 0;
     virtual void draw() = 0;
 
     // Factory Method
-    static Shape *getShape(std::string choice);
+    static IShape *getShape(std::string choice);
 };
 
-Shape *Shape::getShape(std::string choice)
+IShape *IShape::getShape(std::string choice)
 {
     if ("Line" == choice)
     {
@@ -28,7 +28,7 @@ Shape *Shape::getShape(std::string choice)
 }
 
 
-class Line : public Shape
+class Line : public IShape
 {
   public:
     virtual ~Line();
@@ -40,7 +40,7 @@ class Line : public Shape
     point end_point_1, end_point_2;
 };
 
-class Curve : public Shape
+class Curve : public IShape
 {
   public:
     virtual ~Curve();
@@ -56,7 +56,7 @@ class Curve : public Shape
 
 int main (void)
 {
-  using ShapePtr = std::shared_ptr<Shape>;
+  using ShapePtr = std::shared_ptr<IShape>;
 
   std::vector<ShapePtr> vShapes;
   vShapes.emplace_back(std::make_shared(Shape::getShape("Line")));
