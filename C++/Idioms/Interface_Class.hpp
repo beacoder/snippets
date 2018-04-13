@@ -27,7 +27,6 @@ IShape *IShape::getShape(std::string choice)
     }
 }
 
-
 class Line : public IShape
 {
   public:
