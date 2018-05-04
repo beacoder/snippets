@@ -1,3 +1,4 @@
+// usually implemented with Template Method design pattern
 class Base {
 private:
     ReaderWriterLock lock_;
@@ -22,6 +23,7 @@ private:
     virtual void read_from_impl( std::istream & ) = 0;
     virtual void write_to_impl( std::ostream & ) const = 0;
 };
+
 class XMLReaderWriter : public Base {
 private:
     virtual void read_from_impl (std::istream &) {
@@ -31,6 +33,7 @@ private:
       // Write XML.
     }
 };
+
 class TextReaderWriter : public Base {
 private:
     virtual void read_from_impl (std::istream &) {}
