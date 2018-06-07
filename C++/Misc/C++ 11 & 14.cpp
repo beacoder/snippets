@@ -35,7 +35,7 @@ int main()
 /// std::bind() vs lambdas in C++14
 
 // (1) capture apply only to non-static local variables (including parameters)
-// visible in the scope where the lambda is created.
+//     visible in the scope where the lambda is created.
 
 // (2) static/global variables can be used inside lambdas, but they can’t be captured.
 
