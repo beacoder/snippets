@@ -10,17 +10,17 @@ void third_party(int n, std::function<void(int)> f)
 
 struct foo
 {
-  template <typename... Args>
-  void invoke(int n, Args&&... args)
+  template <typename ... Args>
+  void invoke(int n, Args&& ... args)
   {
-    auto bound = std::bind(&foo::invoke_impl<Args&...>, this,
-                           std::placeholders::_1, std::forward<Args>(args)...);
+    auto bound = std::bind(&foo::invoke_impl<Args& ...>, this,
+                           std::placeholders::_1, std::forward<Args>(args) ...);
  
     third_party(n, bound);
   }
  
-  template <typename... Args>
-  void invoke_impl(int, Args&&...)
+  template <typename ... Args>
+  void invoke_impl(int, Args&& ...)
   {
   }
 };
@@ -48,20 +48,20 @@ auto f1 = std::bind(f, 42, _1, a + b);
 auto f1 = [sum = a + b](auto arg) { f(42, arg, sum); };
 
 // perfect forwarding
-auto f1 = std::bind(f, 42, std::forward<Args>(args)...);
-auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg)...); };
+auto f1 = std::bind(f, 42, std::forward<Args>(args) ...);
+auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg) ...); };
 
 
 /// variadic template recursive function
 
 template<typename T>
-T adder(T v) {
+T adder(const T& v) {
   return v;
 }
 
-template<typename T, typename... Args>
-T adder(T first, Args... args) {
-  return first + adder(args...);
+template<typename T, typename ... Args>
+T adder(const T& first, const Args& ... args) {
+  return first + adder(args ...);
 }
 
 int main()
