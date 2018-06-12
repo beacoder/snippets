@@ -2,7 +2,7 @@
 class IShape
 {
   public:
-    virtual ~IShape() {}
+    virtual ~IShape()          = default;
     virtual void move_x(int x) = 0;
     virtual void move_y(int y) = 0;
     virtual void draw() = 0;
