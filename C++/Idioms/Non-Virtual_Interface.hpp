@@ -18,7 +18,7 @@ public:
       write_to_impl(o);
       lock_.release();
     }
-    virtual ~Base() {}  // Virtual because Base is a polymorphic base class.
+    virtual ~Base() = default;  // Virtual because Base is a polymorphic base class.
 private:
     virtual void read_from_impl( std::istream & ) = 0;
     virtual void write_to_impl( std::ostream & ) const = 0;
