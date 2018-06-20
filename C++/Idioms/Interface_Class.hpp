@@ -58,8 +58,8 @@ int main (void)
   using ShapePtr = std::shared_ptr<IShape>;
 
   std::vector<ShapePtr> vShapes;
-  vShapes.emplace_back(std::make_shared(Shape::getShape("Line")));
-  vShapes.emplace_back(std::make_shared(Shape::getShape("Curve")));
+  vShapes.emplace_back(std::make_shared(Shape::getShape("Line")));   // favor emplace_back over push_back
+  vShapes.emplace_back(std::make_shared(Shape::getShape("Curve")));  // favor emplace_back over push_back
   
   auto drawer = [&vShapes]()
   { 
