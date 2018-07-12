@@ -22,19 +22,19 @@
 const std::map<uint32_t, uint32_t> pool {
     {1,1},
     {2,2},
-    {3,3},
-    {4,4}
+    {3,1},
+    {4,2}
 };
 
 // AccumulatedWeight
-const std::set<uint32_t> accumulatedWeights {1, 3, 6, 10};
+const std::set<uint32_t> accumulatedWeights {1, 3, 4, 6};
 
 // AccumulatedWeight
 std::map<uint32_t, uint32_t> accumulatedWeights2 {
     {1,1},
-    {2,2},
-    {3,3},
-    {4,4}
+    {2,3},
+    {3,4},
+    {4,6}
 };
 
 std::map<uint32_t, std::vector<int> > finalResult;
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     // srand(getSum());
     srand (time(NULL));
 
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 10000; ++i)
     {
         uint32_t curRd = rand() % getSum() + 1;
 
@@ -72,11 +72,10 @@ int main(int argc, char *argv[])
 
         // std::cout << "This one falls into position: " << position << std::endl;
     }
-    
+
     /* This version has smaller fluctuation.
     uint32_t initRd = rand();
     uint32_t currentIndex = 1;
-
     for (int i = 0; i < 10000; ++i)
     {
         uint32_t curRd = initRd % getSum();
@@ -93,7 +92,6 @@ int main(int argc, char *argv[])
         finalResult[currentIndex-1].emplace_back(i);
         
         initRd += 1;
-
         //std::cout << "This one falls into position: " << currentIndex -1 << std::endl;
     }
     */
