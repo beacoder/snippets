@@ -29,6 +29,14 @@ const std::map<uint32_t, uint32_t> pool {
 // AccumulatedWeight
 const std::set<uint32_t> accumulatedWeights {1, 3, 6, 10};
 
+// AccumulatedWeight
+std::map<uint32_t, uint32_t> accumulatedWeights2 {
+    {1,1},
+    {2,2},
+    {3,3},
+    {4,4}
+};
+
 std::map<uint32_t, std::vector<int> > finalResult;
 
 uint32_t getSum()
@@ -64,6 +72,31 @@ int main(int argc, char *argv[])
 
         // std::cout << "This one falls into position: " << position << std::endl;
     }
+    
+    /* This version has smaller fluctuation.
+    uint32_t initRd = rand();
+    uint32_t currentIndex = 1;
+
+    for (int i = 0; i < 10000; ++i)
+    {
+        uint32_t curRd = initRd % getSum();
+                                     
+        if (curRd <= accumulatedWeights2[currentIndex])
+        {
+            currentIndex = (curRd == 0 ? 0 : currentIndex);
+        }
+        else
+        {
+            currentIndex = ((currentIndex + 1) % pool.size());
+        }
+        
+        finalResult[currentIndex-1].emplace_back(i);
+        
+        initRd += 1;
+
+        //std::cout << "This one falls into position: " << currentIndex -1 << std::endl;
+    }
+    */
 
     for (const auto& pair : finalResult)
     {
