@@ -1,11 +1,3 @@
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <set>
-#include <stdlib.h>
-#include <time.h>
-
 //@see https://blog.csdn.net/wzh200x/article/details/37708609
 //
 // 需求：广告按权重展现 => weighted arbitration
@@ -17,6 +9,14 @@
 // 4、接着遍历所有广告，访问顺序可以随意.
 //    将当前节点的权重值加上前面访问的各节点权重值得到 curWt, 判断 curWt >= rd.
 //    如果条件成立则返回当前节点, 如果不是则继续累加下一节点，直到符合上面的条件, 由于 rd<=sum，因此一定存在 curWt >= rd.
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <set>
+#include <stdlib.h>
+#include <time.h>
 
 // Key, Value -> Weight
 const std::map<uint32_t, uint32_t> pool {
