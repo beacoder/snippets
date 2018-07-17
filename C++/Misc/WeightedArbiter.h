@@ -1,5 +1,7 @@
 #include <algorithm>
+#include <iostream>
 #include <limits>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -26,11 +28,13 @@ public:
 
     std::size_t size() const;
 
-    void push(ResourceType resource);
+    void add(ResourceType resource);
 
-    ResourcePtr pop();
+    ResourcePtr allocate();
 
     void clear();
+
+    void print();
 
 private:
     void initialize();
@@ -42,18 +46,19 @@ private:
     void incSelectionHelpNumber();
 
 private:
-    std::vector<ResourceType>          resources_;
-    std::vector<AccumulatedWeightType> accumulatedWeights_;      // Accumulated Weights, [weight0 - 1, weight0 + weight1 - 1, ..., weight0 + weight1 +...+ weightn - 1]
-    uint32_t                           selectionHelperNumber_;   // Help number, will be set to 0 when reach max value
-    uint8_t                            currentIndex_;            // Current index of allocated resources
-    AccumulatedWeightType              sumOfAccumulatedWeights_; // Sum of all Accumulated Weight
-    bool                               hasInitialized;           // Whether proper initialization has been done or not
+    std::vector<ResourceType>                resources_;
+    std::vector<AccumulatedWeightType>       accumulatedWeights_;      // Accumulated Weights, [weight0 - 1, weight0 + weight1 - 1, ..., weight0 + weight1 +...+ weightn - 1]
+    std::map<uint8_t, std::vector<uint8_t> > selectionResults_;        // Store selection results, for debugging
+    uint32_t                                 selectionHelperNumber_;   // Help number, will be set to 0 when reach max value
+    uint8_t                                  currentIndex_;            // Current index of allocated resources
+    AccumulatedWeightType                    sumOfAccumulatedWeights_; // Sum of all Accumulated Weight
+    bool                                     hasInitialized;           // Whether proper initialization has been done or not
 };
 
 template<typename ResourcePtr>
 WeightedArbiter<ResourcePtr>::WeightedArbiter()
     : selectionHelperNumber_(0),
-    currentIndex_(0),
+    currentIndex_(1),
     sumOfAccumulatedWeights_(0),
     hasInitialized(false)
 {
@@ -82,15 +87,18 @@ void WeightedArbiter<ResourcePtr>::clear()
 {
     for (const auto& resource : resources_)
     {
-        delete resource.first;
+        // delete resource.first;
     }
 
-    resources_.clear();
+    std::vector<ResourceType>().swap(resources_);
+    std::vector<AccumulatedWeightType>().swap(accumulatedWeights_);
+    std::map<uint8_t, std::vector<uint8_t> >().swap(selectionResults_);
+
     hasInitialized = false;
 }
 
 template<typename ResourcePtr>
-void WeightedArbiter<ResourcePtr>::push(ResourceType resource)
+void WeightedArbiter<ResourcePtr>::add(ResourceType resource)
 {
     if (resource.first && resource.second > 0)
     {
@@ -104,7 +112,7 @@ void WeightedArbiter<ResourcePtr>::push(ResourceType resource)
 }
 
 template<typename ResourcePtr>
-ResourcePtr WeightedArbiter<ResourcePtr>::pop()
+ResourcePtr WeightedArbiter<ResourcePtr>::allocate()
 {
     if (!hasInitialized)
     {
@@ -123,8 +131,9 @@ ResourcePtr WeightedArbiter<ResourcePtr>::pop()
     }
 
     incSelectionHelpNumber();
+    selectionResults_[currentIndex_-1].emplace_back(0);
 
-    return resources_[currentIndex_];
+    return resources_[currentIndex_-1].first;
 }
 
 template<typename ResourcePtr>
@@ -132,11 +141,13 @@ void WeightedArbiter<ResourcePtr>::initialize()
 {
     srand(time(nullptr));
 
-    selectionHelperNumber_ = rand();
-    currentIndex_          = 0;
+    selectionHelperNumber_   = rand();
+    currentIndex_            = 1;
+    sumOfAccumulatedWeights_ = 0;
 
     calcAccumulatedWeights();
     calcSumOfAccumulatedWeights();
+    selectionResults_.clear();
 
     hasInitialized = true;
 }
@@ -144,6 +155,7 @@ void WeightedArbiter<ResourcePtr>::initialize()
 template<typename ResourcePtr>
 void WeightedArbiter<ResourcePtr>::calcAccumulatedWeights()
 {
+    accumulatedWeights_.clear();
     accumulatedWeights_.reserve(resources_.size());
 
     uint8_t currentWeight = resources_.front().second;
@@ -171,4 +183,33 @@ template<typename ResourcePtr>
 void WeightedArbiter<ResourcePtr>::incSelectionHelpNumber()
 {
     selectionHelperNumber_ = (selectionHelperNumber_ == MaxNumberOfResoures ? 0 : selectionHelperNumber_ + 1);
+}
+
+template<typename ResourcePtr>
+void WeightedArbiter<ResourcePtr>::print()
+{
+    for (const auto& pair : selectionResults_)
+    {
+        std::cout << "Pool-" << pair.first << " contains " << pair.second.size() << " elements." << std::endl;
+    }
+}
+
+int main(int argc, char *argv[])
+{
+
+    WeightedArbiter<int*> tmp;
+
+    for (int i = 0; i < 10; ++i)
+    {
+        tmp.add(std::make_pair<int*, uint8_t>((int*)i, 1));
+    }
+
+    for (int i = 0; i < 100; ++i)
+    {
+        tmp.allocate();
+    }
+
+    tmp.print();
+
+    return 0;
 }
