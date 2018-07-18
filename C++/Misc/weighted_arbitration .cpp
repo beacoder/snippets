@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 
     for (const auto& pair : finalResult)
     {
-        std::cout << "Pool-" << pair.first << " contains " << pair.second.size() << " elements." << std::endl;
+        std::cout << "Pool-" << static_cast<unsigned int>(pair.first) << " contains " << pair.second.size() << " elements." << std::endl;
     }
 
     return 0;
