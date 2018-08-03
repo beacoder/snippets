@@ -1,3 +1,4 @@
+// C++ guarantees that the destructors of objects on the stack will be called, even if an exception is thrown
 template <class T>
 class AutoDelete
 {
