@@ -16,10 +16,13 @@ class Manager : public Employee                 // "is-a" relationship
     Manager () {}                               // Default constructor
     Manager (Manager const &) {}                // Copy constructor
     virtual ~Manager () {}
+
+  private:
     Ptr create () const                         // Virtual constructor (creation)
     {
       return Ptr(new Manager());
     }
+  
     Ptr clone () const                          // Virtual constructor (copying)
     {
       return Ptr(new Manager (*this));
