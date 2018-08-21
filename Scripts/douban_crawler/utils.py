@@ -10,10 +10,10 @@
 """
 
 #History#
-#1 [Done] (2017-05-26) Add queue, stack, encoding
-#2 [Done] (2017-05-31) Add decoding
-#3 [Done] (2017-06-02) Add send mail
-#4 [Done] (2017-06-16) Add breadth_first_search
+#1 [DONE] (2017-05-26) Add queue, stack, encoding
+#2 [DONE] (2017-05-31) Add decoding
+#3 [DONE] (2017-06-02) Add send mail
+#4 [DONE] (2017-06-16) Add breadth_first_search
 
 # public symbols
 __all__ = ["send_mail", "encode_with_utf8", "decode_with_utf8", "Queue", "Stack",
