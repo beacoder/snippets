@@ -3,16 +3,16 @@
 """Minimal crawler to crawl high rated movies from movie.douban.com"""
 
 #History#
-#1  [Done] (2017-05-18) crawl movies on douban
-#2  [Done] (2017-05-23) add delays, don't blacklisted by douban
-#3  [Done] (2017-05-25) save data into sqlite
-#4  [Done] (2017-05-25) fix chinese character encoding problem
-#5  [Done] (2017-06-06) only save movies which doesn't exist in DB
-#6  [Done] (2017-06-16) extract breadth_first_search function
+#1  [DONE] (2017-05-18) crawl movies on douban
+#2  [DONE] (2017-05-23) add delays, don't blacklisted by douban
+#3  [DONE] (2017-05-25) save data into sqlite
+#4  [DONE] (2017-05-25) fix chinese character encoding problem
+#5  [DONE] (2017-06-06) only save movies which doesn't exist in DB
+#6  [DONE] (2017-06-16) extract breadth_first_search function
 #7  [TODO] use asyncio+aiohttp to improve performance (pythonVersion >= 3.4)
 #8  [TODO] separate crawler into two scripts, one for gathering data, the other for querying data
-#9  [Todo] push the latest movies to cell phone
-#10 [Todo] add logging to log errors
+#9  [TODO] push the latest movies to cell phone
+#10 [TODO] add logging to log errors
 
 
 from utils import breadth_first_search
