@@ -4,10 +4,10 @@ Sqlite used to store movies.
 """
 
 #History#
-#1 [Done] (2017-05-26) Add DB operation.
-#2 [Done] (2017-06-06) Add column id in table movies.
-#3 [Done] (2017-06-13) Use SQLAlchemy as ORM, instead of using raw sql.
-#4 [Done] (2017-06-15) Fix encoding error when save movie to db
+#1 [DONE] (2017-05-26) Add DB operation.
+#2 [DONE] (2017-06-06) Add column id in table movies.
+#3 [DONE] (2017-06-13) Use SQLAlchemy as ORM, instead of using raw sql.
+#4 [DONE] (2017-06-15) Fix encoding error when save movie to db
 
 # public symbols
 __all__ = ["Movie", "connect_db", "close_db", "find_movie",
