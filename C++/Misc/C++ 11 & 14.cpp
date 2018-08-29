@@ -68,3 +68,22 @@ int main()
 {
   std::cout << adder(1,2,3,4,5);    
 }
+
+
+/// variadic templates for lambda expressions
+
+template < typename F >
+void g (F f);
+
+template < typename ... A >
+void h (A ... a);
+
+template < typename ... A >
+void f (A ... a) {
+  g ([&, a...] () { h (a...); }); 
+}
+
+int main(void)
+{
+  f(1, 2, 3, 4, 5);
+}
