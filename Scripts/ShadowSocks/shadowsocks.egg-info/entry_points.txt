@@ -1,0 +1,5 @@
+
+    [console_scripts]
+    sslocal = shadowsocks.local:main
+    ssserver = shadowsocks.server:main
+    
