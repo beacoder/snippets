@@ -1,3 +1,10 @@
+# Monte Carlo simulation is a computerized mathematical technique that allows people
+# to account for risk in quantitative analysis and decision making.
+
+# The technique is used by professionals in such widely disparate fields as finance,
+# project management, energy, manufacturing, engineering, research and development,
+# insurance, oil & gas, transportation, and the environment.
+
 import random
 import math
 
