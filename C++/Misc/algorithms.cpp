@@ -10,9 +10,9 @@
 
 using namespace std;
 
-// constexpr objects are const and are initialized with values known during compilation.
-// constexpr functions can produce compile-time results when called with arguments
-// whose values are known during compilation.
+// constexpr specifier declares that it is possible to evaluate the value of the function or variable at compile time.
+// such variables and functions can then be used where only compile time constant expressions are allowed.
+
 constexpr uint32_t MAXNUMBER = 50000;
 
 void BubbleSort(int *array, int n);
