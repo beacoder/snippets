@@ -15,56 +15,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import os
+import random
+import socket
 import time
-from socketserver import BaseRequestHandler, UDPServer
 
-
-def check_db():
-    """Check if db is ready.
-
-    Check if db is ready, if not, create db and initialize
-    all tables.
-    """
-
-    if not os.path.exists('./db.sqlite'):
-        from sqlalchemy import create_engine
-        from sqlalchemy import MetaData
-        from sqlalchemy import Table
-        from sqlalchemy import Column
-        from sqlalchemy import Integer, String
-
-        db_uri   = 'sqlite:///db.sqlite'
-        engine   = create_engine(db_uri)
-        metadata = MetaData(engine)
-
-        users_table = Table('Users', metadata,
-                            Column('id', Integer, primary_key=True),
-                            Column('ipaddr', String),
-                            Column('message', String))
-        metadata.create_all()
-
-        for _t in metadata.tables:
-           print("Table: ", _t)
-    pass
-
-
-class EchoHandler(BaseRequestHandler):
-    def handle(self):
-        data, sock = self.request
-        print('Got message {msg} from {peer}.'.format(msg=data,
-              peer=self.client_address))
-        print('Sent message {msg} to {peer}.'.format(msg=data,
-              peer=self.client_address))
-        print('')
-        sock.sendto(data, self.client_address)
+BUF_SIZE = 65536
 
 
 def main():
-    check_db()
-
-    with UDPServer(('', 1223), EchoHandler) as serv:
-        serv.serve_forever()
+    with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as sock:
+        words = [b"Hello\n", b"World\n", b"!\n"]
+        while True:
+            data = random.choice(words)
+            addr = ('localhost', 1223)
+            print('Sent message {msg} to {peer}.'.format(msg=data, peer=addr))
+            sock.sendto(data, addr)
+            time.sleep(1)
+            data, addr = sock.recvfrom(BUF_SIZE)
+            print('Got message {msg} from {peer}.'.format(msg=data, peer=addr))
+            print('')
+            time.sleep(1)
 
 
 if __name__ == '__main__':
