@@ -34,7 +34,7 @@ To provide uniform interface to it to facilitate generic programming.
 ```
 Create an exception safe implementation of overloaded assignment operator
 ```
-#### Non-Virtual_Interface
+#### Non_Virtual_Interface
 ```
 Separate a class interface into two distinct interfaces:
 Client interface: This is the public non-virtual interface.
