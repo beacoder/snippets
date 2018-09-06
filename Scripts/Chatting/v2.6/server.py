@@ -35,7 +35,8 @@ class UDPServer(object):
         self._sock.close()
 
 if __name__ == '__main__':
-    host = 'localhost'
+    # the public network interface
+    host = socket.gethostbyname(socket.gethostname())
     port = 5566
     with UDPServer(host,port) as s:
         while True:
