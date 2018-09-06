@@ -32,9 +32,10 @@ class EchoHandler(BaseRequestHandler):
 
 
 def main():
-    check_db()
-
-    with UDPServer(('', 1223), EchoHandler) as serv:
+    # the public network interface
+    host = socket.gethostbyname(socket.gethostname())
+    port = 5566
+    with UDPServer((host, port), EchoHandler) as serv:
         serv.serve_forever()
 
 
