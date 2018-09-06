@@ -20,35 +20,6 @@ import time
 from socketserver import BaseRequestHandler, UDPServer
 
 
-def check_db():
-    """Check if db is ready.
-
-    Check if db is ready, if not, create db and initialize
-    all tables.
-    """
-
-    if not os.path.exists('./db.sqlite'):
-        from sqlalchemy import create_engine
-        from sqlalchemy import MetaData
-        from sqlalchemy import Table
-        from sqlalchemy import Column
-        from sqlalchemy import Integer, String
-
-        db_uri   = 'sqlite:///db.sqlite'
-        engine   = create_engine(db_uri)
-        metadata = MetaData(engine)
-
-        users_table = Table('Users', metadata,
-                            Column('id', Integer, primary_key=True),
-                            Column('ipaddr', String),
-                            Column('message', String))
-        metadata.create_all()
-
-        for _t in metadata.tables:
-           print("Table: ", _t)
-    pass
-
-
 class EchoHandler(BaseRequestHandler):
     def handle(self):
         data, sock = self.request
