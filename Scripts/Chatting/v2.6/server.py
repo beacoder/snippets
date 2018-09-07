@@ -17,16 +17,20 @@
 
 import socket
 
+BUF_SIZE = 65536
+
 class UDPServer(object):
+
     def __init__(self,host,port):
         self._host = host
         self._port = port
+        self._clients = set()
 
     def __enter__(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind((self._host,self._port))
         self._sock = sock
-        return sock
+        return self
 
     def __exit__(self,*exc_info):
         if exc_info[0]:
@@ -34,11 +38,24 @@ class UDPServer(object):
             traceback.print_exception(*exc_info)
         self._sock.close()
 
-if __name__ == '__main__':
-    # the public network interface
-    host = socket.gethostbyname(socket.gethostname())
+    def handle_connections(self):
+        """recv msg from clients."""
+
+        data, addr = self._sock.recvfrom(BUF_SIZE)
+        self._clients.add(addr)
+
+        print('Got message {msg} from {peer}.'.format(msg=data, peer=addr))
+        print('')
+
+        for addr in self._clients:
+            self._sock.sendto(data, addr)
+
+def main():
+    host = socket.gethostbyname(socket.gethostname()) # the public network interface
     port = 5566
-    with UDPServer(host,port) as s:
+    with UDPServer(host,port) as server:
         while True:
-            msg, addr = s.recvfrom(1024)
-            s.sendto(msg, addr)
+            server.handle_connections()
+
+if __name__ == '__main__':
+    main()
