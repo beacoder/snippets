@@ -21,21 +21,47 @@ import time
 
 BUF_SIZE = 65536
 
+class UDPClient(object):
+
+    def __init__(self):
+        self._data = [b"Hello\n", b"World\n", b"!\n"]
+        pass
+
+    def __enter__(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._sock = sock
+        return self
+
+    def __exit__(self,*exc_info):
+        if exc_info[0]:
+            import traceback
+            traceback.print_exception(*exc_info)
+        self._sock.close()
+
+    def recv_msg(self):
+        """recv msg from server."""
+
+        data, addr = self._sock.recvfrom(BUF_SIZE)
+        print('Got message {msg} from {peer}.'.format(msg=data, peer=addr))
+        print('')
+        time.sleep(1)
+
+    def send_msg(self, dest, port):
+        """send msg to server."""
+
+        data = random.choice(self._data)
+        addr = (dest, port)
+        print('Sent message {msg} to {peer}.'.format(msg=data, peer=addr))
+        self._sock.sendto(data, addr)
+        time.sleep(1)
 
 def main():
-    with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as sock:
-        words = [b"Hello\n", b"World\n", b"!\n"]
+    dest = socket.gethostbyname(socket.gethostname())
+    port = 5566
+    with UDPClient() as client:
         while True:
-            data = random.choice(words)
-            addr = ('localhost', 1223)
-            print('Sent message {msg} to {peer}.'.format(msg=data, peer=addr))
-            sock.sendto(data, addr)
-            time.sleep(1)
-            data, addr = sock.recvfrom(BUF_SIZE)
-            print('Got message {msg} from {peer}.'.format(msg=data, peer=addr))
-            print('')
-            time.sleep(1)
-
+            client.send_msg(dest, port)
+            client.recv_msg()
 
 if __name__ == '__main__':
     main()
