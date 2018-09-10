@@ -17,7 +17,9 @@
 
 import socket
 
+
 BUF_SIZE = 65536
+
 
 class UDPServer(object):
 
@@ -50,12 +52,14 @@ class UDPServer(object):
         for addr in self._clients:
             self._sock.sendto(data, addr)
 
+
 def main():
     host = socket.gethostbyname(socket.gethostname()) # the public network interface
     port = 5566
     with UDPServer(host,port) as server:
         while True:
             server.handle_connections()
+
 
 if __name__ == '__main__':
     main()
