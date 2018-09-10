@@ -19,7 +19,9 @@ import random
 import socket
 import time
 
+
 BUF_SIZE = 65536
+
 
 class UDPClient(object):
 
@@ -55,6 +57,7 @@ class UDPClient(object):
         self._sock.sendto(data, addr)
         time.sleep(1)
 
+
 def main():
     dest = socket.gethostbyname(socket.gethostname())
     port = 5566
@@ -62,6 +65,7 @@ def main():
         while True:
             client.send_msg(dest, port)
             client.recv_msg()
+
 
 if __name__ == '__main__':
     main()
