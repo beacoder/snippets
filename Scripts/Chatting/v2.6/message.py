@@ -38,87 +38,117 @@ class MessageType(IntEnum):
 class IMessage:
     """Message interface."""
 
-    def msg_type(self):
+    def to_bytes(self):
         raise NotImplementedError
 
 
-class BaseMessage(IMessage):
-    """Base message class."""
-
-    def __init__(self):
-        self._msg_type = MessageType(MessageType.INVALID_MSG)
-
-    def msg_type(self):
-        return self._msg_type
-
-
-class HeartbeatReq(BaseMessage):
+class HeartbeatReq(IMessage):
     """Represent a heartbeat request."""
 
+    MSG_TYPE = MessageType.HEARTBEAT_REQ
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.HEARTBEAT_REQ)
+
+    def to_bytes(self):
+        return struct.pack(HeartbeatReq.ENCODE_FORMAT, self._from, self._to)
 
 
-class LoginReq(BaseMessage):
+class LoginReq(IMessage):
     """Represent a login request."""
 
+    MSG_TYPE = MessageType.LOGIN_REQ
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.LOGIN_REQ)
+
+    def to_bytes(self):
+        return struct.pack(LoginReq.ENCODE_FORMAT, self._from, self._to)
 
 
-class LogoutReq(BaseMessage):
+class LogoutReq(IMessage):
     """Represent a logout request."""
 
+    MSG_TYPE = MessageType.LOGOUT_REQ
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.LOGOUT_REQ)
+
+    def to_bytes(self):
+        return struct.pack(LogoutReq.ENCODE_FORMAT, self._from, self._to)
 
 
-class HeartbeatRsp(BaseMessage):
+class HeartbeatRsp(IMessage):
     """Represent a heartbeat response."""
 
+    MSG_TYPE = MessageType.HEARTBEAT_RSP
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.HEARTBEAT_RSP)
+
+    def to_bytes(self):
+        return struct.pack(HeartbeatRsp.ENCODE_FORMAT, self._from, self._to)
 
 
-class LoginRsp(BaseMessage):
+class LoginRsp(IMessage):
     """Represent a login response."""
 
+    MSG_TYPE = MessageType.LOGIN_RSP
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.LOGIN_RSP)
+
+    def to_bytes(self):
+        return struct.pack(LoginRsp.ENCODE_FORMAT, self._from, self._to)
 
 
-class LogoutRsp(BaseMessage):
+class LogoutRsp(IMessage):
     """Represent a logout response."""
 
+    MSG_TYPE = MessageType.LOGOUT_RSP
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.LOGOUT_RSP)
+
+    def to_bytes(self):
+        return struct.pack(LogoutRsp.ENCODE_FORMAT, self._from, self._to)
 
 
-class ChatMessage(BaseMessage):
+class ChatMessage(IMessage):
     """Represent a single chat message."""
 
+    MSG_TYPE = MessageType.CHAT_MSG
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.CHAT_MSG)
+
+    def to_bytes(self):
+        return struct.pack(ChatMessage.ENCODE_FORMAT, self._from, self._to)
 
 
-class BroadcastMessage(BaseMessage):
+class BroadcastMessage(IMessage):
     """Represent a broadcast chat message."""
 
+    MSG_TYPE = MessageType.BROADCAST_MSG
+    ENCODE_FORMAT = ">II"
+
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.BROADCAST_MSG)
+
+    def to_bytes(self):
+        return struct.pack(BroadcastMessage.ENCODE_FORMAT, self._from, self._to)
