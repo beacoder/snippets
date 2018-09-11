@@ -94,7 +94,7 @@ class LoginRsp(BaseMessage):
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.CHAT_MSG)
+        self._msg_type = MessageType(MessageType.LOGIN_RSP)
 
 
 class LogoutRsp(BaseMessage):
@@ -103,7 +103,7 @@ class LogoutRsp(BaseMessage):
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.CHAT_MSG)
+        self._msg_type = MessageType(MessageType.LOGOUT_RSP)
 
 
 class ChatMessage(BaseMessage):
@@ -121,4 +121,4 @@ class BroadcastMessage(BaseMessage):
     def __init__(self, msg_from, msg_to):
         self._from = msg_from
         self._to = msg_to
-        self._msg_type = MessageType(MessageType.CHAT_MSG)
+        self._msg_type = MessageType(MessageType.BROADCAST_MSG)
