@@ -38,6 +38,9 @@ class MessageType(IntEnum):
 class IMessage:
     """Message interface."""
 
+    MSG_TYPE = MessageType.INVALID_MSG
+    ENCODE_FORMAT = None
+
     def to_bytes(self):
         raise NotImplementedError
 
@@ -152,3 +155,19 @@ class BroadcastMessage(IMessage):
 
     def to_bytes(self):
         return struct.pack(BroadcastMessage.ENCODE_FORMAT, self._from, self._to)
+
+
+def create_message(msg_type, msg_body):
+    """Factory method for message class."""
+
+    if msg_type == MessageType.HEARTBEAT_REQ:
+        data = struct.unpack(HeartbeatReq.ENCODE_FORMAT, msg_body)
+        return HeartbeatReq(*data) # unpack tuple into *args.
+    elif msg_type == MessageType.BROADCAST_MSG:
+        data = struct.unpack(LoginReq.ENCODE_FORMAT, msg_body)
+        return LoginReq(*data)
+    elif msg_type == MessageType.CHAT_MSG:
+        data = struct.unpack(ChatMessage.ENCODE_FORMAT, msg_body)
+        return ChatMessage(*data)
+    else:
+        raise ValueError
