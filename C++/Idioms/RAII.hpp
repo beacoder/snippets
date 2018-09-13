@@ -1,4 +1,6 @@
 // C++ guarantees that the destructors of objects on the stack will be called, even if an exception is thrown
+// e.g: resources are passed around with std::unique_ptr
+
 template <class T>
 class AutoDelete
 {
