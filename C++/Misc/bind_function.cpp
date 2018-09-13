@@ -8,8 +8,6 @@
 #include <thread>
 #include <iostream>
 
-// Safely pass resource around with std::unique_ptr
-
 using namespace std;
 
 class Shared_Obj {
