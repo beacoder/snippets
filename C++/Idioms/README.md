@@ -4,9 +4,9 @@
 
 #### Interface_Class
 ```
-  Separating an interface of a class from its implementation
-  Invoke implementation of an abstraction/class using runtime polymorphism.
-  Make unit testing easier.
+Separate interface of class from its implementation
+Invoke implementation of interface using runtime polymorphism.
+Make unit testing easier.
 ```
 #### RAII
 ```
@@ -15,7 +15,7 @@ To provide basic exception safety guarantee
 ```
 #### Pimpl
 ```
-Separates implementation from interface
+Hide implementation details of interface, e.g: Bridge pattern
 ```
 #### Construct_On_First_Use
 ```
