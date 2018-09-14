@@ -5,8 +5,8 @@
 #### Interface_Class
 ```
 Separate interface of class from its implementation
-Invoke implementation of class using runtime polymorphism.
-Make unit testing easier.
+Invoke implementation of class using runtime polymorphism
+Make unit testing easier
 ```
 #### RAII
 ```
