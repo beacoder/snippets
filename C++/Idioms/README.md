@@ -4,7 +4,7 @@
 
 #### Interface_Class
 ```
-Separate interface of class from its implementation
+Separate interface of class from its implementation, e.g: Strategy pattern
 Invoke implementation of class using runtime polymorphism
 Make unit testing easier
 ```
