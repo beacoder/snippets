@@ -54,15 +54,6 @@ class UDPServer(messagereceiver.IMessageSender):
     def close(self):
         self._server_sock.close()
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *exc_info):
-        if exc_info[0]:
-            import traceback
-            traceback.print_exception(*exc_info)
-        self.close()
-
     def set_msg_recver(self, msg_recver):
         self._msg_recver = msg_recver
 
