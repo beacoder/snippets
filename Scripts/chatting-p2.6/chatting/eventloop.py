@@ -92,10 +92,6 @@ class KqueueLoop(object):
         self._control(fd, self._fds[fd], select.KQ_EV_DELETE)
         del self._fds[fd]
 
-    def modify(self, fd, mode):
-        self.unregister(fd)
-        self.register(fd, mode)
-
     def close(self):
         self._kqueue.close()
 
@@ -132,15 +128,20 @@ class SelectLoop(object):
         if fd in self._x_list:
             self._x_list.remove(fd)
 
-    def modify(self, fd, mode):
-        self.unregister(fd)
-        self.register(fd, mode)
-
     def close(self):
         pass
 
 
 class EventLoop(object):
+
+    __instance = None
+
+    @staticmethod
+    def default_loop():
+        if EventLoop.__instance is None:
+            EventLoop.__instance = EventLoop()
+        return EventLoop.__instance
+
     def __init__(self):
         if hasattr(select, 'epoll'):
             self._impl = select.epoll()
@@ -160,7 +161,7 @@ class EventLoop(object):
         self._stopping = False
         logging.debug('using event model: %s', model)
 
-    def poll(self, timeout=None):
+    def _poll(self, timeout=None):
         events = self._impl.poll(timeout)
         return [(self._fdmap[fd][0], fd, event) for fd, event in events]
 
@@ -180,10 +181,6 @@ class EventLoop(object):
     def remove_periodic(self, callback):
         self._periodic_callbacks.remove(callback)
 
-    def modify(self, f, mode):
-        fd = f.fileno()
-        self._impl.modify(fd, mode)
-
     def stop(self):
         self._stopping = True
 
@@ -192,7 +189,7 @@ class EventLoop(object):
         while not self._stopping:
             asap = False
             try:
-                events = self.poll(TIMEOUT_PRECISION)
+                events = self._poll(TIMEOUT_PRECISION)
             except (OSError, IOError) as e:
                 if errno_from_exception(e) in (errno.EPIPE, errno.EINTR):
                     # EPIPE: Happens when the client closes the connection

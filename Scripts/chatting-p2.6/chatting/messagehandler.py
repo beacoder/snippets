@@ -16,39 +16,14 @@
 # under the License.
 
 import message
-import time
+import messagereceiver
 
 
-class IMessageHandler:
-    """Message Handler interface."""
-
-    def handle_heartbeat_req(self, heartbeat_req):
-        raise NotImplementedError
-
-    def handle_login_req(self, login_req):
-        raise NotImplementedError
-
-    def handle_logout_req(self, logout_req):
-        raise NotImplementedError
-
-    def handle_heartbeat_rsp(self, heartbeat_rsp):
-        raise NotImplementedError
-
-    def handle_login_rsp(self, login_rsp):
-        raise NotImplementedError
-
-    def handle_logout_rsp(self, logout_rsp):
-        raise NotImplementedError
-
-    def handle_chat_msg(self, chat_msg):
-        raise NotImplementedError
-
-    def handle_broadcast_msg(self, broadcast_msg):
-        raise NotImplementedError
-
-
-class MessageHandler(IMessageHandler):
+class MessageHandler(object):
     """Message Handler class."""
+
+    def __init__(self, msg_sender):
+        self._msg_sender = msg_sender
 
     def handle_heartbeat_req(self, heartbeat_req):
         pass
