@@ -31,6 +31,7 @@ BUF_SIZE = 65536
 
 
 class UDPServer(messagereceiver.IMessageSender):
+    """Transmitting incomming/outgoing messages."""
 
     def __init__(self, host, port):
         self._listen_addr = host

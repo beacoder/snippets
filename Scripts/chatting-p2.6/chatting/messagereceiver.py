@@ -33,7 +33,9 @@ class IMessageReceiver:
 
 
 class MessageReceiver(IMessageReceiver):
-    """Message receiver class."""
+    """Receiving incomming messages."""
+
+    # TODO: merge create_message logic into this class.
 
     def __init__(self, msg_handler):
         self._msg_handler = msg_handler

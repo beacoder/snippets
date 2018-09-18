@@ -16,17 +16,15 @@
 # under the License.
 
 import message
-import messagereceiver
-import eventloop
 
 
-class MessageHandler(object):
-    """Processing incomming messages."""
+class MessageDatabase(object):
+    """Store information from incomming messages."""
 
-    def __init__(self, msg_sender, msg_database):
-        self._msg_sender = msg_sender
-        self._msg_database = msg_database
-        self._event_loop = eventloop.EventLoop.default_loop()
+    # TODO: save clients information in this class.
+
+    def __init__(self):
+        pass
 
     def handle_heartbeat_req(self, heartbeat_req):
         pass
