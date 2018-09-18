@@ -17,7 +17,7 @@
 
 import struct
 import time
-
+import utils
 
 INVALID_MSG = 0    # invalid message
 HEARTBEAT_REQ = 1  # heartbeat request
@@ -190,21 +190,25 @@ class BroadcastMessage(IMessage):
 def create_message(msg_type, msg_body):
     """Factory method for message class."""
 
-    if msg_type == HEARTBEAT_REQ:
-        return HeartbeatReq().from_bytes(msg_body)
-    elif msg_type == HEARTBEAT_RSP:
-        return HeartbeatRsp().from_bytes(msg_body)
-    if msg_type == LOGIN_REQ:
-        return LoginReq().from_bytes(msg_body)
-    elif msg_type == LOGIN_RSP:
-        return LoginRsp().from_bytes(msg_body)
-    if msg_type == LOGOUT_REQ:
-        return LogoutReq().from_bytes(msg_body)
-    elif msg_type == LOGOUT_RSP:
-        return LogoutRsp().from_bytes(msg_body)
-    elif msg_type == CHAT_MSG:
-        return ChatMessage().from_bytes(msg_body)
-    elif msg_type == BROADCAST_MSG:
-        return BroadcastMessage().from_bytes(msg_body)
-    else:
-        raise ValueError
+    try
+        if msg_type == HEARTBEAT_REQ:
+            return HeartbeatReq().from_bytes(msg_body)
+        elif msg_type == HEARTBEAT_RSP:
+            return HeartbeatRsp().from_bytes(msg_body)
+        if msg_type == LOGIN_REQ:
+            return LoginReq().from_bytes(msg_body)
+        elif msg_type == LOGIN_RSP:
+            return LoginRsp().from_bytes(msg_body)
+        if msg_type == LOGOUT_REQ:
+            return LogoutReq().from_bytes(msg_body)
+        elif msg_type == LOGOUT_RSP:
+            return LogoutRsp().from_bytes(msg_body)
+        elif msg_type == CHAT_MSG:
+            return ChatMessage().from_bytes(msg_body)
+        elif msg_type == BROADCAST_MSG:
+            return BroadcastMessage().from_bytes(msg_body)
+        else:
+            raise ValueError
+    except Exception as e:
+        utils.print_exception(e)
+        sys.exit(1)
