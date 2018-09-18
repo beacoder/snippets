@@ -39,13 +39,21 @@ class MessageReceiver(IMessageReceiver):
         self._msg_handler = msg_handler
 
     def recv_message(self, msg):
-        msg_type = msg.MSG_TYPE
-        msg_handler = self._msg_handler
-        if msg_type == HEARTBEAT_REQ:
-            msg_handler.handle_heartbeat_req(msg)
-        elif msg_type == BROADCAST_MSG:
-            msg_handler.handle_broadcast_msg(msg)
-        elif msg_type == CHAT_MSG:
-            msg_handler.handle_chat_msg(msg)
+        if msg.MSG_TYPE == HEARTBEAT_REQ:
+            self._msg_handler.handle_heartbeat_req(msg)
+        elif msg.MSG_TYPE == HEARTBEAT_RSP:
+            self._msg_handler.handle_heartbeat_rsp(msg)
+        if msg.MSG_TYPE == LOGIN_REQ:
+            self._msg_handler.handle_login_req(msg)
+        elif msg.MSG_TYPE == LOGIN_RSP:
+            self._msg_handler.handle_login_rsp(msg)
+        if msg.MSG_TYPE == LOGOUT_REQ:
+            self._msg_handler.handle_logout_req(msg)
+        elif msg.MSG_TYPE == LOGOUT_RSP:
+            self._msg_handler.handle_logout_rsp(msg)
+        elif msg.MSG_TYPE == CHAT_MSG:
+            self._msg_handler.handle_chat_msg(msg)
+        elif msg.MSG_TYPE == BROADCAST_MSG:
+            self._msg_handler.handle_broadcast_msg(msg)
         else:
             raise ValueError

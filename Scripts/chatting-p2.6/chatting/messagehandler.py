@@ -28,16 +28,16 @@ class MessageHandler(object):
     def handle_heartbeat_req(self, heartbeat_req):
         pass
 
-    def handle_login_req(self, login_req):
-        pass
-
-    def handle_logout_req(self, logout_req):
-        pass
-
     def handle_heartbeat_rsp(self, heartbeat_rsp):
         pass
 
+    def handle_login_req(self, login_req):
+        pass
+
     def handle_login_rsp(self, login_rsp):
+        pass
+
+    def handle_logout_req(self, logout_req):
         pass
 
     def handle_logout_rsp(self, logout_rsp):
