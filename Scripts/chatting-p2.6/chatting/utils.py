@@ -27,6 +27,7 @@ VERBOSE_LEVEL = 5
 verbose = 0
 
 
+# from ssloop
 def check_python():
     info = sys.version_info
     if info[0] == 2 and not info[1] >= 6:
@@ -40,6 +41,7 @@ def check_python():
         sys.exit(1)
 
 
+ # from ssloop
 def print_exception(e):
     global verbose
     logging.error(e)
