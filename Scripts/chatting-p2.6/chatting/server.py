@@ -25,7 +25,7 @@ import signal
 import socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
-from chatting import eventloop, udpserver, messagereceiver, messagehandler
+from chatting import utils, eventloop, udpserver, messagereceiver, messagehandler
 
 
 def main():
@@ -44,8 +44,7 @@ def main():
                        eventloop.POLL_IN | eventloop.POLL_ERR, udp_server)
         event_loop.run()
     except Exception as e:
-        import traceback
-        traceback.print_exc()
+        utils.print_exception(e)
         sys.exit(1)
 
 
