@@ -15,7 +15,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import message
+from collections import deque
 
 
 class MessageDatabase(object):
@@ -24,28 +24,30 @@ class MessageDatabase(object):
     # TODO: save clients information in this class.
 
     def __init__(self):
-        pass
+        self._active_clients = {}    # client_name : ip_address
+        self._offline_clients = []   # client_name
+        self._offline_messages = {}  # client_name : deque(messages)
 
-    def handle_heartbeat_req(self, heartbeat_req):
-        pass
+    def online_client(self, client_info):
+        client_name = client_info['name']
+        client_addr = client_info['address']
+        if not client_name in self._active_clients:
+            self._active_clients[client_name] = client_addr
+            if client_name in self._offline_clients:
+                self._offline_clients.remove(client_name)
+                # TODO: send out offline_messages for this client
+            return True
+        return False
 
-    def handle_heartbeat_rsp(self, heartbeat_rsp):
-        pass
+    def offline_client(self, client_name):
+        if client_name in self._active_clients:
+            del self._active_clients[client_name]
+            if not client_name in self._offline_clients:
+                self._offline_clients.append(client_name)
+                return True
+        return False
 
-    def handle_login_req(self, login_req):
-        pass
+    def get_all_clients(self):
+        """Return all clients, don't modify it."""
 
-    def handle_login_rsp(self, login_rsp):
-        pass
-
-    def handle_logout_req(self, logout_req):
-        pass
-
-    def handle_logout_rsp(self, logout_rsp):
-        pass
-
-    def handle_chat_msg(self, chat_msg):
-        pass
-
-    def handle_broadcast_msg(self, broadcast_msg):
-        pass
+        return client_info
