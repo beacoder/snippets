@@ -35,19 +35,34 @@ class MessageHandler(object):
         pass
 
     def handle_login_req(self, login_req, from_addr):
-        pass
+        ret = self._msg_database.active_client(login_req.nick_name, from_addr)
+        rsp = LoginRsp(ret, b"Sucess") if ret else LoginRsp(ret, b"Failure")
+        self._msg_sender(rsp, from_addr)
 
     def handle_login_rsp(self, login_rsp, from_addr):
         pass
 
     def handle_logout_req(self, logout_req, from_addr):
-        pass
+        ret = self._msg_database.deactive_client(logout_req.nick_name, from_addr)
+        rsp = LogoutRsp(ret, b"Sucess") if ret else LogoutRsp(ret, b"Failure")
+        self._msg_sender(rsp, from_addr)
 
     def handle_logout_rsp(self, logout_rsp, from_addr):
         pass
 
     def handle_chat_msg(self, chat_msg, from_addr):
-        pass
+        if self._msg_database.is_client_active(address=from_addr):
+            peer_client = chat_msg.msg_to
+            msg_content = chat_msg.msg_content
+            if self._msg_database.is_client_active(name=peer_client):
+                # forward msg_content to peer_client through msg_sender
+                pass
+            elif self._msg_database.is_client_offline(peer_client):
+                # save msg_content as offline message for peer_client
+                pass
+            else:
+                # peer_client is lost
+                pass
 
     def handle_broadcast_msg(self, broadcast_msg, from_addr):
         pass

@@ -160,16 +160,16 @@ class ChatMessage(IMessage):
     MSG_TYPE = CHAT_MSG
     ENCODE_FORMAT = "30s1024s"  # 30s -> receiver's nick-name, 1024s -> chat-msg
 
-    def __init__(self, msg_to=None, msg=None):
-        self.msg_to = msg
-        self.msg = msg
+    def __init__(self, msg_to=None, msg_content=None):
+        self.msg_to = msg_to
+        self.msg_content = msg_content
 
     def to_bytes(self):
-        return struct.pack(ChatMessage.ENCODE_FORMAT, self.msg_to, self.msg)
+        return struct.pack(ChatMessage.ENCODE_FORMAT, self.msg_to, self.msg_content)
 
     def from_bytes(self, data):
         (self.msg_to,), data = unpack_helper("30s", data)
-        (self.msg,), _ = unpack_helper("1024s", data)
+        (self.msg_content,), _ = unpack_helper("1024s", data)
         return self
 
 
