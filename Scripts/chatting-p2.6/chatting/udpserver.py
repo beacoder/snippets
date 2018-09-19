@@ -58,10 +58,10 @@ class UDPServer(messagereceiver.IMessageSender):
     def set_msg_recver(self, msg_recver):
         self._msg_recver = msg_recver
 
-    def send_message(self, msg, dest):
+    def send_message(self, msg, to_addr):
         data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
-        print('Sent message {msg} to {peer}.'.format(msg=data, peer=dest))
-        self._server_sock.sendto(data, dest)
+        print('Sent message {msg} to {peer}.'.format(msg=data, peer=to_addr))
+        self._server_sock.sendto(data, to_addr)
 
     def _on_recv_data(self):
         data, addr = self._server_sock.recvfrom(BUF_SIZE)
@@ -74,7 +74,7 @@ class UDPServer(messagereceiver.IMessageSender):
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
         message = create_message(msg_type, msg_body)
         if self._msg_recver is not None:
-            self._msg_recver(message)
+            self._msg_recver(message, addr)
 
     def handle_event(self, sock, fd, event):
         if sock == self._server_sock:

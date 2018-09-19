@@ -28,26 +28,26 @@ class MessageHandler(object):
         self._msg_database = msg_database
         self._event_loop = eventloop.EventLoop.default_loop()
 
-    def handle_heartbeat_req(self, heartbeat_req):
+    def handle_heartbeat_req(self, heartbeat_req, from_addr):
         pass
 
-    def handle_heartbeat_rsp(self, heartbeat_rsp):
+    def handle_heartbeat_rsp(self, heartbeat_rsp, from_addr):
         pass
 
-    def handle_login_req(self, login_req):
+    def handle_login_req(self, login_req, from_addr):
         pass
 
-    def handle_login_rsp(self, login_rsp):
+    def handle_login_rsp(self, login_rsp, from_addr):
         pass
 
-    def handle_logout_req(self, logout_req):
+    def handle_logout_req(self, logout_req, from_addr):
         pass
 
-    def handle_logout_rsp(self, logout_rsp):
+    def handle_logout_rsp(self, logout_rsp, from_addr):
         pass
 
-    def handle_chat_msg(self, chat_msg):
+    def handle_chat_msg(self, chat_msg, from_addr):
         pass
 
-    def handle_broadcast_msg(self, broadcast_msg):
+    def handle_broadcast_msg(self, broadcast_msg, from_addr):
         pass

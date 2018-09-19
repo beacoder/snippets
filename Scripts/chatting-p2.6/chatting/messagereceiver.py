@@ -21,14 +21,14 @@ import message
 class IMessageSender:
     """Message sender interface."""
 
-    def send_message(self, msg):
+    def send_message(self, msg, to_addr):
         raise NotImplementedError
 
 
 class IMessageReceiver:
     """Message receiver interface."""
 
-    def recv_message(self, msg):
+    def recv_message(self, msg, from_addr):
         raise NotImplementedError
 
 
@@ -40,22 +40,22 @@ class MessageReceiver(IMessageReceiver):
     def __init__(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def recv_message(self, msg):
+    def recv_message(self, msg, from_addr):
         if msg.MSG_TYPE == HEARTBEAT_REQ:
-            self._msg_handler.handle_heartbeat_req(msg)
+            self._msg_handler.handle_heartbeat_req(msg, from_addr)
         elif msg.MSG_TYPE == HEARTBEAT_RSP:
-            self._msg_handler.handle_heartbeat_rsp(msg)
+            self._msg_handler.handle_heartbeat_rsp(msg, from_addr)
         if msg.MSG_TYPE == LOGIN_REQ:
-            self._msg_handler.handle_login_req(msg)
+            self._msg_handler.handle_login_req(msg, from_addr)
         elif msg.MSG_TYPE == LOGIN_RSP:
-            self._msg_handler.handle_login_rsp(msg)
+            self._msg_handler.handle_login_rsp(msg, from_addr)
         if msg.MSG_TYPE == LOGOUT_REQ:
-            self._msg_handler.handle_logout_req(msg)
+            self._msg_handler.handle_logout_req(msg, from_addr)
         elif msg.MSG_TYPE == LOGOUT_RSP:
-            self._msg_handler.handle_logout_rsp(msg)
+            self._msg_handler.handle_logout_rsp(msg, from_addr)
         elif msg.MSG_TYPE == CHAT_MSG:
-            self._msg_handler.handle_chat_msg(msg)
+            self._msg_handler.handle_chat_msg(msg, from_addr)
         elif msg.MSG_TYPE == BROADCAST_MSG:
-            self._msg_handler.handle_broadcast_msg(msg)
+            self._msg_handler.handle_broadcast_msg(msg, from_addr)
         else:
             raise ValueError

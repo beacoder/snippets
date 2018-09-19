@@ -21,8 +21,6 @@ from collections import deque
 class MessageDatabase(object):
     """Store information from incomming messages."""
 
-    # TODO: save clients information in this class.
-
     def __init__(self):
         self._active_clients = {}    # client_name : ip_address
         self._offline_clients = []   # client_name
@@ -48,6 +46,6 @@ class MessageDatabase(object):
         return False
 
     def get_all_clients(self):
-        """Return all clients, don't modify it."""
+        """Return all clients, read-only."""
 
         return client_info
