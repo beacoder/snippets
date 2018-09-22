@@ -16,7 +16,7 @@
 # under the License.
 
 import message
-import messagereceiver
+import messagetransceiver
 import eventloop
 
 

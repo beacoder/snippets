@@ -25,17 +25,18 @@ import signal
 import socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
-from chatting import utils, eventloop, udpserver, messagereceiver, \
+from chatting import utils, eventloop, udpserver, messagetransceiver, \
     messagehandler, messagedatabase
 
 
 def main():
+    utils.prepare_logger("/var/log/chatting_server.log");
     host = socket.gethostbyname(socket.gethostname()) # the public network interface
     port = 5566
     udp_server = udpserver.UDPServer(host, port)
     msg_database = messagedatabase.MessageDatabase()
     msg_handler = messagehandler.MessageHandler(udp_server, msg_database)
-    msg_recver = messagereceiver.MessageReceiver(msg_handler)
+    msg_recver = messagetransceiver.MessageReceiver(msg_handler)
     udp_server.set_msg_recver(msg_recver)
 
     def int_handler(signum, _):

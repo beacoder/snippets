@@ -18,56 +18,39 @@
 from __future__ import absolute_import, division, print_function, \
     with_statement
 
-import random
+import sys
+import os
+import logging
+import signal
 import socket
-import time
 
-
-BUF_SIZE = 65536
-
-
-class UDPClient(object):
-
-    def __init__(self):
-        self._data = [b"Hello\n", b"World\n", b"!\n"]
-        pass
-
-    def __enter__(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self._sock = sock
-        return self
-
-    def __exit__(self,*exc_info):
-        if exc_info[0]:
-            import traceback
-            traceback.print_exception(*exc_info)
-        self._sock.close()
-
-    def recv_msg(self):
-        """recv msg from server."""
-
-        data, addr = self._sock.recvfrom(BUF_SIZE)
-        print('Got message {msg} from {peer}.'.format(msg=data, peer=addr))
-        print('')
-        time.sleep(1)
-
-    def send_msg(self, dest, port):
-        """send msg to server."""
-
-        data = random.choice(self._data)
-        addr = (dest, port)
-        print('Sent message {msg} to {peer}.'.format(msg=data, peer=addr))
-        self._sock.sendto(data, addr)
-        time.sleep(1)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
+from chatting import utils, eventloop, udpclient, messagetransceiver, \
+    messagehandler, messagedatabase
 
 
 def main():
-    dest = socket.gethostbyname(socket.gethostname())
-    port = 5566
-    with UDPClient() as client:
-        while True:
-            client.send_msg(dest, port)
-            client.recv_msg()
+    utils.prepare_logger("/var/log/chatting_client.log");
+    server_addr = socket.gethostbyname(socket.gethostname())
+    server_port = 5566
+    udp_client = udpserver.UDPClient(server_addr, server_port)
+    msg_database = messagedatabase.MessageDatabase()
+    msg_handler = messagehandler.MessageHandler(udp_client, msg_database)
+    msg_recver = messagetransceiver.MessageReceiver(msg_handler)
+    udp_client.set_msg_recver(msg_recver)
+
+    def int_handler(signum, _):
+        sys.exit(1)
+    signal.signal(signal.SIGINT, int_handler)
+
+    try:
+        event_loop = eventloop.EventLoop.default_loop()
+        event_loop.add(udp_client.get_client_sock(),
+                       eventloop.POLL_IN | eventloop.POLL_ERR, udp_client)
+        event_loop.run()
+    except Exception as e:
+        utils.print_exception(e)
+        sys.exit(1)
 
 
 if __name__ == '__main__':

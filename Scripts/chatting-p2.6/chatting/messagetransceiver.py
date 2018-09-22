@@ -19,7 +19,7 @@ import message
 
 
 class IMessageSender:
-    """Message sender interface."""
+    """Sending outgoing messages."""
 
     def send_message(self, msg, to_addr):
         raise NotImplementedError
