@@ -57,7 +57,7 @@ class MessageDatabase(object):
         else:
             return False
 
-    def is_client_online(self, name):
+    def is_client_offline(self, name):
         return name in self._offline_clients
 
     def get_client_name(self, address):
@@ -71,3 +71,9 @@ class MessageDatabase(object):
             return self._online_clients[name]
         else:
             return None
+
+    def save_offline_msg(self, name, msg):
+        if name in self._offline_clients:
+            if name not in self._offline_messages:
+                self._offline_messages[name] = deque()
+            self._offline_messages[name].append(msg)
