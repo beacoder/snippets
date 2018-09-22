@@ -61,7 +61,7 @@ def prepare_logger(logfile):
     logging.getLogger('').handlers = []
     logging.addLevelName(VERBOSE_LEVEL, 'VERBOSE')
 
-    config = {'verbose', 0}
+    config = {'verbose':0}
     if config['verbose'] >= 2:
         level = VERBOSE_LEVEL
     elif config['verbose'] == 1:
@@ -77,6 +77,7 @@ def prepare_logger(logfile):
     logging.basicConfig(level=level,
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
+    logging.info("log starts here")
 
 
 def compat_ord(s):
