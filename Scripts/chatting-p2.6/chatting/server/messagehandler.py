@@ -15,9 +15,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import message
+from chatting import message, eventloop
 import messagetransceiver
-import eventloop
 
 
 class MessageHandler(object):

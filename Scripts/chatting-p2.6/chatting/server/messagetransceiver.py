@@ -15,7 +15,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import message
+from chatting import message
 
 
 class IMessageSender:

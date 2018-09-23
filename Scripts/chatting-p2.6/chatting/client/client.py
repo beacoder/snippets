@@ -24,19 +24,19 @@ import signal
 import socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
-from chatting import logging, utils, eventloop, udpserver, messagetransceiver, \
-    messagehandler, messagedatabase
+from chatting import logging, utils, eventloop
+from chatting.client import udpclient
 
 
 def main():
-    logging.prepare_logger("/var/log/chatting_server.log");
-    host = socket.gethostbyname(socket.gethostname()) # the public network interface
-    port = 5566
-    udp_server = udpserver.UDPServer(host, port)
+    logging.prepare_logger("/var/log/chatting_client.log");
+    server_addr = socket.gethostbyname(socket.gethostname())
+    server_port = 5566
+    udp_client = udpclient.UDPClient(server_addr, server_port)
     msg_database = messagedatabase.MessageDatabase()
-    msg_handler = messagehandler.MessageHandler(udp_server, msg_database)
+    msg_handler = messagehandler.MessageHandler(udp_client, msg_database)
     msg_recver = messagetransceiver.MessageReceiver(msg_handler)
-    udp_server.set_msg_recver(msg_recver)
+    udp_client.set_msg_recver(msg_recver)
 
     def int_handler(signum, _):
         sys.exit(1)
@@ -44,8 +44,8 @@ def main():
 
     try:
         event_loop = eventloop.EventLoop.default_loop()
-        event_loop.add(udp_server.get_server_sock(),
-                       eventloop.POLL_IN | eventloop.POLL_ERR, udp_server)
+        event_loop.add(udp_client.get_client_sock(),
+                       eventloop.POLL_IN | eventloop.POLL_ERR, udp_client)
         event_loop.run()
     except Exception as e:
         logging.print_exception(e)
