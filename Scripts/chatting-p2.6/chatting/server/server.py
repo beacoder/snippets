@@ -32,7 +32,8 @@ def main():
     logging.prepare_logger("/var/log/chatting_server.log");
     host = socket.gethostbyname(socket.gethostname()) # the public network interface
     port = 5566
-    udp_server = udpserver.UDPServer(host, port)
+    event_loop = eventloop.EventLoop.default_loop()
+    udp_server = udpserver.UDPServer(host, port, event_loop)
     msg_database = messagedatabase.MessageDatabase()
     msg_handler = messagehandler.MessageHandler(udp_server, msg_database)
 
@@ -41,9 +42,6 @@ def main():
     signal.signal(signal.SIGINT, int_handler)
 
     try:
-        event_loop = eventloop.EventLoop.default_loop()
-        event_loop.add(udp_server.get_server_sock(),
-                       eventloop.POLL_IN | eventloop.POLL_ERR, udp_server)
         event_loop.run()
     except Exception as e:
         logging.print_exception(e)

@@ -31,7 +31,7 @@ from collections import defaultdict
 
 
 __all__ = ['EventLoop', 'POLL_NULL', 'POLL_IN', 'POLL_OUT', 'POLL_ERR',
-           'POLL_HUP', 'POLL_NVAL', 'EVENT_NAMES']
+           'POLL_HUP', 'POLL_NVAL', 'EVENT_NAMES', 'TIMEOUT_PRECISION']
 
 POLL_NULL = 0x00
 POLL_IN = 0x01

@@ -33,25 +33,30 @@ BUF_SIZE = 65536
 class UDPClient(object):
     """Transmitting incomming/outgoing messages."""
 
-    def __init__(self, server_addr, server_port):
+    def __init__(self, server_addr, server_port, event_loop,
+                 int_msg_queue, out_msg_queue):
         self._server_addr = server_addr
         self._server_port = server_port
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setblocking(False)
-
-    def get_client_sock(self):
-        return self._sock
+        event_loop.add(self._sock,
+                       eventloop.POLL_IN | eventloop.POLL_ERR, self)
+        event_loop.add_periodic(self.handle_periodic)
+        self._in_msg_queue = int_msg_queue
+        self._out_msg_queue = out_msg_queue
 
     def close(self):
         self._sock.close()
 
-    def set_msg_recver(self, msg_recver):
-        self._recver = msg_recver
-
     def send_message(self, msg, to_addr):
         data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
         print('Sent message {msg} to {peer}.'.format(msg=data, peer=to_addr))
-        self._sock.sendto(data, to_addr)
+        self._out_msg_queue.put(data)
+
+    def _on_send_data(self):
+        while not self._out_msg_queue.empty():
+            msg = self._out_msg_queue.get_nowait()
+            self._sock.sendto(msg, (self._server_addr, self._server_port))
 
     def _on_recv_data(self):
         data, addr = self._sock.recvfrom(BUF_SIZE)
@@ -64,6 +69,9 @@ class UDPClient(object):
         message = create_message(msg_type, msg_body)
         if self._recver is not None:
             self._recver(message, addr)
+
+    def handle_periodic(self):
+        self._on_send_data()
 
     def handle_event(self, sock, fd, event):
         if sock == self._sock:

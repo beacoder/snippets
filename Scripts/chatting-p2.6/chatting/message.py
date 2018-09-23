@@ -187,34 +187,45 @@ class BroadcastMessage(IMessage):
         return struct.pack(BroadcastMessage.ENCODE_FORMAT, self.msg_from, self.msg_to)
 
 
-def handle_message(msg_type, msg_body, from_addr, msg_handler):
+def handle_message(msg_type, msg_body, from_addr,
+                   msg_queue=None, msg_handler=None):
     try:
         if msg_type == HEARTBEAT_REQ:
             msg = HeartbeatReq().from_bytes(msg_body)
-            msg_handler.handle_heartbeat_req(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_heartbeat_req(msg, from_addr)
         elif msg_type == HEARTBEAT_RSP:
             msg = HeartbeatRsp().from_bytes(msg_body)
-            msg_handler.handle_heartbeat_rsp(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_heartbeat_rsp(msg, from_addr)
         if msg_type == LOGIN_REQ:
             msg = LoginReq().from_bytes(msg_body)
-            msg_handler.handle_login_req(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_login_req(msg, from_addr)
         elif msg_type == LOGIN_RSP:
             msg =  LoginRsp().from_bytes(msg_body)
-            msg_handler.handle_login_rsp(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_login_rsp(msg, from_addr)
         if msg_type == LOGOUT_REQ:
             msg = LogoutReq().from_bytes(msg_body)
-            msg_handler.handle_logout_req(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_logout_req(msg, from_addr)
         elif msg_type == LOGOUT_RSP:
             msg = LogoutRsp().from_bytes(msg_body)
-            msg_handler.handle_logout_rsp(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_logout_rsp(msg, from_addr)
         elif msg_type == CHAT_MSG:
             msg = ChatMessage().from_bytes(msg_body)
-            msg_handler.handle_chat_msg(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_chat_msg(msg, from_addr)
         elif msg_type == BROADCAST_MSG:
             msg = BroadcastMessage().from_bytes(msg_body)
-            msg_handler.handle_broadcast_msg(msg, from_addr)
+            if msg_handler is not None:
+                msg_handler.handle_broadcast_msg(msg, from_addr)
         else:
             raise ValueError
+        if msg_queue is not None:
+            msg_queue.put(msg)
     except Exception as e:
         print_exception(e)
         sys.exit(1)

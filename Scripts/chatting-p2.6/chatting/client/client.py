@@ -22,6 +22,8 @@ import sys
 import os
 import signal
 import socket
+from threading import Thread
+from Queue import Queue
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
 from chatting import logging, utils, eventloop
@@ -32,20 +34,17 @@ def main():
     logging.prepare_logger("/var/log/chatting_client.log");
     server_addr = socket.gethostbyname(socket.gethostname())
     server_port = 5566
-    udp_client = udpclient.UDPClient(server_addr, server_port)
-    msg_database = messagedatabase.MessageDatabase()
-    msg_handler = messagehandler.MessageHandler(udp_client, msg_database)
-    msg_recver = messagetransceiver.MessageReceiver(msg_handler)
-    udp_client.set_msg_recver(msg_recver)
+    in_msg_queue = Queue()
+    out_msg_queue = Queue()
+    event_loop = eventloop.EventLoop.default_loop()
+    udp_client = udpclient.UDPClient(server_addr, server_port, event_loop,
+                                     in_msg_queue, out_msg_queue)
 
     def int_handler(signum, _):
         sys.exit(1)
     signal.signal(signal.SIGINT, int_handler)
 
     try:
-        event_loop = eventloop.EventLoop.default_loop()
-        event_loop.add(udp_client.get_client_sock(),
-                       eventloop.POLL_IN | eventloop.POLL_ERR, udp_client)
         event_loop.run()
     except Exception as e:
         logging.print_exception(e)

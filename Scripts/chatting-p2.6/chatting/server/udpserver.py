@@ -33,7 +33,7 @@ BUF_SIZE = 65536
 class UDPServer(object):
     """Transmitting incomming/outgoing messages."""
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, event_loop):
         self._listen_addr = host
         self._listen_port = port
         self._clients = set()
@@ -48,6 +48,8 @@ class UDPServer(object):
         server_socket.bind((self._listen_addr, self._listen_port))
         server_socket.setblocking(False)
         self._server_sock = server_socket
+        event_loop.add(self._server_sock,
+                       eventloop.POLL_IN | eventloop.POLL_ERR, self)
 
     def get_server_sock(self):
         return self._server_sock
@@ -73,7 +75,8 @@ class UDPServer(object):
         print('')
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
         if self._msg_handler is not None:
-            message.handle_message(msg_type, msg_body, addr, self._msg_handler)
+            message.handle_message(msg_type, msg_body, addr,
+                                   msg_handler=self._msg_handler)
 
     def handle_event(self, sock, fd, event):
         if sock == self._server_sock:
