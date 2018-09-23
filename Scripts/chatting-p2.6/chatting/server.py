@@ -20,17 +20,16 @@ from __future__ import absolute_import, division, print_function, \
 
 import sys
 import os
-import logging
 import signal
 import socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
-from chatting import utils, eventloop, udpserver, messagetransceiver, \
+from chatting import logging, utils, eventloop, udpserver, messagetransceiver, \
     messagehandler, messagedatabase
 
 
 def main():
-    utils.prepare_logger("/var/log/chatting_server.log");
+    logging.prepare_logger("/var/log/chatting_server.log");
     host = socket.gethostbyname(socket.gethostname()) # the public network interface
     port = 5566
     udp_server = udpserver.UDPServer(host, port)
@@ -49,7 +48,7 @@ def main():
                        eventloop.POLL_IN | eventloop.POLL_ERR, udp_server)
         event_loop.run()
     except Exception as e:
-        utils.print_exception(e)
+        logging.print_exception(e)
         sys.exit(1)
 
 

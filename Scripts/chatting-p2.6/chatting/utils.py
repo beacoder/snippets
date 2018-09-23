@@ -24,11 +24,6 @@ import socket
 import struct
 
 
-VERBOSE_LEVEL = 5
-
-verbose = 0
-
-
 # most functions are taken from ss
 def check_python():
     info = sys.version_info
@@ -41,43 +36,6 @@ def check_python():
     elif info[0] not in [2, 3]:
         print('Python version not supported')
         sys.exit(1)
-
-
- # from ssloop
-def print_exception(e):
-    global verbose
-    logging.error(e)
-    if verbose > 0:
-        import traceback
-        traceback.print_exc()
-
-
-def prepare_logger(logfile):
-    global verbose
-
-    logging.basicConfig(filename=logfile,
-                        level=logging.INFO,
-                        format="%(asctime)s %(levelname)s - %(message)s")
-    logging.getLogger('').handlers = []
-    logging.addLevelName(VERBOSE_LEVEL, 'VERBOSE')
-
-    config = {'verbose':0}
-    if config['verbose'] >= 2:
-        level = VERBOSE_LEVEL
-    elif config['verbose'] == 1:
-        level = logging.DEBUG
-    elif config['verbose'] == -1:
-        level = logging.WARN
-    elif config['verbose'] <= -2:
-        level = logging.ERROR
-    else:
-        level = logging.INFO
-    verbose = config['verbose']
-
-    logging.basicConfig(level=level,
-                        format='%(asctime)s %(levelname)-8s %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
-    logging.info("log starts here")
 
 
 def compat_ord(s):

@@ -17,7 +17,7 @@
 
 import struct
 import time
-import utils
+from .logging import print_exception
 
 INVALID_MSG = 0    # invalid message
 HEARTBEAT_REQ = 1  # heartbeat request
@@ -210,5 +210,5 @@ def create_message(msg_type, msg_body):
         else:
             raise ValueError
     except Exception as e:
-        utils.print_exception(e)
+        print_exception(e)
         sys.exit(1)
