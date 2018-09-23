@@ -33,7 +33,7 @@ def main():
     utils.prepare_logger("/var/log/chatting_client.log");
     server_addr = socket.gethostbyname(socket.gethostname())
     server_port = 5566
-    udp_client = udpserver.UDPClient(server_addr, server_port)
+    udp_client = udpclient.UDPClient(server_addr, server_port)
     msg_database = messagedatabase.MessageDatabase()
     msg_handler = messagehandler.MessageHandler(udp_client, msg_database)
     msg_recver = messagetransceiver.MessageReceiver(msg_handler)
