@@ -24,13 +24,13 @@ import logging
 import signal
 import socket
 import struct
-import messagetransceiver
+from chatting import message
 
 
 BUF_SIZE = 65536
 
 
-class UDPClient(messagetransceiver.IMessageSender):
+class UDPClient(object):
     """Transmitting incomming/outgoing messages."""
 
     def __init__(self, server_addr, server_port):

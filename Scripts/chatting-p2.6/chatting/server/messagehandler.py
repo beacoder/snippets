@@ -15,17 +15,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from chatting import message, eventloop
-import messagetransceiver
+from chatting import eventloop, message
 
 
 class MessageHandler(object):
     """Processing incomming messages."""
 
-    def __init__(self, msg_sender, msg_database):
-        self._sender = msg_sender
+    def __init__(self, msg_transceiver, msg_database):
+        self._transceiver = msg_transceiver
         self._db = msg_database
         self._event_loop = eventloop.EventLoop.default_loop()
+        self._transceiver.set_msg_handler(self)
 
     def handle_heartbeat_req(self, heartbeat_req, src_addr):
         pass
@@ -36,7 +36,7 @@ class MessageHandler(object):
     def handle_login_req(self, login_req, src_addr):
         ret = self._db.active_client(login_req.nick_name, src_addr)
         rsp = LoginRsp(ret, b"Sucess") if ret else LoginRsp(ret, b"Failure")
-        self._sender(rsp, src_addr)
+        self._transceiver.send_message(rsp, src_addr)
 
     def handle_login_rsp(self, login_rsp, src_addr):
         pass
@@ -44,7 +44,7 @@ class MessageHandler(object):
     def handle_logout_req(self, logout_req, src_addr):
         ret = self._db.deactive_client(logout_req.nick_name, src_addr)
         rsp = LogoutRsp(ret, b"Sucess") if ret else LogoutRsp(ret, b"Failure")
-        self._sender(rsp, src_addr)
+        self._transceiver.send_message(rsp, src_addr)
 
     def handle_logout_rsp(self, logout_rsp, src_addr):
         pass
@@ -56,7 +56,7 @@ class MessageHandler(object):
             if self._db.is_client_online(name=msg_to):
                 msg_from = self._db.get_client_name(src_addr)
                 dest_addr = self._db.get_client_address(msg_to)
-                self._sender(ChatMessage(msg_from, msg_content), dest_addr)
+                self._transceiver.send_message(ChatMessage(msg_from, msg_content), dest_addr)
             elif self._db.is_client_offline(msg_to):
                 self._db.save_offline_msg(msg_to, msg_content)
             else:

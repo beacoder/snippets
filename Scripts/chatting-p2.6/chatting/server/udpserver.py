@@ -24,20 +24,20 @@ import logging
 import signal
 import socket
 import struct
-import messagetransceiver
+from chatting import message
 
 
 BUF_SIZE = 65536
 
 
-class UDPServer(messagetransceiver.IMessageSender):
+class UDPServer(object):
     """Transmitting incomming/outgoing messages."""
 
     def __init__(self, host, port):
         self._listen_addr = host
         self._listen_port = port
         self._clients = set()
-        self._recver = None
+        self._msg_handler = None
         addrs = socket.getaddrinfo(self._listen_addr, self._listen_port, 0,
                                    socket.SOCK_DGRAM, socket.SOL_UDP)
         if len(addrs) == 0:
@@ -55,8 +55,8 @@ class UDPServer(messagetransceiver.IMessageSender):
     def close(self):
         self._server_sock.close()
 
-    def set_msg_recver(self, msg_recver):
-        self._recver = msg_recver
+    def set_msg_handler(self, msg_handler):
+        self._msg_handler = msg_handler
 
     def send_message(self, msg, to_addr):
         data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
@@ -72,9 +72,8 @@ class UDPServer(messagetransceiver.IMessageSender):
         print('Got message {msg} from {peer}.'.format(msg=data, peer=addr))
         print('')
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
-        message = create_message(msg_type, msg_body)
-        if self._recver is not None:
-            self._recver(message, addr)
+        if self._msg_handler is not None:
+            message.handle_message(msg_type, msg_body, addr, self._msg_handler)
 
     def handle_event(self, sock, fd, event):
         if sock == self._server_sock:

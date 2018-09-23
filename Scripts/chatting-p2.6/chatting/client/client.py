@@ -23,7 +23,7 @@ import os
 import signal
 import socket
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
 from chatting import logging, utils, eventloop
 from chatting.client import udpclient
 
