@@ -34,21 +34,22 @@ class ChatClient(messagehandler.IMessageHandler):
         self._transceiver.set_msg_handler(self)
 
     def do_login(self):
-        logging.info("sending login req.")
+        logging.debug("sending login req.")
         self._transceiver.send_message(message.LoginReq(self._nick_name))
 
     def handle_login_rsp(self, login_rsp, src_addr):
         if login_rsp.result:
-            logging.info("logging success.")
+            logging.debug("login success.")
 
     def handle_chat_msg(self, chat_msg, src_addr):
+        logging.debug("received chat msg.")
         msg_from = chat_msg.msg_to
         msg_content = chat_msg.msg_content
         if msg_from and msg_content:
             print("%s: %s" % (msg_from, msg_content))
 
     def handle_broadcast_msg(self, broadcast_msg, src_addr):
-        pass
+        logging.debug("received broadcast msg.")
 
     def _handle_input(self):
         raw_msg = sys.stdin.readline()
