@@ -29,19 +29,21 @@ from chatting.client import udpclient, chat
 
 
 def main():
-    utils.config_logging("/var/log/chatting_client.log");
-    server_addr = socket.gethostbyname(socket.gethostname())
+    utils.config_logging("/var/log/chatting_client_%s.log" % os.getpid());
+
+    # server_addr = socket.gethostbyname(socket.gethostname())
+    server_addr = '127.0.0.1'
     server_port = 5566
     event_loop = eventloop.EventLoop.default_loop()
     udp_client = udpclient.UDPClient(server_addr, server_port, event_loop)
-    chat_client = chat.ChatClient("nick", event_loop, udp_client)
+    nick_name = raw_input("Please input your nick name!\n")
+    chat_client = chat.ChatClient(nick_name, event_loop, udp_client)
 
     def int_handler(signum, _):
         sys.exit(1)
     signal.signal(signal.SIGINT, int_handler)
 
     try:
-        print("My nick name is nick !")
         print("Start your chat, e.g: 'nick: hello !'")
         chat_client.do_login()
         event_loop.run()

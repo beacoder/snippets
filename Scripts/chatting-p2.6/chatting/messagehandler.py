@@ -19,6 +19,7 @@ from __future__ import absolute_import, division, print_function, \
     with_statement
 
 from . import message
+from . import utils
 
 
 class IMessageHandler(object):
@@ -51,32 +52,32 @@ class IMessageHandler(object):
 
 def handle_message(msg_type, msg_body, from_addr, msg_handler):
     try:
-        if msg_type == HEARTBEAT_REQ:
-            msg = HeartbeatReq().from_bytes(msg_body)
+        if msg_type == message.HEARTBEAT_REQ:
+            msg = message.HeartbeatReq().from_bytes(msg_body)
             msg_handler.handle_heartbeat_req(msg, from_addr)
-        elif msg_type == HEARTBEAT_RSP:
-            msg = HeartbeatRsp().from_bytes(msg_body)
+        elif msg_type == message.HEARTBEAT_RSP:
+            msg = message.HeartbeatRsp().from_bytes(msg_body)
             msg_handler.handle_heartbeat_rsp(msg, from_addr)
-        if msg_type == LOGIN_REQ:
-            msg = LoginReq().from_bytes(msg_body)
+        if msg_type == message.LOGIN_REQ:
+            msg = message.LoginReq().from_bytes(msg_body)
             msg_handler.handle_login_req(msg, from_addr)
-        elif msg_type == LOGIN_RSP:
-            msg =  LoginRsp().from_bytes(msg_body)
+        elif msg_type == message.LOGIN_RSP:
+            msg =  message.LoginRsp().from_bytes(msg_body)
             msg_handler.handle_login_rsp(msg, from_addr)
-        if msg_type == LOGOUT_REQ:
-            msg = LogoutReq().from_bytes(msg_body)
+        if msg_type == message.LOGOUT_REQ:
+            msg = message.LogoutReq().from_bytes(msg_body)
             msg_handler.handle_logout_req(msg, from_addr)
-        elif msg_type == LOGOUT_RSP:
-            msg = LogoutRsp().from_bytes(msg_body)
+        elif msg_type == message.LOGOUT_RSP:
+            msg = message.LogoutRsp().from_bytes(msg_body)
             msg_handler.handle_logout_rsp(msg, from_addr)
-        elif msg_type == CHAT_MSG:
-            msg = ChatMessage().from_bytes(msg_body)
+        elif msg_type == message.CHAT_MSG:
+            msg = message.ChatMessage().from_bytes(msg_body)
             msg_handler.handle_chat_msg(msg, from_addr)
-        elif msg_type == BROADCAST_MSG:
-            msg = BroadcastMessage().from_bytes(msg_body)
+        elif msg_type == message.BROADCAST_MSG:
+            msg = message.BroadcastMessage().from_bytes(msg_body)
             msg_handler.handle_broadcast_msg(msg, from_addr)
         else:
             raise ValueError
     except Exception as e:
-        print_exception(e)
+        utils.print_exception(e)
         # sys.exit(1)

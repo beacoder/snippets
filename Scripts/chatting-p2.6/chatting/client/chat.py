@@ -35,7 +35,7 @@ class ChatClient(messagehandler.IMessageHandler):
 
     def do_login(self):
         logging.info("sending login req.")
-        self._transceiver.send_message(LoginReq(self._nick_name))
+        self._transceiver.send_message(message.LoginReq(self._nick_name))
 
     def handle_login_rsp(self, login_rsp, src_addr):
         if login_rsp.result:
@@ -68,3 +68,13 @@ class ChatClient(messagehandler.IMessageHandler):
             except Exception as e:
                 print ("handle_input: %s", e)
         pass
+
+
+def test_message_available():
+    assert hasattr(message, 'LoginReq')
+    assert hasattr(message, 'LoginRsp')
+    assert hasattr(message, 'ChatMessage')
+
+
+if __name__ == '__main__':
+    test_message_available()

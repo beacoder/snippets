@@ -31,7 +31,7 @@ from chatting.server import udpserver, messageprocesser, messagedatabase
 def main():
     utils.config_logging("/var/log/chatting_server.log");
     # host = socket.gethostbyname(socket.gethostname()) # the public network interface
-    host = 'localhost'
+    host = '127.0.0.1'
     port = 5566
     event_loop = eventloop.EventLoop.default_loop()
     udp_server = udpserver.UDPServer(host, port, event_loop)
@@ -43,6 +43,7 @@ def main():
     signal.signal(signal.SIGINT, int_handler)
 
     try:
+        print("chattting server started!")
         event_loop.run()
     except Exception as e:
         utils.print_exception(e)

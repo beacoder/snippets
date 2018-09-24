@@ -19,7 +19,7 @@ from __future__ import absolute_import, division, print_function, \
     with_statement
 
 import logging
-from chatting import eventloop, messagehandler
+from chatting import eventloop, message, messagehandler
 
 
 class MessageProcesser(messagehandler.IMessageHandler):
@@ -40,13 +40,13 @@ class MessageProcesser(messagehandler.IMessageHandler):
     def handle_login_req(self, login_req, src_addr):
         logging.info("received login req.")
         ret = self._db.active_client(login_req.nick_name, src_addr)
-        rsp = LoginRsp(ret, b"Sucess") if ret else LoginRsp(ret, b"Failure")
+        rsp = message.LoginRsp(ret, b"Sucess") if ret else message.LoginRsp(ret, b"Failure")
         self._transceiver.send_message(rsp, src_addr)
 
     def handle_logout_req(self, logout_req, src_addr):
         logging.info("received logout req.")
         ret = self._db.deactive_client(logout_req.nick_name, src_addr)
-        rsp = LogoutRsp(ret, b"Sucess") if ret else LogoutRsp(ret, b"Failure")
+        rsp = message.LogoutRsp(ret, b"Sucess") if ret else LogoutRsp(ret, b"Failure")
         self._transceiver.send_message(rsp, src_addr)
 
     def handle_chat_msg(self, chat_msg, src_addr):
@@ -56,7 +56,8 @@ class MessageProcesser(messagehandler.IMessageHandler):
             if self._db.is_client_online(name=msg_to):
                 msg_from = self._db.get_client_name(src_addr)
                 dest_addr = self._db.get_client_address(msg_to)
-                self._transceiver.send_message(ChatMessage(msg_from, msg_content), dest_addr)
+                chat_msg = message.ChatMessage(msg_from, msg_content)
+                self._transceiver.send_message(chat_msg, dest_addr)
             elif self._db.is_client_offline(msg_to):
                 self._db.save_offline_msg(msg_to, msg_content)
             else:
