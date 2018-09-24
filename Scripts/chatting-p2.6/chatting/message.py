@@ -134,7 +134,7 @@ class LoginRsp(IMessage):
         self.reason = reason
 
     def to_bytes(self):
-        return struct.pack(LoginRsp.ENCODE_FORMAT, utilts.to_bytes(self.result), utilts.to_bytes(self.reason))
+        return struct.pack(LoginRsp.ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
 
     def from_bytes(self, data):
         (self.result,), data = unpack_helper("?", data)
@@ -178,7 +178,7 @@ class LogoutRsp(IMessage):
         self.reason = reason
 
     def to_bytes(self):
-        return struct.pack(LogoutRsp.ENCODE_FORMAT, utilts.to_bytes(self.result), utilts.to_bytes(self.reason))
+        return struct.pack(LogoutRsp.ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
 
     def from_bytes(self, data):
         (self.result,), data = unpack_helper("?", data)
