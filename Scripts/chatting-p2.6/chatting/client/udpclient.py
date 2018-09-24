@@ -41,37 +41,27 @@ class UDPClient(object):
         self._sock.setblocking(False)
         event_loop.add(self._sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
-        event_loop.add_periodic(self.handle_periodic)
-        self._in_msg_queue = int_msg_queue
-        self._out_msg_queue = out_msg_queue
 
     def close(self):
         self._sock.close()
 
-    def send_message(self, msg, to_addr):
-        data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
-        print('Sent message {msg} to {peer}.'.format(msg=data, peer=to_addr))
-        self._out_msg_queue.put(data)
-
-    def _on_send_data(self):
-        while not self._out_msg_queue.empty():
-            msg = self._out_msg_queue.get_nowait()
-            self._sock.sendto(msg, (self._server_addr, self._server_port))
+    def _on_send_data(self, data, dest):
+        if data and dest:
+            self._sock.sendto(data, dest)
 
     def _on_recv_data(self):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if not data:
             logging.debug('UDP on_recv_data: data is empty')
             return
-        print('Got message {msg} from {peer}.'.format(msg=data, peer=addr))
-        print('')
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
-        message = create_message(msg_type, msg_body)
-        if self._recver is not None:
-            self._recver(message, addr)
+        if self._msg_handler is not None:
+            message.handle_message(msg_type, msg_body, addr,
+                                   msg_handler=self._msg_handler)
 
-    def handle_periodic(self):
-        self._on_send_data()
+    def send_message(self, msg):
+        data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
+        _on_send_data(data, (self._server_addr, self._server_port))
 
     def handle_event(self, sock, fd, event):
         if sock == self._sock:

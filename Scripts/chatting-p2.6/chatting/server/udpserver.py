@@ -36,7 +36,6 @@ class UDPServer(object):
     def __init__(self, host, port, event_loop):
         self._listen_addr = host
         self._listen_port = port
-        self._clients = set()
         self._msg_handler = None
         addrs = socket.getaddrinfo(self._listen_addr, self._listen_port, 0,
                                    socket.SOCK_DGRAM, socket.SOL_UDP)
@@ -51,23 +50,18 @@ class UDPServer(object):
         event_loop.add(self._server_sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
 
-    def get_server_sock(self):
-        return self._server_sock
-
     def close(self):
         self._server_sock.close()
 
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def send_message(self, msg, to_addr):
-        data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
-        print('Sent message {msg} to {peer}.'.format(msg=data, peer=to_addr))
-        self._server_sock.sendto(data, to_addr)
+    def _on_send_data(self, data, dest):
+        if data and dest:
+            self._server_sock.sendto(data, dest)
 
     def _on_recv_data(self):
         data, addr = self._server_sock.recvfrom(BUF_SIZE)
-        self._clients.add(addr)
         if not data:
             logging.debug('UDP on_recv_data: data is empty')
             return
@@ -75,8 +69,12 @@ class UDPServer(object):
         print('')
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
         if self._msg_handler is not None:
-            message.handle_message(msg_type, msg_body, addr,
-                                   msg_handler=self._msg_handler)
+            message.handle_message(msg_type, msg_body, addr, self._msg_handler)
+
+    def send_message(self, msg, to_addr):
+        data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
+        print('Sent message {msg} to {peer}.'.format(msg=data, peer=to_addr))
+        _on_send_data(data, to_addr)
 
     def handle_event(self, sock, fd, event):
         if sock == self._server_sock:
