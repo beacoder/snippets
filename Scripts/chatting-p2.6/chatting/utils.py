@@ -19,6 +19,7 @@ from __future__ import absolute_import, division, print_function, \
     with_statement
 
 import sys
+import os
 import logging
 import socket
 import struct
@@ -32,7 +33,7 @@ verbose = 0
 def config_logging(logfile):
     global verbose
 
-    config = {'verbose':0}
+    config = {'verbose': 1}  # TODO: change to read from config file.
     if config['verbose'] >= 2:
         level = VERBOSE_LEVEL
     elif config['verbose'] == 1:
@@ -47,7 +48,7 @@ def config_logging(logfile):
 
     logging.basicConfig(filename=logfile,
                         level=level,
-                        format='%(asctime)s %(levelname)-8s %(message)s',
+                        format='%(asctime)s (PID: ' + str(os.getpid()) + ') %(levelname)-8s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
     logging.info("log starts here")
 

@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 import socket
 import struct
-from chatting import eventloop, messagehandler
+from chatting import utils, eventloop, messagehandler
 
 
 BUF_SIZE = 65536
@@ -56,14 +56,15 @@ class UDPServer(object):
 
     def _on_send_data(self, data, dest):
         if data and dest:
-            logging.info("send data to %s", dest)
+            logging.info("UDPServer: send data %s to %s" % (data, dest))
             self._server_sock.sendto(data, dest)
 
     def _on_recv_data(self):
         data, addr = self._server_sock.recvfrom(BUF_SIZE)
         if not data:
-            logging.debug('UDPServer _on_recv_data: data is empty')
+            logging.debug('UDPServer: recved empty data!')
             return
+        logging.info("UDPServer: recved data %s" % data)
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
         if self._msg_handler is not None:
             messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
@@ -76,4 +77,7 @@ class UDPServer(object):
         if sock == self._server_sock:
             if event & eventloop.POLL_ERR:
                 logging.error('UDP server_socket err')
-            self._on_recv_data()
+            try:
+                self._on_recv_data()
+            except Exception as e:
+                utils.print_exception(e)

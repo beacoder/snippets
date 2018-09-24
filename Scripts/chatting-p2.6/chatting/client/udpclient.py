@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 import socket
 import struct
-from chatting import eventloop, messagehandler
+from chatting import utils, eventloop, messagehandler
 
 
 BUF_SIZE = 65536
@@ -47,24 +47,30 @@ class UDPClient(object):
 
     def _on_send_data(self, data, dest):
         if data and dest:
-            logging.info("send data to %s", dest)
+            logging.info("UDPClient: send data %s to %s" % (data, dest))
             self._sock.sendto(data, dest)
 
     def _on_recv_data(self):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if not data:
-            logging.debug('UDPClient _on_recv_data: data is empty')
+            logging.debug('UDPClient: recved empty data!')
             return
+        logging.info("UDPClient: recved data %s" % data)
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
         if self._msg_handler is not None:
             messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
 
     def send_message(self, msg):
         data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
+        logging.info('UDPClient: send_message %s' % data)
+        print(data)
         self._on_send_data(data, (self._server_addr, self._server_port))
 
     def handle_event(self, sock, fd, event):
         if sock == self._sock:
             if event & eventloop.POLL_ERR:
                 logging.error('UDP client_socket err')
-            self._on_recv_data()
+            try:
+                self._on_recv_data()
+            except Exception as e:
+                utils.print_exception(e)

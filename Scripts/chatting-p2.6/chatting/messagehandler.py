@@ -58,13 +58,13 @@ def handle_message(msg_type, msg_body, from_addr, msg_handler):
         elif msg_type == message.HEARTBEAT_RSP:
             msg = message.HeartbeatRsp().from_bytes(msg_body)
             msg_handler.handle_heartbeat_rsp(msg, from_addr)
-        if msg_type == message.LOGIN_REQ:
+        elif msg_type == message.LOGIN_REQ:
             msg = message.LoginReq().from_bytes(msg_body)
             msg_handler.handle_login_req(msg, from_addr)
         elif msg_type == message.LOGIN_RSP:
             msg =  message.LoginRsp().from_bytes(msg_body)
             msg_handler.handle_login_rsp(msg, from_addr)
-        if msg_type == message.LOGOUT_REQ:
+        elif msg_type == message.LOGOUT_REQ:
             msg = message.LogoutReq().from_bytes(msg_body)
             msg_handler.handle_logout_req(msg, from_addr)
         elif msg_type == message.LOGOUT_RSP:

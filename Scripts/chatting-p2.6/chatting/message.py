@@ -55,6 +55,9 @@ class IMessage(object):
     def from_bytes(self, data):
         raise NotImplementedError
 
+    def __repr__(self):
+        raise NotImplementedError
+
 
 class HeartbeatReq(IMessage):
     """Represent a heartbeat request."""
@@ -71,6 +74,9 @@ class HeartbeatReq(IMessage):
     def from_bytes(self, data):
         (self._msg,), _ =  unpack_helper(HeartbeatReq.ENCODE_FORMAT, data)
         return self
+
+    def __repr__(self):
+        return "HeartbeatReq"
 
 
 class HeartbeatRsp(IMessage):
@@ -89,6 +95,9 @@ class HeartbeatRsp(IMessage):
         (self._msg,), _ =  unpack_helper(HeartbeatRsp.ENCODE_FORMAT, data)
         return self
 
+    def __repr__(self):
+        return "HeartbeatRsp"
+
 
 class LoginReq(IMessage):
     """Represent a login request."""
@@ -105,6 +114,9 @@ class LoginReq(IMessage):
     def from_bytes(self, data):
         (self.nick_name,), _ =  unpack_helper(LoginReq.ENCODE_FORMAT, data)
         return self
+
+    def __repr__(self):
+        return "nick-name: %s" % self.nick_name
 
 
 class LoginRsp(IMessage):
@@ -125,6 +137,9 @@ class LoginRsp(IMessage):
         (self.reason,), _ =  unpack_helper("10s", data)
         return self
 
+    def __repr__(self):
+        return "result: %s, reason: %s" % (self.result, self.reason)
+
 
 class LogoutReq(IMessage):
     """Represent a logout request."""
@@ -141,6 +156,9 @@ class LogoutReq(IMessage):
     def from_bytes(self, data):
         (self.nick_name,), _ =  unpack_helper(LogoutReq.ENCODE_FORMAT, data)
         return self
+
+    def __repr__(self):
+        return "nick-name: %s" % self.nick_name
 
 
 class LogoutRsp(IMessage):
@@ -161,6 +179,9 @@ class LogoutRsp(IMessage):
         (self.reason,), _ =  unpack_helper("10s", data)
         return self
 
+    def __repr__(self):
+        return "result: %s, reason: %s" % (self.result, self.reason)
+
 
 class ChatMessage(IMessage):
     """Represent a single chat message."""
@@ -179,6 +200,9 @@ class ChatMessage(IMessage):
         (self.msg_to,), data = unpack_helper("30s", data)
         (self.msg_content,), _ = unpack_helper("1024s", data)
         return self
+
+    def __repr__(self):
+        return "peer: %s, msg: %s" % (self.msg_to, self.msg_content)
 
 
 class BroadcastMessage(IMessage):

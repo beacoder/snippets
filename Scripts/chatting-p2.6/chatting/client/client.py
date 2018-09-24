@@ -29,7 +29,7 @@ from chatting.client import udpclient, chat
 
 
 def main():
-    utils.config_logging("/var/log/chatting_client_%s.log" % os.getpid());
+    utils.config_logging("/var/log/chatting_client.log");
 
     # server_addr = socket.gethostbyname(socket.gethostname())
     server_addr = '127.0.0.1'
