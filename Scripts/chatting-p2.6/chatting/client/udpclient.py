@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 import socket
 import struct
-from chatting import utils, eventloop, messagehandler
+from chatting import eventloop, messagehandler
 
 
 BUF_SIZE = 65536
@@ -70,7 +70,5 @@ class UDPClient(object):
         if sock == self._sock:
             if event & eventloop.POLL_ERR:
                 logging.error('UDP client_socket err')
-            try:
+            else:
                 self._on_recv_data()
-            except Exception as e:
-                utils.print_exception(e)
