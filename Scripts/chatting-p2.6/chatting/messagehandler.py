@@ -77,7 +77,7 @@ def handle_message(msg_type, msg_body, from_addr, msg_handler):
             msg = message.BroadcastMessage().from_bytes(msg_body)
             msg_handler.handle_broadcast_msg(msg, from_addr)
         else:
-            raise ValueError
+            raise ValueError("Invalid message type: %d" % msg_type)
     except Exception as e:
         utils.print_exception(e)
         # sys.exit(1)
