@@ -18,13 +18,10 @@
 from __future__ import absolute_import, division, print_function, \
     with_statement
 
-import sys
-import os
 import logging
-import signal
 import socket
 import struct
-from chatting import message
+from chatting import messagehandler
 
 
 BUF_SIZE = 65536
@@ -33,10 +30,10 @@ BUF_SIZE = 65536
 class UDPClient(object):
     """Transmitting incomming/outgoing messages."""
 
-    def __init__(self, server_addr, server_port, event_loop,
-                 int_msg_queue, out_msg_queue):
+    def __init__(self, server_addr, server_port, event_loop):
         self._server_addr = server_addr
         self._server_port = server_port
+        self._msg_handler = None
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setblocking(False)
         event_loop.add(self._sock,
@@ -44,6 +41,9 @@ class UDPClient(object):
 
     def close(self):
         self._sock.close()
+
+    def set_msg_handler(self, msg_handler):
+        self._msg_handler = msg_handler
 
     def _on_send_data(self, data, dest):
         if data and dest:
@@ -56,8 +56,7 @@ class UDPClient(object):
             return
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
         if self._msg_handler is not None:
-            message.handle_message(msg_type, msg_body, addr,
-                                   msg_handler=self._msg_handler)
+            messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
 
     def send_message(self, msg):
         data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();

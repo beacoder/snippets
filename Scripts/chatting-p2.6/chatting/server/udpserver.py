@@ -18,13 +18,10 @@
 from __future__ import absolute_import, division, print_function, \
     with_statement
 
-import sys
-import os
 import logging
-import signal
 import socket
 import struct
-from chatting import message
+from chatting import messagehandler
 
 
 BUF_SIZE = 65536
@@ -69,7 +66,7 @@ class UDPServer(object):
         print('')
         (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
         if self._msg_handler is not None:
-            message.handle_message(msg_type, msg_body, addr, self._msg_handler)
+            messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
 
     def send_message(self, msg, to_addr):
         data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();

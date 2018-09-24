@@ -25,7 +25,7 @@ import socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
 from chatting import logging, utils, eventloop
-from chatting.server import udpserver, messagehandler, messagedatabase
+from chatting.server import udpserver, messageprocesser, messagedatabase
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
     event_loop = eventloop.EventLoop.default_loop()
     udp_server = udpserver.UDPServer(host, port, event_loop)
     msg_database = messagedatabase.MessageDatabase()
-    msg_handler = messagehandler.MessageHandler(udp_server, msg_database)
+    msg_handler = messageprocesser.MessageProcesser(udp_server, msg_database)
 
     def int_handler(signum, _):
         sys.exit(1)

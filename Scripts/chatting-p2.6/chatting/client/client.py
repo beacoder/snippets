@@ -22,29 +22,26 @@ import sys
 import os
 import signal
 import socket
-from threading import Thread
-from Queue import Queue
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
 from chatting import logging, utils, eventloop
-from chatting.client import udpclient
+from chatting.client import udpclient, chat
 
 
 def main():
     logging.prepare_logger("/var/log/chatting_client.log");
     server_addr = socket.gethostbyname(socket.gethostname())
     server_port = 5566
-    in_msg_queue = Queue()
-    out_msg_queue = Queue()
     event_loop = eventloop.EventLoop.default_loop()
-    udp_client = udpclient.UDPClient(server_addr, server_port, event_loop,
-                                     in_msg_queue, out_msg_queue)
+    udp_client = udpclient.UDPClient(server_addr, server_port, event_loop)
+    chat_client = chat.ChatClient(event_loop, udp_client)
 
     def int_handler(signum, _):
         sys.exit(1)
     signal.signal(signal.SIGINT, int_handler)
 
     try:
+        print("Start your chat, e.g: 'nick: hello !'")
         event_loop.run()
     except Exception as e:
         logging.print_exception(e)

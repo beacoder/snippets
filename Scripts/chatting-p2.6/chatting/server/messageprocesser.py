@@ -1,4 +1,4 @@
-#!/usr/bin/python
+n#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 # Copyright 2018-2018 humingchen
@@ -15,10 +15,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from chatting import eventloop, message
+from __future__ import absolute_import, division, print_function, \
+    with_statement
+
+from chatting import eventloop, messagehandle
 
 
-class MessageHandler(object):
+class MessageProcesser(messagehandle.IMessageHandler):
     """Processing incomming messages."""
 
     def __init__(self, msg_transceiver, msg_database):
