@@ -20,6 +20,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import struct
 import time
+from . import utils
 
 
 __all__ = ['HeartbeatReq', 'HeartbeatRsp', 'LoginReq', 'LoginRsp',
@@ -66,17 +67,18 @@ class HeartbeatReq(IMessage):
     ENCODE_FORMAT = "15s"  # 15s -> "HeartbeatReq"
 
     def __init__(self):
-        self._msg = b"HeartbeatReq"
+        self._msg = "HeartbeatReq"
 
     def to_bytes(self):
-        return struct.pack(HeartbeatReq.ENCODE_FORMAT, self._msg)
+        return struct.pack(HeartbeatReq.ENCODE_FORMAT, utils.to_bytes(self._msg))
 
     def from_bytes(self, data):
-        (self._msg,), _ =  unpack_helper(HeartbeatReq.ENCODE_FORMAT, data)
+        (data,), _ = unpack_helper(HeartbeatReq.ENCODE_FORMAT, data)
+        self._msg = utils.to_str(data)
         return self
 
     def __repr__(self):
-        return "HeartbeatReq"
+        return self._msg
 
 
 class HeartbeatRsp(IMessage):
@@ -86,17 +88,18 @@ class HeartbeatRsp(IMessage):
     ENCODE_FORMAT = "15s"  # 15s -> "HeartbeatRsp"
 
     def __init__(self):
-        self._msg = b"HeartbeatRsp"
+        self._msg = "HeartbeatRsp"
 
     def to_bytes(self):
-        return struct.pack(HeartbeatRsp.ENCODE_FORMAT, self._msg)
+        return struct.pack(HeartbeatRsp.ENCODE_FORMAT, utils.to_bytes(self._msg))
 
     def from_bytes(self, data):
-        (self._msg,), _ =  unpack_helper(HeartbeatRsp.ENCODE_FORMAT, data)
+        (data,), _ = unpack_helper(HeartbeatRsp.ENCODE_FORMAT, data)
+        self._msg = utils.to_str(data)
         return self
 
     def __repr__(self):
-        return "HeartbeatRsp"
+        return self._msg
 
 
 class LoginReq(IMessage):
@@ -109,10 +112,11 @@ class LoginReq(IMessage):
         self.nick_name = nick_name
 
     def to_bytes(self):
-        return struct.pack(LoginReq.ENCODE_FORMAT, self.nick_name)
+        return struct.pack(LoginReq.ENCODE_FORMAT, utils.to_bytes(self.nick_name))
 
     def from_bytes(self, data):
-        (self.nick_name,), _ =  unpack_helper(LoginReq.ENCODE_FORMAT, data)
+        (data,), _ = unpack_helper(LoginReq.ENCODE_FORMAT, data)
+        self.nick_name = utils.to_str(data)
         return self
 
     def __repr__(self):
@@ -130,11 +134,12 @@ class LoginRsp(IMessage):
         self.reason = reason
 
     def to_bytes(self):
-        return struct.pack(LoginRsp.ENCODE_FORMAT, self.result, self.reason)
+        return struct.pack(LoginRsp.ENCODE_FORMAT, utilts.to_bytes(self.result), utilts.to_bytes(self.reason))
 
     def from_bytes(self, data):
-        (self.result,), data =  unpack_helper("?", data)
-        (self.reason,), _ =  unpack_helper("10s", data)
+        (self.result,), data = unpack_helper("?", data)
+        (data,), _ = unpack_helper("10s", data)
+        self.reason = utils.to_str(data)
         return self
 
     def __repr__(self):
@@ -151,10 +156,11 @@ class LogoutReq(IMessage):
         self.nick_name = nick_name
 
     def to_bytes(self):
-        return struct.pack(LogoutReq.ENCODE_FORMAT, self.nick_name)
+        return struct.pack(LogoutReq.ENCODE_FORMAT, utils.to_bytes(self.nick_name))
 
     def from_bytes(self, data):
-        (self.nick_name,), _ =  unpack_helper(LogoutReq.ENCODE_FORMAT, data)
+        (data,), _ = unpack_helper(LogoutReq.ENCODE_FORMAT, data)
+        self.nick_name = utils.to_str(data)
         return self
 
     def __repr__(self):
@@ -172,11 +178,12 @@ class LogoutRsp(IMessage):
         self.reason = reason
 
     def to_bytes(self):
-        return struct.pack(LogoutRsp.ENCODE_FORMAT, self.result, self.reason)
+        return struct.pack(LogoutRsp.ENCODE_FORMAT, utilts.to_bytes(self.result), utilts.to_bytes(self.reason))
 
     def from_bytes(self, data):
-        (self.result,), data =  unpack_helper("?", data)
-        (self.reason,), _ =  unpack_helper("10s", data)
+        (self.result,), data = unpack_helper("?", data)
+        (data,), _ = unpack_helper("10s", data)
+        self.reason = utils.to_str(data)
         return self
 
     def __repr__(self):
@@ -194,11 +201,13 @@ class ChatMessage(IMessage):
         self.msg_content = msg_content
 
     def to_bytes(self):
-        return struct.pack(ChatMessage.ENCODE_FORMAT, self.msg_to, self.msg_content)
+        return struct.pack(ChatMessage.ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
 
     def from_bytes(self, data):
         (self.msg_to,), data = unpack_helper("30s", data)
+        self.msg_to = utils.to_str(self.msg_to)
         (self.msg_content,), _ = unpack_helper("1024s", data)
+        self.msg_content = utils.to_str(self.msg_content)
         return self
 
     def __repr__(self):
@@ -216,4 +225,4 @@ class BroadcastMessage(IMessage):
         self.msg_to = msg_to
 
     def to_bytes(self):
-        return struct.pack(BroadcastMessage.ENCODE_FORMAT, self.msg_from, self.msg_to)
+        return struct.pack(BroadcastMessage.ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))

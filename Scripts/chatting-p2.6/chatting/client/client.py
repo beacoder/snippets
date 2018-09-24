@@ -36,7 +36,11 @@ def main():
     server_port = 5566
     event_loop = eventloop.EventLoop.default_loop()
     udp_client = udpclient.UDPClient(server_addr, server_port, event_loop)
-    nick_name = raw_input("Please input your nick name!\n")
+
+    if hasattr(__builtins__, 'raw_input'):
+        nick_name = raw_input("Please input your nick name!\n")
+    elif hasattr(__builtins__, 'input'):
+        nick_name = input("Please input your nick name!\n")
     chat_client = chat.ChatClient(nick_name, event_loop, udp_client)
 
     def int_handler(signum, _):
