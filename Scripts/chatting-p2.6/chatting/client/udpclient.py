@@ -54,12 +54,12 @@ class UDPClient(object):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if  data and addr:
             logging.debug("UDPClient: recved data %s" % data)
-            (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
+            (msg_type,), msg_body = struct.unpack(">B", data[:1]), data[1:]
             if self._msg_handler is not None:
                 messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
 
     def send_message(self, msg):
-        data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
+        data = struct.pack(">B", msg.MSG_TYPE) + msg.to_bytes();
         self._on_send_data(data, (self._server_addr, self._server_port))
 
     def handle_event(self, sock, fd, event):
