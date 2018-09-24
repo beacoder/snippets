@@ -56,18 +56,16 @@ class UDPServer(object):
 
     def _on_send_data(self, data, dest):
         if data and dest:
-            logging.info("UDPServer: send data %s to %s" % (data, dest))
+            logging.debug("UDPServer: send data %s to %s" % (data, dest))
             self._server_sock.sendto(data, dest)
 
     def _on_recv_data(self):
         data, addr = self._server_sock.recvfrom(BUF_SIZE)
-        if not data:
-            logging.debug('UDPServer: recved empty data!')
-            return
-        logging.info("UDPServer: recved data %s" % data)
-        (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
-        if self._msg_handler is not None:
-            messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
+        if data and addr:
+            logging.debug("UDPServer: recved data %s" % data)
+            (msg_type,), msg_body = struct.unpack(">H", data[:2]), data[2:]
+            if self._msg_handler is not None:
+                messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
 
     def send_message(self, msg, to_addr):
         data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
@@ -77,5 +75,4 @@ class UDPServer(object):
         if sock == self._server_sock:
             if event & eventloop.POLL_ERR:
                 logging.error('UDP server_socket err')
-            else:
-                self._on_recv_data()
+            self._on_recv_data()

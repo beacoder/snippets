@@ -45,7 +45,7 @@ class ChatClient(messagehandler.IMessageHandler):
         msg_from = chat_msg.msg_to
         msg_content = chat_msg.msg_content
         if msg_from and msg_content:
-            print("%s: %s", msg_from, msg_content)
+            print("%s: %s" % (msg_from, msg_content))
 
     def handle_broadcast_msg(self, broadcast_msg, src_addr):
         pass
@@ -57,17 +57,13 @@ class ChatClient(messagehandler.IMessageHandler):
         if msg_to and msg:
             if len(msg) > 1024:
                 raise Exception("Max message length reached: 1024!")
-            self._transceiver.send_message(ChatMessage(msg_to, msg_content))
+            self._transceiver.send_message(message.ChatMessage(msg_to, msg))
 
     def handle_event(self, sock, fd, event):
-        if fd == sys.stdin:
+        if fd == sys.stdin.fileno():  # handle input from sys.stdin
             if event & eventloop.POLL_ERR:
                 logging.error('ChatClient err')
-            try:
-                self._handle_input()
-            except Exception as e:
-                print ("handle_input: %s", e)
-        pass
+            self._handle_input()
 
 
 def test_message_available():

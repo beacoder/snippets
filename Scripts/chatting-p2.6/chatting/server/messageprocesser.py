@@ -32,24 +32,25 @@ class MessageProcesser(messagehandler.IMessageHandler):
         self._transceiver.set_msg_handler(self)
 
     def handle_heartbeat_req(self, heartbeat_req, src_addr):
-        pass
+        logging.debug("received heartbeat req.")
 
     def handle_heartbeat_rsp(self, heartbeat_rsp, src_addr):
-        pass
+        logging.debug("received heartbeat rsp.")
 
     def handle_login_req(self, login_req, src_addr):
-        logging.info("received login req.")
+        logging.debug("received login req.")
         ret = self._db.active_client(login_req.nick_name, src_addr)
         rsp = message.LoginRsp(ret, b"Sucess") if ret else message.LoginRsp(ret, b"Failure")
         self._transceiver.send_message(rsp, src_addr)
 
     def handle_logout_req(self, logout_req, src_addr):
-        logging.info("received logout req.")
+        logging.debug("received logout req.")
         ret = self._db.deactive_client(logout_req.nick_name, src_addr)
         rsp = message.LogoutRsp(ret, b"Sucess") if ret else LogoutRsp(ret, b"Failure")
         self._transceiver.send_message(rsp, src_addr)
 
     def handle_chat_msg(self, chat_msg, src_addr):
+        logging.debug("received chat msg.")
         if self._db.is_client_online(address=src_addr):
             msg_to = chat_msg.msg_to
             msg_content = chat_msg.msg_content
@@ -65,4 +66,4 @@ class MessageProcesser(messagehandler.IMessageHandler):
                 pass
 
     def handle_broadcast_msg(self, broadcast_msg, src_addr):
-        pass
+        logging.debug("received broadcast msg.")
