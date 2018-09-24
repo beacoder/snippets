@@ -29,12 +29,6 @@ verbose = 0
 def prepare_logger(logfile):
     global verbose
 
-    logging.basicConfig(filename=logfile,
-                        level=logging.INFO,
-                        format="%(asctime)s %(levelname)s - %(message)s")
-    logging.getLogger('').handlers = []
-    logging.addLevelName(VERBOSE_LEVEL, 'VERBOSE')
-
     config = {'verbose':0}
     if config['verbose'] >= 2:
         level = VERBOSE_LEVEL
@@ -48,7 +42,8 @@ def prepare_logger(logfile):
         level = logging.INFO
     verbose = config['verbose']
 
-    logging.basicConfig(level=level,
+    logging.basicConfig(filename=logfile,
+                        level=level,
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
     logging.info("log starts here")
