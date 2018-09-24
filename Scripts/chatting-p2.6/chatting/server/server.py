@@ -29,7 +29,7 @@ from chatting.server import udpserver, messageprocesser, messagedatabase
 
 
 def main():
-    logging.prepare_logger("/var/log/chatting_server.log");
+    logging.config_logging("/var/log/chatting_server.log");
     # host = socket.gethostbyname(socket.gethostname()) # the public network interface
     host = 'localhost'
     port = 5566

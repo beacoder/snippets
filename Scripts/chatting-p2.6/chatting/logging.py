@@ -26,7 +26,7 @@ VERBOSE_LEVEL = 5
 verbose = 0
 
 
-def prepare_logger(logfile):
+def config_logging(logfile):
     global verbose
 
     config = {'verbose':0}
