@@ -24,27 +24,29 @@ import signal
 import socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
-from chatting import logging, utils, eventloop
+from chatting import utils, eventloop
 from chatting.client import udpclient, chat
 
 
 def main():
-    logging.config_logging("/var/log/chatting_client.log");
+    utils.config_logging("/var/log/chatting_client.log");
     server_addr = socket.gethostbyname(socket.gethostname())
     server_port = 5566
     event_loop = eventloop.EventLoop.default_loop()
     udp_client = udpclient.UDPClient(server_addr, server_port, event_loop)
-    chat_client = chat.ChatClient(event_loop, udp_client)
+    chat_client = chat.ChatClient("nick", event_loop, udp_client)
 
     def int_handler(signum, _):
         sys.exit(1)
     signal.signal(signal.SIGINT, int_handler)
 
     try:
+        print("My nick name is nick !")
         print("Start your chat, e.g: 'nick: hello !'")
+        chat_client.do_login()
         event_loop.run()
     except Exception as e:
-        logging.print_exception(e)
+        utils.print_exception(e)
         sys.exit(1)
 
 

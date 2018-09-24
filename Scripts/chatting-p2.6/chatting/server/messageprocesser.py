@@ -18,6 +18,7 @@
 from __future__ import absolute_import, division, print_function, \
     with_statement
 
+import logging
 from chatting import eventloop, messagehandler
 
 
@@ -37,20 +38,16 @@ class MessageProcesser(messagehandler.IMessageHandler):
         pass
 
     def handle_login_req(self, login_req, src_addr):
+        logging.info("received login req.")
         ret = self._db.active_client(login_req.nick_name, src_addr)
         rsp = LoginRsp(ret, b"Sucess") if ret else LoginRsp(ret, b"Failure")
         self._transceiver.send_message(rsp, src_addr)
 
-    def handle_login_rsp(self, login_rsp, src_addr):
-        pass
-
     def handle_logout_req(self, logout_req, src_addr):
+        logging.info("received logout req.")
         ret = self._db.deactive_client(logout_req.nick_name, src_addr)
         rsp = LogoutRsp(ret, b"Sucess") if ret else LogoutRsp(ret, b"Failure")
         self._transceiver.send_message(rsp, src_addr)
-
-    def handle_logout_rsp(self, logout_rsp, src_addr):
-        pass
 
     def handle_chat_msg(self, chat_msg, src_addr):
         if self._db.is_client_online(address=src_addr):

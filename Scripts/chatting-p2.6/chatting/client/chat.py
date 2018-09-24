@@ -20,17 +20,26 @@ from __future__ import absolute_import, division, print_function, \
 
 import sys
 import logging
-from chatting import eventloop, messagehandler
+from chatting import eventloop, message, messagehandler
 
 
 class ChatClient(messagehandler.IMessageHandler):
     """Gui for chatting."""
 
-    def __init__(self, event_loop, msg_transceiver):
+    def __init__(self, nick_name, event_loop, msg_transceiver):
+        self._nick_name = nick_name
         event_loop.add(sys.stdin,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
         self._transceiver = msg_transceiver
         self._transceiver.set_msg_handler(self)
+
+    def do_login(self):
+        logging.info("sending login req.")
+        self._transceiver.send_message(LoginReq(self._nick_name))
+
+    def handle_login_rsp(self, login_rsp, src_addr):
+        if login_rsp.result:
+            logging.info("logging success.")
 
     def handle_chat_msg(self, chat_msg, src_addr):
         msg_from = chat_msg.msg_to
@@ -49,11 +58,6 @@ class ChatClient(messagehandler.IMessageHandler):
             if len(msg) > 1024:
                 raise Exception("Max message length reached: 1024!")
             self._transceiver.send_message(ChatMessage(msg_to, msg_content))
-
-    def send_message(self, msg, to_addr):
-        data = struct.pack(">H", msg.MSG_TYPE) + msg.to_bytes();
-        print('Sent message {msg} to {peer}.'.format(msg=data, peer=to_addr))
-        self._out_msg_queue.put(data)
 
     def handle_event(self, sock, fd, event):
         if fd == sys.stdin:

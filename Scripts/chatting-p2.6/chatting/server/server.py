@@ -24,12 +24,12 @@ import signal
 import socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
-from chatting import logging, utils, eventloop
+from chatting import utils, eventloop
 from chatting.server import udpserver, messageprocesser, messagedatabase
 
 
 def main():
-    logging.config_logging("/var/log/chatting_server.log");
+    utils.config_logging("/var/log/chatting_server.log");
     # host = socket.gethostbyname(socket.gethostname()) # the public network interface
     host = 'localhost'
     port = 5566
@@ -45,7 +45,7 @@ def main():
     try:
         event_loop.run()
     except Exception as e:
-        logging.print_exception(e)
+        utils.print_exception(e)
         sys.exit(1)
 
 

@@ -20,7 +20,6 @@ from __future__ import absolute_import, division, print_function, \
 
 import struct
 import time
-from .logging import print_exception
 
 
 __all__ = ['HeartbeatReq', 'HeartbeatRsp', 'LoginReq', 'LoginRsp',
