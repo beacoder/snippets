@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 import socket
 import struct
-from chatting import messagehandler
+from chatting import eventloop, messagehandler
 
 
 BUF_SIZE = 65536

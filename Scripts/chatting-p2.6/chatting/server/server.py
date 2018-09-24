@@ -30,7 +30,8 @@ from chatting.server import udpserver, messageprocesser, messagedatabase
 
 def main():
     logging.prepare_logger("/var/log/chatting_server.log");
-    host = socket.gethostbyname(socket.gethostname()) # the public network interface
+    # host = socket.gethostbyname(socket.gethostname()) # the public network interface
+    host = 'localhost'
     port = 5566
     event_loop = eventloop.EventLoop.default_loop()
     udp_server = udpserver.UDPServer(host, port, event_loop)

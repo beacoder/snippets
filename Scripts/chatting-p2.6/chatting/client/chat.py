@@ -20,10 +20,10 @@ from __future__ import absolute_import, division, print_function, \
 
 import sys
 import logging
-from chatting import eventloop, messagehandle
+from chatting import eventloop, messagehandler
 
 
-class ChatClient(messagehandle.IMessageHandler):
+class ChatClient(messagehandler.IMessageHandler):
     """Gui for chatting."""
 
     def __init__(self, event_loop, msg_transceiver):

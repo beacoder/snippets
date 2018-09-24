@@ -1,4 +1,4 @@
-n#!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 # Copyright 2018-2018 humingchen
@@ -18,10 +18,10 @@ n#!/usr/bin/python
 from __future__ import absolute_import, division, print_function, \
     with_statement
 
-from chatting import eventloop, messagehandle
+from chatting import eventloop, messagehandler
 
 
-class MessageProcesser(messagehandle.IMessageHandler):
+class MessageProcesser(messagehandler.IMessageHandler):
     """Processing incomming messages."""
 
     def __init__(self, msg_transceiver, msg_database):

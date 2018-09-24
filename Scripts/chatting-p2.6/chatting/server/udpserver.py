@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function, \
 import logging
 import socket
 import struct
-from chatting import messagehandler
+from chatting import eventloop, messagehandler
 
 
 BUF_SIZE = 65536
@@ -41,6 +41,7 @@ class UDPServer(object):
                             (self._listen_addr, self._listen_port))
         af, socktype, proto, canonname, sa = addrs[0]
         server_socket = socket.socket(af, socktype, proto)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((self._listen_addr, self._listen_port))
         server_socket.setblocking(False)
         self._server_sock = server_socket
