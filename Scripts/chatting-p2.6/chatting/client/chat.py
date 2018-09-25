@@ -55,9 +55,11 @@ class ChatClient(messagehandler.IMessageHandler):
         raw_msg = sys.stdin.readline()
         msg_to = raw_msg.split(":")[0].strip()
         msg = ":".join(raw_msg.split(":")[1:]).strip()
-        if msg_to and msg:
-            if len(msg) > 1024:
-                raise Exception("Max message length reached: 1024!")
+        if (not msg_to) or (not msg):
+            print("Please specify whom and what message, e.g: 'nick: hello.'")
+        elif len(msg) > 1024:
+            raise Exception("Max message length reached: 1024!")
+        else:
             self._transceiver.send_message(message.ChatMessage(msg_to, msg))
 
     def handle_event(self, sock, fd, event):

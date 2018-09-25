@@ -18,13 +18,15 @@
 from __future__ import absolute_import, division, print_function, \
     with_statement
 
+import sys
 import logging
 import socket
 import struct
-from chatting import eventloop, messagehandler
+from chatting import eventloop, message, messagehandler
 
 
 BUF_SIZE = 65536
+MAX_RETRY_TIMES = 3
 
 
 class UDPClient(object):
@@ -38,12 +40,29 @@ class UDPClient(object):
         self._sock.setblocking(False)
         event_loop.add(self._sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
+        event_loop.add_periodic(self.handle_periodic)
+        self._heartbeatreq_sent = False
+        self._heartbeatrsp_miss_times = 0
 
     def close(self):
         self._sock.close()
 
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
+
+    def _handle_heartbeat_msg(self, msg_type):
+        if msg_type == message.HEARTBEAT_REQ:
+            self.send_message(message.HeartbeatRsp())  # respond right away
+        elif msg_type == message.HEARTBEAT_RSP:
+            if not self._heartbeatreq_sent:  # should not receive rsp if we haven't sent req
+                return
+            if self._heartbeatrsp_miss_times <= MAX_RETRY_TIMES:
+                self._heartbeatreq_sent = False
+                self._heartbeatrsp_miss_times = 0
+            else:
+                logging.debug("UDPClient: too late, you should come early")
+        else:
+            logging.error("UDPClient: unexpected msg recved in _handle_heartbeat_msg")
 
     def _on_send_data(self, data, dest):
         if data and dest:
@@ -55,8 +74,12 @@ class UDPClient(object):
         if  data and addr:
             logging.debug("UDPClient: recved data %s" % data)
             (msg_type,), msg_body = struct.unpack(">B", data[:1]), data[1:]
-            if self._msg_handler is not None:
+            if msg_type in (message.HEARTBEAT_REQ, message.HEARTBEAT_RSP):
+                self._handle_heartbeat_msg(msg_type)
+            elif self._msg_handler is not None:
                 messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
+            else:
+                logging.debug("UDPClient: no msg handler")
 
     def send_message(self, msg):
         data = struct.pack(">B", msg.MSG_TYPE) + msg.to_bytes();
@@ -65,5 +88,17 @@ class UDPClient(object):
     def handle_event(self, sock, fd, event):
         if sock == self._sock:
             if event & eventloop.POLL_ERR:
-                logging.error('UDP client_socket err')
+                logging.error('UDPClient socket error')
             self._on_recv_data()
+
+    def handle_periodic(self):
+        if self._heartbeatreq_sent:
+            if self._heartbeatrsp_miss_times < MAX_RETRY_TIMES:
+                self._heartbeatrsp_miss_times += 1
+                logging.info('UDPClient: heartbeat timeout for %d times', self._heartbeatrsp_miss_times)
+            if self._heartbeatrsp_miss_times == MAX_RETRY_TIMES:
+                print("Server is down!")
+                sys.exit(1)
+        else:  # send heartbeatreq every 10s
+            self.send_message(message.HeartbeatReq())
+            self._heartbeatreq_sent = True
