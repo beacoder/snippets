@@ -36,7 +36,7 @@ def main():
     event_loop = eventloop.EventLoop.default_loop()
     udp_server = udpserver.UDPServer(host, port, event_loop)
     msg_database = messagedatabase.MessageDatabase()
-    msg_handler = messageprocesser.MessageProcesser(udp_server, msg_database)
+    msg_handler = messageprocesser.MessageProcesser(event_loop, udp_server, msg_database)
 
     def int_handler(signum, _):
         sys.exit(1)

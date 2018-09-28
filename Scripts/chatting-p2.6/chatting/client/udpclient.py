@@ -52,9 +52,11 @@ class UDPClient(object):
 
     def _handle_heartbeat_msg(self, msg_type):
         if msg_type == message.HEARTBEAT_REQ:
-            self.send_message(message.HeartbeatRsp())  # respond right away
+            # respond right away
+            self.send_message(message.HeartbeatRsp())
         elif msg_type == message.HEARTBEAT_RSP:
-            if not self._heartbeatreq_sent:  # should not receive rsp if we haven't sent req
+            if not self._heartbeatreq_sent:
+                logging.error("UDPClient: unexpected msg recved in _handle_heartbeat_msg")
                 return
             if self._heartbeatrsp_miss_times <= MAX_RETRY_TIMES:
                 self._heartbeatreq_sent = False
@@ -62,7 +64,7 @@ class UDPClient(object):
             else:
                 logging.debug("UDPClient: too late, you should come early")
         else:
-            logging.error("UDPClient: unexpected msg recved in _handle_heartbeat_msg")
+            pass
 
     def _on_send_data(self, data, dest):
         if data and dest:
@@ -99,6 +101,7 @@ class UDPClient(object):
             if self._heartbeatrsp_miss_times == MAX_RETRY_TIMES:
                 print("Server is down!")
                 sys.exit(1)
-        else:  # send heartbeatreq every 10s
+        else:
+            # send heartbeatreq every 10s
             self.send_message(message.HeartbeatReq())
             self._heartbeatreq_sent = True

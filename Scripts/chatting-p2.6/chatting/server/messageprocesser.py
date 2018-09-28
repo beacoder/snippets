@@ -22,20 +22,34 @@ import logging
 from chatting import eventloop, message, messagehandler
 
 
+MAX_RETRY_TIMES = 3
+
+
 class MessageProcesser(messagehandler.IMessageHandler):
     """Processing incomming messages."""
 
-    def __init__(self, msg_transceiver, msg_database):
+    def __init__(self, event_loop, msg_transceiver, msg_database):
         self._transceiver = msg_transceiver
         self._db = msg_database
         self._event_loop = eventloop.EventLoop.default_loop()
         self._transceiver.set_msg_handler(self)
+        event_loop.add_periodic(self.handle_periodic)
+        self._heartbeatreq_sent = False
+        self._heartbeatrsp_miss_times = 0
 
     def handle_heartbeat_req(self, heartbeat_req, src_addr):
-        logging.debug("received heartbeat req.")
+        # respond right away
+        self._transceiver.send_message(message.HeartbeatRsp(), src_addr)
 
     def handle_heartbeat_rsp(self, heartbeat_rsp, src_addr):
-        logging.debug("received heartbeat rsp.")
+        if not self._heartbeatreq_sent:
+            logging.error("MessageProcesser: unexpected msg recved in _handle_heartbeat_msg")
+            return
+        if self._heartbeatrsp_miss_times <= MAX_RETRY_TIMES:
+            self._heartbeatreq_sent = False
+            self._heartbeatrsp_miss_times = 0
+        else:
+            logging.debug("MessageProcesser: too late, you should come early")
 
     def handle_login_req(self, login_req, src_addr):
         logging.debug("received login req.")
@@ -67,3 +81,15 @@ class MessageProcesser(messagehandler.IMessageHandler):
 
     def handle_broadcast_msg(self, broadcast_msg, src_addr):
         logging.debug("received broadcast msg.")
+
+    def handle_periodic(self):
+        if self._heartbeatreq_sent:
+            if self._heartbeatrsp_miss_times < MAX_RETRY_TIMES:
+                self._heartbeatrsp_miss_times += 1
+            if self._heartbeatrsp_miss_times == MAX_RETRY_TIMES:
+                # client is down, print
+                print("Client is down!")
+        else:
+            # send heartbeatreq every 10s
+            # self.send_message(message.HeartbeatReq())
+            self._heartbeatreq_sent = True
