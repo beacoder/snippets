@@ -25,7 +25,7 @@ from chatting import eventloop, message, messagehandler
 
 
 BUF_SIZE = 65536
-MAX_RETRY_TIMES = 3
+
 
 class UDPServer(object):
     """Transmitting incomming/outgoing messages."""
