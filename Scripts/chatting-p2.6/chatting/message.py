@@ -47,8 +47,8 @@ def unpack_helper(fmt, data):
 class IMessage(object):
     """Message interface."""
 
-    MSG_TYPE = INVALID_MSG
-    ENCODE_FORMAT = None  # use fixed-length for now, change to TLV if needed.
+    MSG_TYPE = INVALID_MSG  # in C++, use interface function instead, e.g: "virtual int getMessageType() = 0;"
+    ENCODE_FORMAT = None    # use fixed-length for now, change to TLV if needed.
 
     def to_bytes(self):
         raise NotImplementedError
