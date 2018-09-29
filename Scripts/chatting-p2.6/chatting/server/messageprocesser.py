@@ -20,6 +20,7 @@ from __future__ import absolute_import, division, print_function, \
 
 import logging
 from chatting import eventloop, message, messagehandler
+from collections import defaultdict
 
 
 MAX_RETRY_TIMES = 3
@@ -34,22 +35,27 @@ class MessageProcesser(messagehandler.IMessageHandler):
         self._event_loop = eventloop.EventLoop.default_loop()
         self._transceiver.set_msg_handler(self)
         event_loop.add_periodic(self.handle_periodic)
-        self._heartbeatreq_sent = False
-        self._heartbeatrsp_miss_times = 0
+        self._heartbeat_map = defaultdict(lambda: [False, 0])  # key: nick-name value: [heartbeatreq_sent, heartbeatrsp_miss_times]
 
     def handle_heartbeat_req(self, heartbeat_req, src_addr):
         # respond right away
         self._transceiver.send_message(message.HeartbeatRsp(), src_addr)
 
     def handle_heartbeat_rsp(self, heartbeat_rsp, src_addr):
-        if not self._heartbeatreq_sent:
-            logging.error("MessageProcesser: unexpected msg recved in _handle_heartbeat_msg")
-            return
-        if self._heartbeatrsp_miss_times <= MAX_RETRY_TIMES:
-            self._heartbeatreq_sent = False
-            self._heartbeatrsp_miss_times = 0
+        msg_from = self._db.get_client_name(src_addr)
+        if msg_from is None:
+            logging.warning("MessageProcesser: unregistered ip-address")
         else:
-            logging.debug("MessageProcesser: too late, you should come early")
+            heartbeatreq_sent, heartbeatrsp_miss_times = self._heartbeat_map[msg_from]
+            if not heartbeatreq_sent:
+                logging.warning("MessageProcesser: unexpected heartbeat_rsp recved")
+            else:
+                if heartbeatrsp_miss_times <= MAX_RETRY_TIMES:
+                    heartbeatreq_sent, heartbeatrsp_miss_times = [False, 0]
+                    self._heartbeat_map[msg_from] = [heartbeatreq_sent,
+                                                     heartbeatrsp_miss_times]
+                else:
+                    logging.warning("MessageProcesser: too late, you should come early")
 
     def handle_login_req(self, login_req, src_addr):
         logging.debug("received login req.")
@@ -83,13 +89,23 @@ class MessageProcesser(messagehandler.IMessageHandler):
         logging.debug("received broadcast msg.")
 
     def handle_periodic(self):
-        if self._heartbeatreq_sent:
-            if self._heartbeatrsp_miss_times < MAX_RETRY_TIMES:
-                self._heartbeatrsp_miss_times += 1
-            if self._heartbeatrsp_miss_times == MAX_RETRY_TIMES:
-                # client is down, print
-                print("Client is down!")
-        else:
-            # send heartbeatreq every 10s
-            # self.send_message(message.HeartbeatReq())
-            self._heartbeatreq_sent = True
+        lost_clients = set()
+        for client, address in self._db.get_online_clients().items():
+            heartbeatreq_sent, heartbeatrsp_miss_times = self._heartbeat_map[client]
+            if heartbeatreq_sent:
+                if heartbeatrsp_miss_times < MAX_RETRY_TIMES:
+                    self._heartbeat_map[client][1] += 1
+                    logging.info('MessageProcesser: heartbeat timeout for %d times',
+                                 self._heartbeat_map[client][1])
+                if heartbeatrsp_miss_times == MAX_RETRY_TIMES:
+                    logging.info('MessageProcesser: client is down')
+                    lost_clients.add(client)
+            else:
+                # for each client, send heartbeatreq every 10s
+                self._transceiver.send_message(message.HeartbeatReq(), address)
+                heartbeatreq_sent, heartbeatrsp_miss_times = [True, 0]
+                self._heartbeat_map[client] = [heartbeatreq_sent,
+                                               heartbeatrsp_miss_times]
+         # deactive offline clients
+        for client in lost_clients:
+            self._db.deactive_client(client)

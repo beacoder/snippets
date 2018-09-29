@@ -50,7 +50,7 @@ class MessageDatabase(object):
         return False
 
     def get_online_clients(self):
-        return self._online_clients.keys
+        return self._online_clients
 
     def is_client_online(self, name=None, address=None):
         if name is not None:

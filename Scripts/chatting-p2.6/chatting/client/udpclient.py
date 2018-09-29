@@ -74,7 +74,7 @@ class UDPClient(object):
     def _on_recv_data(self):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if  data and addr:
-            logging.debug("UDPClient: recved data %s" % data)
+            logging.debug("UDPClient: recved data %s from %s" % (data, addr))
             (msg_type,), msg_body = struct.unpack(">B", data[:1]), data[1:]
             if msg_type in (message.HEARTBEAT_REQ, message.HEARTBEAT_RSP):
                 self._handle_heartbeat_msg(msg_type)

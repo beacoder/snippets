@@ -62,7 +62,7 @@ class UDPServer(object):
     def _on_recv_data(self):
         data, addr = self._server_sock.recvfrom(BUF_SIZE)
         if data and addr:
-            logging.debug("UDPServer: recved data %s" % data)
+            logging.debug("UDPServer: recved data %s from %s" % (data, addr))
             (msg_type,), msg_body = struct.unpack(">B", data[:1]), data[1:]
             if self._msg_handler is not None:
                 messagehandler.handle_message(msg_type, msg_body, addr,
