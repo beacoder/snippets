@@ -42,6 +42,7 @@ class MessageDatabase(object):
 
     def deactive_client(self, name):
         if name in self._online_clients:
+            address = self._online_clients[name]
             del self._online_clients[name]
             del self._online_clients_2[address]
             if not name in self._offline_clients:
