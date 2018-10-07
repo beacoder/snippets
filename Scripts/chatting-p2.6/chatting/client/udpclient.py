@@ -96,9 +96,11 @@ class UDPClient(object):
     def handle_periodic(self):
         if self._heartbeatreq_sent:
             if self._heartbeatrsp_miss_times < MAX_RETRY_TIMES:
+                # try again
+                self.send_message(message.HeartbeatReq())
                 self._heartbeatrsp_miss_times += 1
                 logging.info('UDPClient: heartbeat timeout for %d times', self._heartbeatrsp_miss_times)
-            if self._heartbeatrsp_miss_times == MAX_RETRY_TIMES:
+            else:
                 print("Server is down!")
                 sys.exit(1)
         else:

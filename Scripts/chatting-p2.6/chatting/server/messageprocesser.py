@@ -94,10 +94,12 @@ class MessageProcesser(messagehandler.IMessageHandler):
             heartbeatreq_sent, heartbeatrsp_miss_times = self._heartbeat_map[client]
             if heartbeatreq_sent:
                 if heartbeatrsp_miss_times < MAX_RETRY_TIMES:
+                    # try again
+                    self._transceiver.send_message(message.HeartbeatReq(), address)
                     self._heartbeat_map[client][1] += 1
                     logging.info('MessageProcesser: heartbeat timeout for %d times',
                                  self._heartbeat_map[client][1])
-                if heartbeatrsp_miss_times == MAX_RETRY_TIMES:
+                else:
                     logging.info('MessageProcesser: client is down')
                     lost_clients.add(client)
             else:
