@@ -84,7 +84,7 @@ class UDPClient(object):
                 logging.debug("UDPClient: no msg handler")
 
     def send_message(self, msg):
-        data = struct.pack(">B", msg.MSG_TYPE) + msg.to_bytes();
+        data = struct.pack(">B", msg.message_type()) + msg.to_bytes();
         self._on_send_data(data, (self._server_addr, self._server_port))
 
     def handle_event(self, sock, fd, event):

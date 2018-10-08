@@ -47,8 +47,13 @@ def unpack_helper(fmt, data):
 class IMessage(object):
     """Message interface."""
 
-    MSG_TYPE = INVALID_MSG  # in C++, use interface function instead, e.g: "virtual int getMessageType() = 0;"
-    # __ENCODE_FORMAT = None  # use fixed-length for now, change to TLV if needed.
+    # __MSG_TYPE = INVALID_MSG  # in C++, use interface function instead, e.g: "virtual int getMessageType() = 0;"
+    # __ENCODE_FORMAT = None    # use fixed-length for now, change to TLV if needed.
+
+    def message_type(self):
+        """Message type."""
+
+        raise NotImplementedError
 
     def to_bytes(self):
         """Serialize to bytes."""
@@ -72,11 +77,14 @@ class IMessage(object):
 class HeartbeatReq(IMessage):
     """Represent a heartbeat request."""
 
-    MSG_TYPE = HEARTBEAT_REQ
+    __MSG_TYPE = HEARTBEAT_REQ
     __ENCODE_FORMAT = "15s"  # 15s -> "HeartbeatReq"
 
     def __init__(self):
         self._msg = "HeartbeatReq"
+
+    def message_type(self):
+        return HeartbeatReq.__MSG_TYPE
 
     def to_bytes(self):
         return struct.pack(HeartbeatReq.__ENCODE_FORMAT, utils.to_bytes(self._msg))
@@ -93,11 +101,14 @@ class HeartbeatReq(IMessage):
 class HeartbeatRsp(IMessage):
     """Represent a heartbeat response."""
 
-    MSG_TYPE = HEARTBEAT_RSP
+    __MSG_TYPE = HEARTBEAT_RSP
     __ENCODE_FORMAT = "15s"  # 15s -> "HeartbeatRsp"
 
     def __init__(self):
         self._msg = "HeartbeatRsp"
+
+    def message_type(self):
+        return HeartbeatRsp.__MSG_TYPE
 
     def to_bytes(self):
         return struct.pack(HeartbeatRsp.__ENCODE_FORMAT, utils.to_bytes(self._msg))
@@ -114,11 +125,14 @@ class HeartbeatRsp(IMessage):
 class LoginReq(IMessage):
     """Represent a login request."""
 
-    MSG_TYPE = LOGIN_REQ
+    __MSG_TYPE = LOGIN_REQ
     __ENCODE_FORMAT = "30s"  # nick-name
 
     def __init__(self, nick_name=None):
         self.nick_name = nick_name
+
+    def message_type(self):
+        return LoginReq.__MSG_TYPE
 
     def to_bytes(self):
         return struct.pack(LoginReq.__ENCODE_FORMAT, utils.to_bytes(self.nick_name))
@@ -135,12 +149,15 @@ class LoginReq(IMessage):
 class LoginRsp(IMessage):
     """Represent a login response."""
 
-    MSG_TYPE = LOGIN_RSP
+    __MSG_TYPE = LOGIN_RSP
     __ENCODE_FORMAT = "?10s"  # ? -> LoginResult, 10s -> Reason
 
     def __init__(self, result=None, reason=None):
         self.result = result
         self.reason = reason
+
+    def message_type(self):
+        return LoginRsp.__MSG_TYPE
 
     def to_bytes(self):
         return struct.pack(LoginRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
@@ -158,11 +175,14 @@ class LoginRsp(IMessage):
 class LogoutReq(IMessage):
     """Represent a logout request."""
 
-    MSG_TYPE = LOGOUT_REQ
+    __MSG_TYPE = LOGOUT_REQ
     __ENCODE_FORMAT = "30s"  # nick-name
 
     def __init__(self, nick_name=None):
         self.nick_name = nick_name
+
+    def message_type(self):
+        return LogoutReq.__MSG_TYPE
 
     def to_bytes(self):
         return struct.pack(LogoutReq.__ENCODE_FORMAT, utils.to_bytes(self.nick_name))
@@ -179,12 +199,15 @@ class LogoutReq(IMessage):
 class LogoutRsp(IMessage):
     """Represent a logout response."""
 
-    MSG_TYPE = LOGOUT_RSP
+    __MSG_TYPE = LOGOUT_RSP
     __ENCODE_FORMAT = "?10s"  # ? -> LogoutResult, 10s -> Reason
 
     def __init__(self, result=None, reason=None):
         self.result = result
         self.reason = reason
+
+    def message_type(self):
+        return LogoutRsp.__MSG_TYPE
 
     def to_bytes(self):
         return struct.pack(LogoutRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
@@ -202,12 +225,15 @@ class LogoutRsp(IMessage):
 class ChatMessage(IMessage):
     """Represent a single chat message."""
 
-    MSG_TYPE = CHAT_MSG
+    __MSG_TYPE = CHAT_MSG
     __ENCODE_FORMAT = "30s1024s"  # 30s -> receiver's nick-name, 1024s -> chat-msg
 
     def __init__(self, msg_to=None, msg_content=None):
         self.msg_to = msg_to
         self.msg_content = msg_content
+
+    def message_type(self):
+        return ChatMessage.__MSG_TYPE
 
     def to_bytes(self):
         return struct.pack(ChatMessage.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
@@ -226,7 +252,7 @@ class ChatMessage(IMessage):
 class BroadcastMessage(IMessage):
     """Represent a broadcast chat message."""
 
-    MSG_TYPE = BROADCAST_MSG
+    __MSG_TYPE = BROADCAST_MSG
     __ENCODE_FORMAT = "II"  # TODO: elaborate this later
 
     def __init__(self, msg_from, msg_to):

@@ -71,7 +71,7 @@ class UDPServer(object):
                 logging.debug("UDPServer: no msg handler")
 
     def send_message(self, msg, to_addr):
-        data = struct.pack(">B", msg.MSG_TYPE) + msg.to_bytes();
+        data = struct.pack(">B", msg.message_type()) + msg.to_bytes();
         self._on_send_data(data, to_addr)
 
     def handle_event(self, sock, fd, event):
