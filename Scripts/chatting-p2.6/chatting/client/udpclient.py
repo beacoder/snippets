@@ -75,7 +75,7 @@ class UDPClient(object):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if  data and addr:
             logging.debug("UDPClient: recved data %s from %s" % (data, addr))
-            (msg_type,), msg_body = struct.unpack(">B", data[:1]), data[1:]
+            (msg_type, sequence_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
             if msg_type in (message.HEARTBEAT_REQ, message.HEARTBEAT_RSP):
                 self._handle_heartbeat_msg(msg_type)
             elif self._msg_handler is not None:
@@ -84,7 +84,7 @@ class UDPClient(object):
                 logging.debug("UDPClient: no msg handler")
 
     def send_message(self, msg):
-        data = struct.pack(">B", msg.message_type()) + msg.to_bytes();
+        data = struct.pack(">BI", msg.message_type(), msg.sequence_number()) + msg.to_bytes();
         self._on_send_data(data, (self._server_addr, self._server_port))
 
     def handle_event(self, sock, fd, event):
