@@ -41,8 +41,8 @@ class UDPClient(object):
         event_loop.add(self._sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
         event_loop.add_periodic(self.handle_periodic)
-        self._heartbeatreq_sent = False
-        self._heartbeatrsp_miss_times = 0
+        self._retransmission_map = {}  # key: seq_num value: retry-times
+        self._msg_map = {}  # key: seq_num, value: msg
 
     def close(self):
         self._sock.close()
@@ -50,42 +50,32 @@ class UDPClient(object):
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def _handle_heartbeat_msg(self, msg_type):
-        if msg_type == message.HEARTBEAT_REQ:
-            # respond right away
-            self.send_message(message.HeartbeatRsp())
-        elif msg_type == message.HEARTBEAT_RSP:
-            if not self._heartbeatreq_sent:
-                logging.error("UDPClient: unexpected msg recved in _handle_heartbeat_msg")
-                return
-            if self._heartbeatrsp_miss_times <= MAX_RETRY_TIMES:
-                self._heartbeatreq_sent = False
-                self._heartbeatrsp_miss_times = 0
+    def _on_recv_data(self):
+        data, addr = self._sock.recvfrom(BUF_SIZE)
+        if data and addr:
+            logging.debug("UDPClient: recved data %s from %s" % (data, addr))
+            (msg_type, seq_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
+            if msg_type == message.HEARTBEAT_REQ:
+                self.send_message(message.HeartbeatRsp(), False)
+            elif seq_num in self._msg_map:  # cancel retransmission since Rsp is recved
+                del self._msg_map[seq_num]
+                del self._retransmission_map[seq_num]
+                if self._msg_handler is not None:
+                    messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
+                else:
+                    logging.debug("UDPClient: no msg handler")
             else:
-                logging.debug("UDPClient: too late, you should come early")
-        else:
-            pass
+                logging.warning("UDPClient: unexpected msg recved")
 
-    def _on_send_data(self, data, dest):
+    def send_message(self, msg, retransmission=True):
+        if retransmission:
+            self._msg_map[msg.sequence_number()] = msg
+            self._retransmission_map[msg.sequence_number()] = 0
+        data = struct.pack(">BI", msg.message_type(), msg.sequence_number()) + msg.to_bytes();
+        dest = (self._server_addr, self._server_port)
         if data and dest:
             logging.debug("UDPClient: send data %s to %s" % (data, dest))
             self._sock.sendto(data, dest)
-
-    def _on_recv_data(self):
-        data, addr = self._sock.recvfrom(BUF_SIZE)
-        if  data and addr:
-            logging.debug("UDPClient: recved data %s from %s" % (data, addr))
-            (msg_type, sequence_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
-            if msg_type in (message.HEARTBEAT_REQ, message.HEARTBEAT_RSP):
-                self._handle_heartbeat_msg(msg_type)
-            elif self._msg_handler is not None:
-                messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
-            else:
-                logging.debug("UDPClient: no msg handler")
-
-    def send_message(self, msg):
-        data = struct.pack(">BI", msg.message_type(), msg.sequence_number()) + msg.to_bytes();
-        self._on_send_data(data, (self._server_addr, self._server_port))
 
     def handle_event(self, sock, fd, event):
         if sock == self._sock:
@@ -94,16 +84,14 @@ class UDPClient(object):
             self._on_recv_data()
 
     def handle_periodic(self):
-        if self._heartbeatreq_sent:
-            if self._heartbeatrsp_miss_times < MAX_RETRY_TIMES:
-                # try again
-                self.send_message(message.HeartbeatReq())
-                self._heartbeatrsp_miss_times += 1
-                logging.info('UDPClient: heartbeat timeout for %d times', self._heartbeatrsp_miss_times)
+        # message retransmission
+        for seq_num, msg in self._msg_map.iteritems():
+            if self._retransmission_map[seq_num] < MAX_RETRY_TIMES:
+                self.send_message(msg)
+                self._retransmission_map[seq_num] += 1
+                logging.info('UDPClient: msg %s timeout for %d times' % (msg, self._retransmission_map[seq_num]))
             else:
-                print("Server is down!")
-                sys.exit(1)
-        else:
-            # send heartbeatreq every 10s
-            self.send_message(message.HeartbeatReq())
-            self._heartbeatreq_sent = True
+                logging.warning('UDPClient: failed to send msg %s for %d times' % (msg, self._retransmission_map[seq_num]))
+                if msg.message_type() == message.HEARTBEAT_REQ:
+                    print("Server is down!")
+                    sys.exit(1)

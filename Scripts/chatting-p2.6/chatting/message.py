@@ -40,7 +40,7 @@ BROADCAST_MSG = 8  # broadcast chat message
 
 __sequence_number = 0  # starting sequence_number
 
-def gen_sequence_num():
+def gen_seq_num():
     global __sequence_number
     __sequence_number += 1
     return __sequence_number
@@ -91,13 +91,13 @@ class HeartbeatReq(IMessage):
 
     def __init__(self):
         self._msg = "HeartbeatReq"
-        self._sequence_num = gen_sequence_num()
+        self._seq_num = gen_seq_num()
 
     def message_type(self):
         return HeartbeatReq.__MSG_TYPE
 
     def sequence_number(self):
-        return self._sequence_num
+        return self._seq_num
 
     def to_bytes(self):
         return struct.pack(HeartbeatReq.__ENCODE_FORMAT, utils.to_bytes(self._msg))
@@ -117,15 +117,15 @@ class HeartbeatRsp(IMessage):
     __MSG_TYPE = HEARTBEAT_RSP
     __ENCODE_FORMAT = "15s"  # 15s -> "HeartbeatRsp"
 
-    def __init__(self, sequence_num=None):
+    def __init__(self, seq_num=None):
         self._msg = "HeartbeatRsp"
-        self._sequence_num = sequence_num
+        self._seq_num = seq_num
 
     def message_type(self):
         return HeartbeatRsp.__MSG_TYPE
 
     def sequence_number(self):
-        return self._sequence_num
+        return self._seq_num
 
     def to_bytes(self):
         return struct.pack(HeartbeatRsp.__ENCODE_FORMAT, utils.to_bytes(self._msg))
@@ -147,13 +147,13 @@ class LoginReq(IMessage):
 
     def __init__(self, nick_name=None):
         self.nick_name = nick_name
-        self._sequence_num = gen_sequence_num()
+        self._seq_num = gen_seq_num()
 
     def message_type(self):
         return LoginReq.__MSG_TYPE
 
     def sequence_number(self):
-        return self._sequence_num
+        return self._seq_num
 
     def to_bytes(self):
         return struct.pack(LoginReq.__ENCODE_FORMAT, utils.to_bytes(self.nick_name))
@@ -173,8 +173,8 @@ class LoginRsp(IMessage):
     __MSG_TYPE = LOGIN_RSP
     __ENCODE_FORMAT = "?10s"  # ? -> LoginResult, 10s -> Reason
 
-    def __init__(self, sequence_num=None, result=None, reason=None):
-        self._sequence_num = sequence_num
+    def __init__(self, seq_num=None, result=None, reason=None):
+        self._seq_num = seq_num
         self.result = result
         self.reason = reason
 
@@ -182,7 +182,7 @@ class LoginRsp(IMessage):
         return LoginRsp.__MSG_TYPE
 
     def sequence_number(self):
-        return self._sequence_num
+        return self._seq_num
 
     def to_bytes(self):
         return struct.pack(LoginRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
@@ -205,13 +205,13 @@ class LogoutReq(IMessage):
 
     def __init__(self, nick_name=None):
         self.nick_name = nick_name
-        self._sequence_num = gen_sequence_num()
+        self._seq_num = gen_seq_num()
 
     def message_type(self):
         return LogoutReq.__MSG_TYPE
 
     def sequence_number(self):
-        return self._sequence_num
+        return self._seq_num
 
     def to_bytes(self):
         return struct.pack(LogoutReq.__ENCODE_FORMAT, utils.to_bytes(self.nick_name))
@@ -231,8 +231,8 @@ class LogoutRsp(IMessage):
     __MSG_TYPE = LOGOUT_RSP
     __ENCODE_FORMAT = "?10s"  # ? -> LogoutResult, 10s -> Reason
 
-    def __init__(self, sequence_num=None, result=None, reason=None):
-        self._sequence_num = sequence_num
+    def __init__(self, seq_num=None, result=None, reason=None):
+        self._seq_num = seq_num
         self.result = result
         self.reason = reason
 
@@ -240,7 +240,7 @@ class LogoutRsp(IMessage):
         return LogoutRsp.__MSG_TYPE
 
     def sequence_number(self):
-        return self._sequence_num
+        return self._seq_num
 
     def to_bytes(self):
         return struct.pack(LogoutRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
@@ -264,13 +264,13 @@ class ChatMessage(IMessage):
     def __init__(self, msg_to=None, msg_content=None):
         self.msg_to = msg_to
         self.msg_content = msg_content
-        self._sequence_num = gen_sequence_num()
+        self._seq_num = gen_seq_num()
 
     def message_type(self):
         return ChatMessage.__MSG_TYPE
 
     def sequence_number(self):
-        return self._sequence_num
+        return self._seq_num
 
     def to_bytes(self):
         return struct.pack(ChatMessage.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
