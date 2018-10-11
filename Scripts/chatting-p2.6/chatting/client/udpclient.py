@@ -41,7 +41,7 @@ class UDPClient(object):
         event_loop.add(self._sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
         event_loop.add_periodic(self.handle_periodic)
-        self._retransmission_map = {}  # key: seq_num value: retry-times
+        self._retransmission_map = {}  # key: seq_num, value: retry-times
         self._msg_map = {}  # key: seq_num, value: msg
 
     def close(self):
@@ -60,12 +60,11 @@ class UDPClient(object):
             elif seq_num in self._msg_map:  # cancel retransmission since Rsp is recved
                 del self._msg_map[seq_num]
                 del self._retransmission_map[seq_num]
-                if self._msg_handler is not None:
-                    messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
-                else:
-                    logging.debug("UDPClient: no msg handler")
+            # TODO: only retransmit Reqs
+            if self._msg_handler is not None:
+                messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
             else:
-                logging.warning("UDPClient: unexpected msg recved")
+                logging.debug("UDPClient: no msg handler")
 
     def send_message(self, msg, retransmission=True):
         if retransmission:

@@ -47,6 +47,8 @@ class UDPServer(object):
         self._server_sock = server_socket
         event_loop.add(self._server_sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
+        self._retransmission_map = {}  # key: (address, seq_num), value: retry-times
+        self._msg_map = {}  # key: key: (address, seq_num), value: msg
 
     def close(self):
         self._server_sock.close()
@@ -54,25 +56,27 @@ class UDPServer(object):
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def _on_send_data(self, data, dest):
-        if data and dest:
-            logging.debug("UDPServer: send data %s to %s" % (data, dest))
-            self._server_sock.sendto(data, dest)
-
     def _on_recv_data(self):
         data, addr = self._server_sock.recvfrom(BUF_SIZE)
         if data and addr:
             logging.debug("UDPServer: recved data %s from %s" % (data, addr))
-            (msg_type, sequence_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
+            (msg_type, seq_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
+            # TODO: only retransmit Reqs
             if self._msg_handler is not None:
                 messagehandler.handle_message(msg_type, msg_body, addr,
                                               self._msg_handler)
             else:
                 logging.debug("UDPServer: no msg handler")
 
-    def send_message(self, msg, to_addr):
+    def send_message(self, msg, src_addr, dest_addr, retransmission=True):
+        if retransmission:
+            map_key = (src_addr, msg.sequence_number())
+            self._msg_map[map_key] = msg
+            self._retransmission_map[map_key] = 0
         data = struct.pack(">BI", msg.message_type(), msg.sequence_number()) + msg.to_bytes();
-        self._on_send_data(data, to_addr)
+        if data and dest_addr:
+            logging.debug("UDPServer: send data %s to %s" % (data, dest))
+            self._server_sock.sendto(data, dest_addr)
 
     def handle_event(self, sock, fd, event):
         if sock == self._server_sock:
