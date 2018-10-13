@@ -48,9 +48,6 @@ class ChatClient(messagehandler.IMessageHandler):
         if msg_from and msg_content:
             print("%s: %s" % (msg_from, msg_content))
 
-    def handle_broadcast_msg(self, broadcast_msg, src_addr):
-        logging.debug("received broadcast msg.")
-
     def _handle_input(self):
         raw_msg = sys.stdin.readline()
         msg_to = raw_msg.split(":")[0].strip()

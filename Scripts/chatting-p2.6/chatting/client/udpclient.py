@@ -51,26 +51,31 @@ class UDPClient(object):
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def _handle_message(message, from_addr):
+    def _handle_response(message, from_addr):
+        msg_handler = self._msg_handler
+        msg_type = message.message_type()
+        if msg_handler:
+            if msg_type == message.HEARTBEAT_RSP:
+                self._heartbeatreq_sent = False
+            elif msg_type == message.LOGIN_RSP:
+                msg_handler.handle_login_rsp(message, from_addr)
+            elif msg_type == message.LOGOUT_RSP:
+                msg_handler.handle_logout_rsp(message, from_addr)
+            else:
+                raise ValueError("Invalid message type: %d" % msg_type)
+
+    def _handle_request(message, from_addr):
         msg_handler = self._msg_handler
         msg_type = message.message_type()
         if msg_handler:
             if msg_type == message.HEARTBEAT_REQ:
-                msg_handler.handle_heartbeat_req(message, from_addr)
-            elif msg_type == message.HEARTBEAT_RSP:
-                msg_handler.handle_heartbeat_rsp(message, from_addr)
+                self.send_message(message.HeartbeatRsp(), from_addr)
             elif msg_type == message.LOGIN_REQ:
                 msg_handler.handle_login_req(message, from_addr)
-            elif msg_type == message.LOGIN_RSP:
-                msg_handler.handle_login_rsp(message, from_addr)
             elif msg_type == message.LOGOUT_REQ:
                 msg_handler.handle_logout_req(message, from_addr)
-            elif msg_type == message.LOGOUT_RSP:
-                msg_handler.handle_logout_rsp(message, from_addr)
             elif msg_type == message.CHAT_MSG:
                 msg_handler.handle_chat_msg(message, from_addr)
-            elif msg_type == message.BROADCAST_MSG:
-                msg_handler.handle_broadcast_msg(message, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
@@ -80,21 +85,18 @@ class UDPClient(object):
             logging.debug("UDPClient: recved data %s from %s" % (data, addr))
             message = unsearialize_message(data)
             msg_type, seq_num = message.message_type(), message.sequence_number()
-            if msg_type == message.HEARTBEAT_REQ:  # handle incoming heartbeatreq
-                self._handle_message(message, addr)
-            else:
-                if seq_num in self._msg_map:  # cancel retransmission if response is recved
+            if message.is_request(message):
+                self._handle_request(message, addr)
+            elif message.is_response(message):
+                if seq_num in self._msg_map:
                     del self._msg_map[seq_num]
                     del self._retransmission_map[seq_num]
-                    if msg_type == message.HEARTBEAT_RSP:
-                        self._heartbeatreq_sent = False  # start sending heartbeatreq again
-                    else:
-                        self._handle_message(message, addr)
+                    self._handle_response(message, addr)
                 else:
                     logging.error("UDPClient: unexpected message recved")
 
     def send_message(self, msg):
-        if message.is_request(msg):  # enable retransmission for requests only
+        if message.is_request(msg):
             self._msg_map[msg.sequence_number()] = msg
             self._retransmission_map[msg.sequence_number()] = 0
         data = searialize_message(message)
@@ -109,7 +111,16 @@ class UDPClient(object):
                 logging.error('UDPClient socket error')
             self._on_recv_data()
 
-    def do_retransmission(self):
+    def handle_periodic(self):
+        self._send_heartbeat()
+        self._do_retransmission()
+
+    def _send_heartbeat():
+        if not self._heartbeatreq_sent:
+            self.send_message(message.HeartbeatReq())
+            self._heartbeatreq_sent = True
+
+    def _do_retransmission(self):
         for seq_num, msg in self._msg_map.iteritems():
             if self._retransmission_map[seq_num] < MAX_RETRY_TIMES:
                 self.send_message(msg)
@@ -120,10 +131,3 @@ class UDPClient(object):
                 if msg.message_type() == message.HEARTBEAT_REQ:
                     print("Server is down!")
                     sys.exit(1)
-
-    def handle_periodic(self):
-        # send heartbeat request
-        if not self._heartbeatreq_sent:
-            self.send_message(message.HeartbeatReq())
-            self._heartbeatreq_sent = True
-        self.do_retransmission()

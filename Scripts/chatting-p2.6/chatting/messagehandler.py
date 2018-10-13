@@ -31,6 +31,9 @@ class IMessageHandler(object):
     def handle_heartbeat_rsp(self, heartbeat_rsp, src_addr):
         raise NotImplementedError
 
+    def handle_heartbeat_req_timeout(self, heartbeat_rsp, src_addr):
+        raise NotImplementedError
+
     def handle_login_req(self, login_req, src_addr):
         raise NotImplementedError
 

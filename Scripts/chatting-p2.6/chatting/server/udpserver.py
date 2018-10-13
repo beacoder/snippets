@@ -57,26 +57,27 @@ class UDPServer(object):
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def _handle_message(message, from_addr):
+    def _handle_response(message, from_addr):
+        msg_handler = self._msg_handler
+        msg_type = message.message_type()
+        if msg_handler:
+            if msg_type == message.HEARTBEAT_RSP:
+                msg_handler.handle_heartbeat_rsp(message, from_addr)
+            else:
+                raise ValueError("Invalid message type: %d" % msg_type)
+
+    def _handle_request(message, from_addr):
         msg_handler = self._msg_handler
         msg_type = message.message_type()
         if msg_handler:
             if msg_type == message.HEARTBEAT_REQ:
-                msg_handler.handle_heartbeat_req(message, from_addr)
-            elif msg_type == message.HEARTBEAT_RSP:
-                msg_handler.handle_heartbeat_rsp(message, from_addr)
+                self.send_message(message.HeartbeatRsp(), from_addr)
             elif msg_type == message.LOGIN_REQ:
                 msg_handler.handle_login_req(message, from_addr)
-            elif msg_type == message.LOGIN_RSP:
-                msg_handler.handle_login_rsp(message, from_addr)
             elif msg_type == message.LOGOUT_REQ:
                 msg_handler.handle_logout_req(message, from_addr)
-            elif msg_type == message.LOGOUT_RSP:
-                msg_handler.handle_logout_rsp(message, from_addr)
             elif msg_type == message.CHAT_MSG:
                 msg_handler.handle_chat_msg(message, from_addr)
-            elif msg_type == message.BROADCAST_MSG:
-                msg_handler.handle_broadcast_msg(message, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
@@ -86,19 +87,19 @@ class UDPServer(object):
             logging.debug("UDPServer: recved data %s from %s" % (data, addr))
             message = unsearialize_message(data)
             msg_type, seq_num = message.message_type(), message.sequence_number()
-            if msg_type == message.HEARTBEAT_REQ:  # handle incoming heartbeatreq
-                self._handle_message(message, addr)
-            else:
+            if message.is_request(message):
+                self._handle_request(message, addr)
+            elif message.is_response(message):
                 map_key = (addr, seq_num)
-                if map_key in self._msg_map:  # cancel retransmission if response is recved
+                if map_key in self._msg_map:
                     del self._msg_map[map_key]
                     del self._retransmission_map[map_key]
-                    self._handle_message(message, addr)
+                    self._handle_response(message, addr)
                 else:
                     logging.error("UDPServer: unexpected message recved")
 
-    def send_message(self, message, src_addr, dest_addr):
-        if message.is_request(message):  # enable retransmission for requests only
+    def send_message(self, message, dest_addr, src_addr=None):
+        if message.is_request(message):
             map_key = (src_addr, message.sequence_number())
             self._msg_map[map_key] = (message, dest_addr)
             self._retransmission_map[map_key] = 0
@@ -114,19 +115,17 @@ class UDPServer(object):
             self._on_recv_data()
 
     def handle_periodic(self):
-        # send heartbeat request
-        # if not self._heartbeatreq_sent:
-        #     self.send_message(message.HeartbeatReq())
-        #     self._heartbeatreq_sent = True
-        self.do_retransmission()
+        self._do_retransmission()
 
-    def do_retransmission(self):
+    def _do_retransmission(self):
         for map_key, map_value in self._msg_map.iteritems():
             src_addr, _ = map_key
             msg, dest_addr = map_value
             if self._retransmission_map[map_key] < MAX_RETRY_TIMES:
-                self.send_message(msg, src_addr, dest_addr)
+                self.send_message(msg, dest_addr, src_addr)
                 self._retransmission_map[map_key] += 1
                 logging.info('UDPServer: msg %s timeout for %d times' % (msg, self._retransmission_map[map_key]))
             else:
                 logging.warning('UDPServer: failed to send msg %s for %d times' % (msg, self._retransmission_map[map_key]))
+                if msg.message_type() == message.HEARTBEAT_REQ:
+                    self._msg_handler.handle_heartbeat_req_timeout(msg, src_addr)
