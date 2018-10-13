@@ -51,31 +51,32 @@ class UDPClient(object):
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def _handle_response(message, from_addr):
+    def _handle_response(self, msg, from_addr):
         msg_handler = self._msg_handler
-        msg_type = message.message_type()
+        msg_type = msg.message_type()
         if msg_handler:
             if msg_type == message.HEARTBEAT_RSP:
                 self._heartbeatreq_sent = False
             elif msg_type == message.LOGIN_RSP:
-                msg_handler.handle_login_rsp(message, from_addr)
+                msg_handler.handle_login_rsp(msg, from_addr)
             elif msg_type == message.LOGOUT_RSP:
-                msg_handler.handle_logout_rsp(message, from_addr)
+                msg_handler.handle_logout_rsp(msg, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
-    def _handle_request(message, from_addr):
+    def _handle_request(self, msg, from_addr):
         msg_handler = self._msg_handler
-        msg_type = message.message_type()
+        msg_type = msg.message_type()
+        seq_num = msg.sequence_number()
         if msg_handler:
             if msg_type == message.HEARTBEAT_REQ:
-                self.send_message(message.HeartbeatRsp(), from_addr)
+                self.send_message(message.HeartbeatRsp(seq_num))
             elif msg_type == message.LOGIN_REQ:
-                msg_handler.handle_login_req(message, from_addr)
+                msg_handler.handle_login_req(msg, from_addr)
             elif msg_type == message.LOGOUT_REQ:
-                msg_handler.handle_logout_req(message, from_addr)
+                msg_handler.handle_logout_req(msg, from_addr)
             elif msg_type == message.CHAT_MSG:
-                msg_handler.handle_chat_msg(message, from_addr)
+                msg_handler.handle_chat_msg(msg, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
@@ -83,15 +84,15 @@ class UDPClient(object):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if data and addr:
             logging.debug("UDPClient: recved data %s from %s" % (data, addr))
-            message = unsearialize_message(data)
-            msg_type, seq_num = message.message_type(), message.sequence_number()
-            if message.is_request(message):
-                self._handle_request(message, addr)
-            elif message.is_response(message):
+            msg = message.unsearialize_message(data)
+            msg_type, seq_num = msg.message_type(), msg.sequence_number()
+            if message.is_request(msg):
+                self._handle_request(msg, addr)
+            elif message.is_response(msg):
                 if seq_num in self._msg_map:
                     del self._msg_map[seq_num]
                     del self._retransmission_map[seq_num]
-                    self._handle_response(message, addr)
+                    self._handle_response(msg, addr)
                 else:
                     logging.error("UDPClient: unexpected message recved")
 
@@ -99,7 +100,7 @@ class UDPClient(object):
         if message.is_request(msg):
             self._msg_map[msg.sequence_number()] = msg
             self._retransmission_map[msg.sequence_number()] = 0
-        data = searialize_message(message)
+        data = message.searialize_message(msg)
         dest = (self._server_addr, self._server_port)
         if data and dest:
             logging.debug("UDPClient: send data %s to %s" % (data, dest))
@@ -115,7 +116,7 @@ class UDPClient(object):
         self._send_heartbeat()
         self._do_retransmission()
 
-    def _send_heartbeat():
+    def _send_heartbeat(self):
         if not self._heartbeatreq_sent:
             self.send_message(message.HeartbeatReq())
             self._heartbeatreq_sent = True

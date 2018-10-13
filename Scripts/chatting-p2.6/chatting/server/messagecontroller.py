@@ -26,7 +26,7 @@ from collections import defaultdict
 MAX_RETRY_TIMES = 3
 
 
-class MessageController(IMessageHandler):
+class MessageController(messagehandler.IMessageHandler):
     """Processing incomming messages."""
 
     def __init__(self, event_loop, msg_transceiver, msg_database):
@@ -49,13 +49,13 @@ class MessageController(IMessageHandler):
     def handle_login_req(self, login_req, src_addr):
         logging.debug("received login req.")
         ret = self._db.active_client(login_req.nick_name, src_addr)
-        rsp = message.LoginRsp(ret, b"Sucess") if ret else message.LoginRsp(ret, b"Failure")
+        rsp = message.LoginRsp(ret, b"Sucess", '') if ret else message.LoginRsp(ret, b"Failure", '')
         self._transceiver.send_message(rsp, src_addr)
 
     def handle_logout_req(self, logout_req, src_addr):
         logging.debug("received logout req.")
         ret = self._db.deactive_client(logout_req.nick_name, src_addr)
-        rsp = message.LogoutRsp(ret, b"Sucess") if ret else LogoutRsp(ret, b"Failure")
+        rsp = message.LogoutRsp(ret, b"Sucess", '') if ret else LogoutRsp(ret, b"Failure", '')
         self._transceiver.send_message(rsp, src_addr)
 
     def handle_chat_msg(self, chat_msg, src_addr):
@@ -77,7 +77,7 @@ class MessageController(IMessageHandler):
     def handle_periodic(self):
         self._send_heartbeat()
 
-    def _send_heartbeat():
+    def _send_heartbeat(self):
         for client, address in self._db.get_online_clients().items():
             if not self._heartbeat_map[client]:
                 self._transceiver.send_message(message.HeartbeatReq(), address)

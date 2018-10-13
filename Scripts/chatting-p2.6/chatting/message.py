@@ -26,7 +26,8 @@ from . import utils
 __all__ = ['HeartbeatReq', 'HeartbeatRsp', 'LoginReq', 'LoginRsp',
            'LogoutReq', 'LogoutRsp', 'ChatMessage', 'BroadcastMessage',
            'INVALID_MSG', 'HEARTBEAT_REQ', 'HEARTBEAT_RSP', 'LOGIN_REQ',
-           'LOGIN_RSP', 'LOGOUT_REQ', 'LOGOUT_RSP', 'CHAT_MSG', 'BROADCAST_MSG']
+           'LOGIN_RSP', 'LOGOUT_REQ', 'LOGOUT_RSP', 'CHAT_MSG', 'BROADCAST_MSG',
+           'is_request', 'is_response', 'searialize_message', 'unsearialize_message']
 
 INVALID_MSG = 0    # invalid message
 HEARTBEAT_REQ = 1  # heartbeat request
@@ -52,42 +53,42 @@ def unpack_helper(fmt, data):
     return struct.unpack(fmt, data[:size]), data[size:]
 
 
-def is_request(message):
-    msg_type = message.message_type()
+def is_request(msg):
+    msg_type = msg.message_type()
     return msg_type in (HEARTBEAT_REQ, LOGIN_REQ, LOGOUT_REQ)
 
 
-def is_response(message):
-    msg_type = message.message_type()
+def is_response(msg):
+    msg_type = msg.message_type()
     return msg_type in (HEARTBEAT_RSP, LOGIN_RSP, LOGOUT_RSP)
 
 
-def searialize_message(message):
-    data = struct.pack(">BI", message.message_type(), message.sequence_number()) + message.to_bytes()
+def searialize_message(msg):
+    data = struct.pack(">BI", msg.message_type(), msg.sequence_number()) + msg.to_bytes()
     return data
 
 
 def unsearialize_message(data):
     (msg_type, seq_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
-    if msg_type == message.HEARTBEAT_REQ:
-        message = message.HeartbeatReq()
-    elif msg_type == message.HEARTBEAT_RSP:
-        message = message.HeartbeatRsp()
-    elif msg_type == message.LOGIN_REQ:
-        message = message.LoginReq()
-    elif msg_type == message.LOGIN_RSP:
-        message =  message.LoginRsp()
-    elif msg_type == message.LOGOUT_REQ:
-        message = message.LogoutReq()
-    elif msg_type == message.LOGOUT_RSP:
-        message = message.LogoutRsp()
-    elif msg_type == message.CHAT_MSG:
-        message = message.ChatMessage()
-    elif msg_type == message.BROADCAST_MSG:
-        message = message.BroadcastMessage()
+    if msg_type == HEARTBEAT_REQ:
+        msg = HeartbeatReq()
+    elif msg_type == HEARTBEAT_RSP:
+        msg = HeartbeatRsp()
+    elif msg_type == LOGIN_REQ:
+        msg = LoginReq()
+    elif msg_type == LOGIN_RSP:
+        msg =  LoginRsp()
+    elif msg_type == LOGOUT_REQ:
+        msg = LogoutReq()
+    elif msg_type == LOGOUT_RSP:
+        msg = LogoutRsp()
+    elif msg_type == CHAT_MSG:
+        msg = ChatMessage()
+    elif msg_type == BROADCAST_MSG:
+        msg = BroadcastMessage()
     else:
         raise ValueError("Invalid message type: %d" % msg_type)
-    return message.from_bytes((seq_num, msg_body))
+    return msg.from_bytes((seq_num, msg_body))
 
 
 class IMessage(object):

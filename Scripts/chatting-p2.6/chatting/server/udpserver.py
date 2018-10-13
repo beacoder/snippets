@@ -25,6 +25,7 @@ from chatting import eventloop, message, messagehandler
 
 
 BUF_SIZE = 65536
+MAX_RETRY_TIMES = 3
 
 
 class UDPServer(object):
@@ -57,27 +58,28 @@ class UDPServer(object):
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
-    def _handle_response(message, from_addr):
+    def _handle_response(self, msg, from_addr):
         msg_handler = self._msg_handler
-        msg_type = message.message_type()
+        msg_type = msg.message_type()
         if msg_handler:
             if msg_type == message.HEARTBEAT_RSP:
-                msg_handler.handle_heartbeat_rsp(message, from_addr)
+                msg_handler.handle_heartbeat_rsp(msg, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
-    def _handle_request(message, from_addr):
+    def _handle_request(self, msg, from_addr):
         msg_handler = self._msg_handler
-        msg_type = message.message_type()
+        msg_type = msg.message_type()
+        seq_num = msg.sequence_number()
         if msg_handler:
             if msg_type == message.HEARTBEAT_REQ:
-                self.send_message(message.HeartbeatRsp(), from_addr)
+                self.send_message(message.HeartbeatRsp(seq_num), from_addr)
             elif msg_type == message.LOGIN_REQ:
-                msg_handler.handle_login_req(message, from_addr)
+                msg_handler.handle_login_req(msg, from_addr)
             elif msg_type == message.LOGOUT_REQ:
-                msg_handler.handle_logout_req(message, from_addr)
+                msg_handler.handle_logout_req(msg, from_addr)
             elif msg_type == message.CHAT_MSG:
-                msg_handler.handle_chat_msg(message, from_addr)
+                msg_handler.handle_chat_msg(msg, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
@@ -85,25 +87,25 @@ class UDPServer(object):
         data, addr = self._server_sock.recvfrom(BUF_SIZE)
         if data and addr:
             logging.debug("UDPServer: recved data %s from %s" % (data, addr))
-            message = unsearialize_message(data)
-            msg_type, seq_num = message.message_type(), message.sequence_number()
-            if message.is_request(message):
-                self._handle_request(message, addr)
-            elif message.is_response(message):
+            msg = message.unsearialize_message(data)
+            msg_type, seq_num = msg.message_type(), msg.sequence_number()
+            if message.is_request(msg):
+                self._handle_request(msg, addr)
+            elif message.is_response(msg):
                 map_key = (addr, seq_num)
                 if map_key in self._msg_map:
                     del self._msg_map[map_key]
                     del self._retransmission_map[map_key]
-                    self._handle_response(message, addr)
+                    self._handle_response(msg, addr)
                 else:
                     logging.error("UDPServer: unexpected message recved")
 
-    def send_message(self, message, dest_addr, src_addr=None):
-        if message.is_request(message):
-            map_key = (src_addr, message.sequence_number())
-            self._msg_map[map_key] = (message, dest_addr)
+    def send_message(self, msg, dest_addr, src_addr=None):
+        if message.is_request(msg):
+            map_key = (src_addr, msg.sequence_number())
+            self._msg_map[map_key] = (msg, dest_addr)
             self._retransmission_map[map_key] = 0
-        data = searialize_message(message)
+        data = message.searialize_message(msg)
         if data and dest_addr:
             logging.debug("UDPServer: send data %s to %s" % (data, dest_addr))
             self._server_sock.sendto(data, dest_addr)
