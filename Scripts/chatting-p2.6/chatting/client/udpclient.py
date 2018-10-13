@@ -43,6 +43,7 @@ class UDPClient(object):
         event_loop.add_periodic(self.handle_periodic)
         self._retransmission_map = {}  # key: seq_num, value: retry-times
         self._msg_map = {}  # key: seq_num, value: msg
+        self._heartbeatreq_sent = False
 
     def close(self):
         self._sock.close()
@@ -55,19 +56,21 @@ class UDPClient(object):
         if data and addr:
             logging.debug("UDPClient: recved data %s from %s" % (data, addr))
             (msg_type, seq_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
-            if msg_type == message.HEARTBEAT_REQ:
-                self.send_message(message.HeartbeatRsp(), False)
-            elif seq_num in self._msg_map:  # cancel retransmission since Rsp is recved
-                del self._msg_map[seq_num]
-                del self._retransmission_map[seq_num]
-            # TODO: only retransmit Reqs
-            if self._msg_handler is not None:
-                messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
+            if msg_type == message.HEARTBEAT_REQ:  # handle incoming heartbeatreq
+                self.send_message(message.HeartbeatRsp())
             else:
-                logging.debug("UDPClient: no msg handler")
+                if seq_num in self._msg_map:  # cancel retransmission if response is recved
+                    del self._msg_map[seq_num]
+                    del self._retransmission_map[seq_num]
+                    if msg_type == message.HEARTBEAT_RSP:
+                        self._heartbeatreq_sent = False  # start sending heartbeatreq again
+                    if self._msg_handler:
+                        messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
+                else:
+                    logging.error("UDPClient: unexpected message recved")
 
-    def send_message(self, msg, retransmission=True):
-        if retransmission:
+    def send_message(self, msg):
+        if message.is_request(msg):  # enable retransmission for requests only
             self._msg_map[msg.sequence_number()] = msg
             self._retransmission_map[msg.sequence_number()] = 0
         data = struct.pack(">BI", msg.message_type(), msg.sequence_number()) + msg.to_bytes();
@@ -82,8 +85,7 @@ class UDPClient(object):
                 logging.error('UDPClient socket error')
             self._on_recv_data()
 
-    def handle_periodic(self):
-        # message retransmission
+    def do_retransmission(self):
         for seq_num, msg in self._msg_map.iteritems():
             if self._retransmission_map[seq_num] < MAX_RETRY_TIMES:
                 self.send_message(msg)
@@ -94,3 +96,10 @@ class UDPClient(object):
                 if msg.message_type() == message.HEARTBEAT_REQ:
                     print("Server is down!")
                     sys.exit(1)
+
+    def handle_periodic(self):
+        # send heartbeat request
+        if not self._heartbeatreq_sent:
+            self.send_message(message.HeartbeatReq())
+            self._heartbeatreq_sent = True
+        self.do_retransmission()

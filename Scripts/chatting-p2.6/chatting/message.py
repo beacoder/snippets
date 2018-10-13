@@ -40,6 +40,7 @@ BROADCAST_MSG = 8  # broadcast chat message
 
 __sequence_number = 0  # starting sequence_number
 
+
 def gen_seq_num():
     global __sequence_number
     __sequence_number += 1
@@ -49,6 +50,16 @@ def gen_seq_num():
 def unpack_helper(fmt, data):
     size = struct.calcsize(fmt)
     return struct.unpack(fmt, data[:size]), data[size:]
+
+
+def is_request(message):
+    msg_type = message.message_type()
+    return msg_type in (HEARTBEAT_REQ, LOGIN_REQ, LOGOUT_REQ)
+
+
+def is_response(message):
+    msg_type = message.message_type()
+    return msg_type in (HEARTBEAT_RSP, LOGIN_RSP, LOGOUT_RSP)
 
 
 class IMessage(object):
