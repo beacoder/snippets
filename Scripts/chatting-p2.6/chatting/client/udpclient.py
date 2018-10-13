@@ -51,21 +51,45 @@ class UDPClient(object):
     def set_msg_handler(self, msg_handler):
         self._msg_handler = msg_handler
 
+    def _handle_message(message, from_addr):
+        msg_handler = self._msg_handler
+        msg_type = message.message_type()
+        if msg_handler:
+            if msg_type == message.HEARTBEAT_REQ:
+                msg_handler.handle_heartbeat_req(message, from_addr)
+            elif msg_type == message.HEARTBEAT_RSP:
+                msg_handler.handle_heartbeat_rsp(message, from_addr)
+            elif msg_type == message.LOGIN_REQ:
+                msg_handler.handle_login_req(message, from_addr)
+            elif msg_type == message.LOGIN_RSP:
+                msg_handler.handle_login_rsp(message, from_addr)
+            elif msg_type == message.LOGOUT_REQ:
+                msg_handler.handle_logout_req(message, from_addr)
+            elif msg_type == message.LOGOUT_RSP:
+                msg_handler.handle_logout_rsp(message, from_addr)
+            elif msg_type == message.CHAT_MSG:
+                msg_handler.handle_chat_msg(message, from_addr)
+            elif msg_type == message.BROADCAST_MSG:
+                msg_handler.handle_broadcast_msg(message, from_addr)
+            else:
+                raise ValueError("Invalid message type: %d" % msg_type)
+
     def _on_recv_data(self):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if data and addr:
             logging.debug("UDPClient: recved data %s from %s" % (data, addr))
-            (msg_type, seq_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
+            message = unsearialize_message(data)
+            msg_type, seq_num = message.message_type(), message.sequence_number()
             if msg_type == message.HEARTBEAT_REQ:  # handle incoming heartbeatreq
-                self.send_message(message.HeartbeatRsp())
+                self._handle_message(message, addr)
             else:
                 if seq_num in self._msg_map:  # cancel retransmission if response is recved
                     del self._msg_map[seq_num]
                     del self._retransmission_map[seq_num]
                     if msg_type == message.HEARTBEAT_RSP:
                         self._heartbeatreq_sent = False  # start sending heartbeatreq again
-                    if self._msg_handler:
-                        messagehandler.handle_message(msg_type, msg_body, addr, self._msg_handler)
+                    else:
+                        self._handle_message(message, addr)
                 else:
                     logging.error("UDPClient: unexpected message recved")
 
@@ -73,7 +97,7 @@ class UDPClient(object):
         if message.is_request(msg):  # enable retransmission for requests only
             self._msg_map[msg.sequence_number()] = msg
             self._retransmission_map[msg.sequence_number()] = 0
-        data = struct.pack(">BI", msg.message_type(), msg.sequence_number()) + msg.to_bytes();
+        data = searialize_message(message)
         dest = (self._server_addr, self._server_port)
         if data and dest:
             logging.debug("UDPClient: send data %s to %s" % (data, dest))

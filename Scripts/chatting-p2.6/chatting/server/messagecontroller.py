@@ -26,7 +26,7 @@ from collections import defaultdict
 MAX_RETRY_TIMES = 3
 
 
-class MessageProcesser(messagehandler.IMessageHandler):
+class MessageController(IMessageHandler):
     """Processing incomming messages."""
 
     def __init__(self, event_loop, msg_transceiver, msg_database):
@@ -44,18 +44,18 @@ class MessageProcesser(messagehandler.IMessageHandler):
     def handle_heartbeat_rsp(self, heartbeat_rsp, src_addr):
         msg_from = self._db.get_client_name(src_addr)
         if msg_from is None:
-            logging.warning("MessageProcesser: unregistered ip-address")
+            logging.warning("MessageController: unregistered ip-address")
         else:
             heartbeatreq_sent, heartbeatrsp_miss_times = self._heartbeat_map[msg_from]
             if not heartbeatreq_sent:
-                logging.warning("MessageProcesser: unexpected heartbeat_rsp recved")
+                logging.warning("MessageController: unexpected heartbeat_rsp recved")
             else:
                 if heartbeatrsp_miss_times <= MAX_RETRY_TIMES:
                     heartbeatreq_sent, heartbeatrsp_miss_times = [False, 0]
                     self._heartbeat_map[msg_from] = [heartbeatreq_sent,
                                                      heartbeatrsp_miss_times]
                 else:
-                    logging.warning("MessageProcesser: too late, you should come early")
+                    logging.warning("MessageController: too late, you should come early")
 
     def handle_login_req(self, login_req, src_addr):
         logging.debug("received login req.")
@@ -97,10 +97,10 @@ class MessageProcesser(messagehandler.IMessageHandler):
                     # try again
                     self._transceiver.send_message(message.HeartbeatReq(), address)
                     self._heartbeat_map[client][1] += 1
-                    logging.info('MessageProcesser: heartbeat timeout for %d times',
+                    logging.info('MessageController: heartbeat timeout for %d times',
                                  self._heartbeat_map[client][1])
                 else:
-                    logging.info('MessageProcesser: client is down')
+                    logging.info('MessageController: client is down')
                     lost_clients.add(client)
             else:
                 # for each client, send heartbeatreq every 10s

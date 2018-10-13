@@ -62,6 +62,34 @@ def is_response(message):
     return msg_type in (HEARTBEAT_RSP, LOGIN_RSP, LOGOUT_RSP)
 
 
+def searialize_message(message):
+    data = struct.pack(">BI", message.message_type(), message.sequence_number()) + message.to_bytes()
+    return data
+
+
+def unsearialize_message(data):
+    (msg_type, seq_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
+    if msg_type == message.HEARTBEAT_REQ:
+        message = message.HeartbeatReq()
+    elif msg_type == message.HEARTBEAT_RSP:
+        message = message.HeartbeatRsp()
+    elif msg_type == message.LOGIN_REQ:
+        message = message.LoginReq()
+    elif msg_type == message.LOGIN_RSP:
+        message =  message.LoginRsp()
+    elif msg_type == message.LOGOUT_REQ:
+        message = message.LogoutReq()
+    elif msg_type == message.LOGOUT_RSP:
+        message = message.LogoutRsp()
+    elif msg_type == message.CHAT_MSG:
+        message = message.ChatMessage()
+    elif msg_type == message.BROADCAST_MSG:
+        message = message.BroadcastMessage()
+    else:
+        raise ValueError("Invalid message type: %d" % msg_type)
+    return message.from_bytes((seq_num, msg_body))
+
+
 class IMessage(object):
     """Message interface."""
 
@@ -114,6 +142,7 @@ class HeartbeatReq(IMessage):
         return struct.pack(HeartbeatReq.__ENCODE_FORMAT, utils.to_bytes(self._msg))
 
     def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
         (data,), _ = unpack_helper(HeartbeatReq.__ENCODE_FORMAT, data)
         self._msg = utils.to_str(data)
         return self
@@ -142,6 +171,7 @@ class HeartbeatRsp(IMessage):
         return struct.pack(HeartbeatRsp.__ENCODE_FORMAT, utils.to_bytes(self._msg))
 
     def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
         (data,), _ = unpack_helper(HeartbeatRsp.__ENCODE_FORMAT, data)
         self._msg = utils.to_str(data)
         return self
@@ -170,6 +200,7 @@ class LoginReq(IMessage):
         return struct.pack(LoginReq.__ENCODE_FORMAT, utils.to_bytes(self.nick_name))
 
     def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
         (data,), _ = unpack_helper(LoginReq.__ENCODE_FORMAT, data)
         self.nick_name = utils.to_str(data)
         return self
@@ -199,6 +230,7 @@ class LoginRsp(IMessage):
         return struct.pack(LoginRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
 
     def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
         (self.result,), data = unpack_helper("?", data)
         (data,), _ = unpack_helper("10s", data)
         self.reason = utils.to_str(data)
@@ -228,6 +260,7 @@ class LogoutReq(IMessage):
         return struct.pack(LogoutReq.__ENCODE_FORMAT, utils.to_bytes(self.nick_name))
 
     def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
         (data,), _ = unpack_helper(LogoutReq.__ENCODE_FORMAT, data)
         self.nick_name = utils.to_str(data)
         return self
@@ -257,6 +290,7 @@ class LogoutRsp(IMessage):
         return struct.pack(LogoutRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
 
     def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
         (self.result,), data = unpack_helper("?", data)
         (data,), _ = unpack_helper("10s", data)
         self.reason = utils.to_str(data)
@@ -287,6 +321,7 @@ class ChatMessage(IMessage):
         return struct.pack(ChatMessage.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
 
     def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
         (self.msg_to,), data = unpack_helper("30s", data)
         self.msg_to = utils.to_str(self.msg_to)
         (self.msg_content,), _ = unpack_helper("1024s", data)
