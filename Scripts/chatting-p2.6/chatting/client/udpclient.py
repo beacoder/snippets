@@ -86,7 +86,7 @@ class UDPClient(object):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if data and addr:
             logging.debug("UDPClient: recved data %s from %s" % (data, addr))
-            msg = message.unsearialize_message(data)
+            msg = message.desearialize_message(data)
             msg_type, seq_num = msg.message_type(), msg.sequence_number()
             if message.is_request(msg):
                 self._handle_request(msg, addr)

@@ -28,7 +28,7 @@ __all__ = ['HeartbeatReq', 'HeartbeatRsp', 'LoginReq', 'LoginRsp',
            'INVALID_MSG', 'HEARTBEAT_REQ', 'HEARTBEAT_RSP', 'LOGIN_REQ',
            'LOGIN_RSP', 'LOGOUT_REQ', 'LOGOUT_RSP', 'CHAT_REQ', 'CHAT_RSP'
            'BROADCAST_REQ', 'BROADCAST_RSP', 'is_request', 'is_response',
-           'searialize_message', 'unsearialize_message']
+           'searialize_message', 'desearialize_message']
 
 INVALID_MSG = 0    # invalid message
 HEARTBEAT_REQ = 1  # heartbeat request
@@ -71,7 +71,7 @@ def searialize_message(msg):
     return data
 
 
-def unsearialize_message(data):
+def desearialize_message(data):
     (msg_type, seq_num), msg_body = struct.unpack(">BI", data[:5]), data[5:]
     if msg_type == HEARTBEAT_REQ:
         msg = HeartbeatReq()
