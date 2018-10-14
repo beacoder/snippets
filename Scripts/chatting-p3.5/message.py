@@ -31,8 +31,9 @@ class MessageType(IntEnum):
     HEARTBEAT_RSP = 4  # heartbeat response
     LOGIN_RSP = 5      # login response
     LOGOUT_RSP = 6     # logout response
-    CHAT_MSG = 7       # one-to-one chat message
-    BROADCAST_MSG = 8  # broadcast chat message
+    CHAT_MSG_REQ = 7   # one-to-one chat message
+    CHAT_MSG_RSP = 8   # response to chat message
+    BROADCAST_MSG = 9  # broadcast chat message
 
 
 class IMessage:
@@ -132,7 +133,7 @@ class LogoutRsp(IMessage):
 class ChatMessage(IMessage):
     """Represent a single chat message."""
 
-    MSG_TYPE = MessageType.CHAT_MSG
+    MSG_TYPE = MessageType.CHAT_MSG_REQ
     ENCODE_FORMAT = ">II"
 
     def __init__(self, msg_from, msg_to):
@@ -166,7 +167,7 @@ def create_message(msg_type, msg_body):
     elif msg_type == MessageType.BROADCAST_MSG:
         data = struct.unpack(LoginReq.ENCODE_FORMAT, msg_body)
         return LoginReq(*data)
-    elif msg_type == MessageType.CHAT_MSG:
+    elif msg_type == MessageType.CHAT_MSG_REQ:
         data = struct.unpack(ChatMessage.ENCODE_FORMAT, msg_body)
         return ChatMessage(*data)
     else:

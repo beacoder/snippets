@@ -24,10 +24,11 @@ from . import utils
 
 
 __all__ = ['HeartbeatReq', 'HeartbeatRsp', 'LoginReq', 'LoginRsp',
-           'LogoutReq', 'LogoutRsp', 'ChatMessage', 'BroadcastMessage',
+           'LogoutReq', 'LogoutRsp', 'ChatMessageReq', 'BroadcastMessage',
            'INVALID_MSG', 'HEARTBEAT_REQ', 'HEARTBEAT_RSP', 'LOGIN_REQ',
-           'LOGIN_RSP', 'LOGOUT_REQ', 'LOGOUT_RSP', 'CHAT_MSG', 'BROADCAST_MSG',
-           'is_request', 'is_response', 'searialize_message', 'unsearialize_message']
+           'LOGIN_RSP', 'LOGOUT_REQ', 'LOGOUT_RSP', 'CHAT_MSG_REQ', 'CHAT_MSG_RSP'
+           'BROADCAST_REQ', 'BROADCAST_RSP', 'is_request', 'is_response',
+           'searialize_message', 'unsearialize_message']
 
 INVALID_MSG = 0    # invalid message
 HEARTBEAT_REQ = 1  # heartbeat request
@@ -36,8 +37,10 @@ LOGIN_REQ = 3      # login request
 LOGIN_RSP = 4      # login response
 LOGOUT_REQ = 5     # logout request
 LOGOUT_RSP = 6     # logout response
-CHAT_MSG = 7       # one-to-one chat message
-BROADCAST_MSG = 8  # broadcast chat message
+CHAT_MSG_REQ = 7   # one-to-one chat message
+CHAT_MSG_RSP = 8   # response to chat message
+BROADCAST_REQ = 9  # broadcast message
+BROADCAST_RSP = 10 # response to broadcast message
 
 __sequence_number = 0  # starting sequence_number
 
@@ -82,9 +85,13 @@ def unsearialize_message(data):
         msg = LogoutReq()
     elif msg_type == LOGOUT_RSP:
         msg = LogoutRsp()
-    elif msg_type == CHAT_MSG:
-        msg = ChatMessage()
-    elif msg_type == BROADCAST_MSG:
+    elif msg_type == CHAT_MSG_REQ:
+        msg = ChatMessageReq()
+    elif msg_type == CHAT_MSG_RSP:
+        msg = ChatMessageRsp()
+    elif msg_type == BROADCAST_REQ:
+        msg = BroadcastMessage()
+    elif msg_type == BROADCAST_RSP:
         msg = BroadcastMessage()
     else:
         raise ValueError("Invalid message type: %d" % msg_type)
@@ -301,10 +308,10 @@ class LogoutRsp(IMessage):
         return "result: %s, reason: %s" % (self.result, self.reason)
 
 
-class ChatMessage(IMessage):
+class ChatMessageReq(IMessage):
     """Represent a single chat message."""
 
-    __MSG_TYPE = CHAT_MSG
+    __MSG_TYPE = CHAT_MSG_REQ
     __ENCODE_FORMAT = "30s1024s"  # 30s -> receiver's nick-name, 1024s -> chat-msg
 
     def __init__(self, msg_to=None, msg_content=None):
@@ -313,13 +320,13 @@ class ChatMessage(IMessage):
         self._seq_num = gen_seq_num()
 
     def message_type(self):
-        return ChatMessage.__MSG_TYPE
+        return ChatMessageReq.__MSG_TYPE
 
     def sequence_number(self):
         return self._seq_num
 
     def to_bytes(self):
-        return struct.pack(ChatMessage.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
+        return struct.pack(ChatMessageReq.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
 
     def from_bytes(self, data):
         (self._seq_num, data) = data[0], data[1]
@@ -333,10 +340,41 @@ class ChatMessage(IMessage):
         return "peer: %s, msg: %s" % (self.msg_to, self.msg_content)
 
 
-class BroadcastMessage(IMessage):
-    """Represent a broadcast chat message."""
+class ChatMessageRsp(IMessage):
+    """Represent a single chat response."""
 
-    __MSG_TYPE = BROADCAST_MSG
+    __MSG_TYPE = CHAT_MSG_RSP
+    __ENCODE_FORMAT = "?10s"  # ? -> Result, 10s -> Reason
+
+    def __init__(self, seq_num=None, result=None, reason=None):
+        self._seq_num = seq_num
+        self.result = result
+        self.reason = reason
+
+    def message_type(self):
+        return ChatMessageRsp.__MSG_TYPE
+
+    def sequence_number(self):
+        return self._seq_num
+
+    def to_bytes(self):
+        return struct.pack(ChatMessageRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
+
+    def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
+        (self.result,), data = unpack_helper("?", data)
+        (data,), _ = unpack_helper("10s", data)
+        self.reason = utils.to_str(data)
+        return self
+
+    def __repr__(self):
+        return "result: %s, reason: %s" % (self.result, self.reason)
+
+
+class BroadcastReq(IMessage):
+    """Represent a broadcast request message."""
+
+    __MSG_TYPE = BROADCAST_REQ
     __ENCODE_FORMAT = "II"  # TODO: elaborate this later
 
     def __init__(self, msg_from, msg_to):
@@ -345,3 +383,34 @@ class BroadcastMessage(IMessage):
 
     def to_bytes(self):
         return struct.pack(BroadcastMessage.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
+
+
+class BroadcastRsp(IMessage):
+    """Represent a broadcast response message."""
+
+    __MSG_TYPE = BROADCAST_RSP
+    __ENCODE_FORMAT = "?10s"  # ? -> Result, 10s -> Reason
+
+    def __init__(self, seq_num=None, result=None, reason=None):
+        self._seq_num = seq_num
+        self.result = result
+        self.reason = reason
+
+    def message_type(self):
+        return BroadcastRsp.__MSG_TYPE
+
+    def sequence_number(self):
+        return self._seq_num
+
+    def to_bytes(self):
+        return struct.pack(BroadcastRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
+
+    def from_bytes(self, data):
+        (self._seq_num, data) = data[0], data[1]
+        (self.result,), data = unpack_helper("?", data)
+        (data,), _ = unpack_helper("10s", data)
+        self.reason = utils.to_str(data)
+        return self
+
+    def __repr__(self):
+        return "result: %s, reason: %s" % (self.result, self.reason)

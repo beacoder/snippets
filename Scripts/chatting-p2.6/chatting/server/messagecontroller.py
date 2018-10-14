@@ -58,16 +58,16 @@ class MessageController(messagehandler.IMessageHandler):
         rsp = message.LogoutRsp(ret, b"Sucess", '') if ret else LogoutRsp(ret, b"Failure", '')
         self._transceiver.send_message(rsp, src_addr)
 
-    def handle_chat_msg(self, chat_msg, src_addr):
-        logging.debug("received chat msg.")
+    def handle_chat_req(self, chat_req, src_addr):
+        logging.debug("received chat request.")
         if self._db.is_client_online(address=src_addr):
-            msg_to = chat_msg.msg_to
-            msg_content = chat_msg.msg_content
+            msg_to = chat_req.msg_to
+            msg_content = chat_req.msg_content
             if self._db.is_client_online(name=msg_to):
                 msg_from = self._db.get_client_name(src_addr)
                 dest_addr = self._db.get_client_address(msg_to)
-                chat_msg = message.ChatMessage(msg_from, msg_content)
-                self._transceiver.send_message(chat_msg, dest_addr, src_addr)
+                chat_req = message.ChatMessage(msg_from, msg_content)
+                self._transceiver.send_message(chat_req, dest_addr, src_addr)
             elif self._db.is_client_offline(msg_to):
                 self._db.save_offline_msg(msg_to, msg_content)
             else:

@@ -41,10 +41,10 @@ class ChatClient(messagehandler.IMessageHandler):
         if login_rsp.result:
             logging.debug("login success.")
 
-    def handle_chat_msg(self, chat_msg, src_addr):
-        logging.debug("received chat msg.")
-        msg_from = chat_msg.msg_to
-        msg_content = chat_msg.msg_content
+    def handle_chat_req(self, chat_req, src_addr):
+        logging.debug("received chat request.")
+        msg_from = chat_req.msg_to
+        msg_content = chat_req.msg_content
         if msg_from and msg_content:
             print("%s: %s" % (msg_from, msg_content))
 
