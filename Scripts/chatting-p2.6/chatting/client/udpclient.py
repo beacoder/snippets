@@ -41,7 +41,7 @@ class UDPClient(object):
         event_loop.add(self._sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
         event_loop.add_periodic(self.handle_periodic)
-        self._retransmission_map = {}  # key: seq_num, value: retry-times
+        self._retry_map = {}  # key: seq_num, value: retry-times
         self._msg_map = {}  # key: seq_num, value: msg
         self._heartbeatreq_sent = False
 
@@ -91,7 +91,7 @@ class UDPClient(object):
             elif message.is_response(msg):
                 if seq_num in self._msg_map:
                     del self._msg_map[seq_num]
-                    del self._retransmission_map[seq_num]
+                    del self._retry_map[seq_num]
                     self._handle_response(msg, addr)
                 else:
                     logging.error("UDPClient: unexpected message recved")
@@ -99,7 +99,7 @@ class UDPClient(object):
     def send_message(self, msg):
         if message.is_request(msg):
             self._msg_map[msg.sequence_number()] = msg
-            self._retransmission_map[msg.sequence_number()] = 0
+            self._retry_map[msg.sequence_number()] = 0
         data = message.searialize_message(msg)
         dest = (self._server_addr, self._server_port)
         if data and dest:
@@ -123,12 +123,12 @@ class UDPClient(object):
 
     def _do_retransmission(self):
         for seq_num, msg in self._msg_map.iteritems():
-            if self._retransmission_map[seq_num] < MAX_RETRY_TIMES:
+            if self._retry_map[seq_num] < MAX_RETRY_TIMES:
                 self.send_message(msg)
-                self._retransmission_map[seq_num] += 1
-                logging.info('UDPClient: msg %s timeout for %d times' % (msg, self._retransmission_map[seq_num]))
+                self._retry_map[seq_num] += 1
+                logging.info('UDPClient: msg %s timeout for %d times' % (msg, self._retry_map[seq_num]))
             else:
-                logging.warning('UDPClient: failed to send msg %s for %d times' % (msg, self._retransmission_map[seq_num]))
+                logging.warning('UDPClient: failed to send msg %s for %d times' % (msg, self._retry_map[seq_num]))
                 if msg.message_type() == message.HEARTBEAT_REQ:
                     print("Server is down!")
                     sys.exit(1)
