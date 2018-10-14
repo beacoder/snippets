@@ -64,6 +64,8 @@ class UDPServer(object):
         if msg_handler:
             if msg_type == message.HEARTBEAT_RSP:
                 msg_handler.handle_heartbeat_rsp(msg, from_addr)
+            elif msg_type == message.CHAT_RSP:
+                pass
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
@@ -78,7 +80,7 @@ class UDPServer(object):
                 msg_handler.handle_login_req(msg, from_addr)
             elif msg_type == message.LOGOUT_REQ:
                 msg_handler.handle_logout_req(msg, from_addr)
-            elif msg_type == message.CHAT_MSG_REQ:
+            elif msg_type == message.CHAT_REQ:
                 msg_handler.handle_chat_req(msg, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)

@@ -61,6 +61,8 @@ class UDPClient(object):
                 msg_handler.handle_login_rsp(msg, from_addr)
             elif msg_type == message.LOGOUT_RSP:
                 msg_handler.handle_logout_rsp(msg, from_addr)
+            elif msg_type == message.CHAT_RSP:
+                pass
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
@@ -75,7 +77,7 @@ class UDPClient(object):
                 msg_handler.handle_login_req(msg, from_addr)
             elif msg_type == message.LOGOUT_REQ:
                 msg_handler.handle_logout_req(msg, from_addr)
-            elif msg_type == message.CHAT_MSG_REQ:
+            elif msg_type == message.CHAT_REQ:
                 msg_handler.handle_chat_req(msg, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)

@@ -49,11 +49,5 @@ class IMessageHandler(object):
     def handle_chat_req(self, chat_msg, src_addr):
         raise NotImplementedError
 
-    def handle_chat_rsp(self, chat_msg, src_addr):
-        raise NotImplementedError
-
     def handle_broadcast_req(self, broadcast_msg, src_addr):
-        raise NotImplementedError
-
-    def handle_broadcast_rsp(self, broadcast_msg, src_addr):
         raise NotImplementedError

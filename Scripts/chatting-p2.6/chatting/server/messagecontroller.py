@@ -66,7 +66,7 @@ class MessageController(messagehandler.IMessageHandler):
             if self._db.is_client_online(name=msg_to):
                 msg_from = self._db.get_client_name(src_addr)
                 dest_addr = self._db.get_client_address(msg_to)
-                chat_req = message.ChatMessage(msg_from, msg_content)
+                chat_req = message.ChatReq(msg_from, msg_content)
                 self._transceiver.send_message(chat_req, dest_addr, src_addr)
             elif self._db.is_client_offline(msg_to):
                 self._db.save_offline_msg(msg_to, msg_content)

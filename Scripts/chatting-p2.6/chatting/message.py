@@ -24,9 +24,9 @@ from . import utils
 
 
 __all__ = ['HeartbeatReq', 'HeartbeatRsp', 'LoginReq', 'LoginRsp',
-           'LogoutReq', 'LogoutRsp', 'ChatMessageReq', 'BroadcastMessage',
+           'LogoutReq', 'LogoutRsp', 'ChatReq', 'BroadcastReq',
            'INVALID_MSG', 'HEARTBEAT_REQ', 'HEARTBEAT_RSP', 'LOGIN_REQ',
-           'LOGIN_RSP', 'LOGOUT_REQ', 'LOGOUT_RSP', 'CHAT_MSG_REQ', 'CHAT_MSG_RSP'
+           'LOGIN_RSP', 'LOGOUT_REQ', 'LOGOUT_RSP', 'CHAT_REQ', 'CHAT_RSP'
            'BROADCAST_REQ', 'BROADCAST_RSP', 'is_request', 'is_response',
            'searialize_message', 'unsearialize_message']
 
@@ -37,8 +37,8 @@ LOGIN_REQ = 3      # login request
 LOGIN_RSP = 4      # login response
 LOGOUT_REQ = 5     # logout request
 LOGOUT_RSP = 6     # logout response
-CHAT_MSG_REQ = 7   # one-to-one chat message
-CHAT_MSG_RSP = 8   # response to chat message
+CHAT_REQ = 7       # one-to-one chat message
+CHAT_RSP = 8       # response to chat message
 BROADCAST_REQ = 9  # broadcast message
 BROADCAST_RSP = 10 # response to broadcast message
 
@@ -85,14 +85,14 @@ def unsearialize_message(data):
         msg = LogoutReq()
     elif msg_type == LOGOUT_RSP:
         msg = LogoutRsp()
-    elif msg_type == CHAT_MSG_REQ:
-        msg = ChatMessageReq()
-    elif msg_type == CHAT_MSG_RSP:
-        msg = ChatMessageRsp()
+    elif msg_type == CHAT_REQ:
+        msg = ChatReq()
+    elif msg_type == CHAT_RSP:
+        msg = ChatRsp()
     elif msg_type == BROADCAST_REQ:
-        msg = BroadcastMessage()
+        msg = BroadcastReq()
     elif msg_type == BROADCAST_RSP:
-        msg = BroadcastMessage()
+        msg = BroadcastRsp()
     else:
         raise ValueError("Invalid message type: %d" % msg_type)
     return msg.from_bytes((seq_num, msg_body))
@@ -308,10 +308,10 @@ class LogoutRsp(IMessage):
         return "result: %s, reason: %s" % (self.result, self.reason)
 
 
-class ChatMessageReq(IMessage):
+class ChatReq(IMessage):
     """Represent a single chat message."""
 
-    __MSG_TYPE = CHAT_MSG_REQ
+    __MSG_TYPE = CHAT_REQ
     __ENCODE_FORMAT = "30s1024s"  # 30s -> receiver's nick-name, 1024s -> chat-msg
 
     def __init__(self, msg_to=None, msg_content=None):
@@ -320,13 +320,13 @@ class ChatMessageReq(IMessage):
         self._seq_num = gen_seq_num()
 
     def message_type(self):
-        return ChatMessageReq.__MSG_TYPE
+        return ChatReq.__MSG_TYPE
 
     def sequence_number(self):
         return self._seq_num
 
     def to_bytes(self):
-        return struct.pack(ChatMessageReq.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
+        return struct.pack(ChatReq.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
 
     def from_bytes(self, data):
         (self._seq_num, data) = data[0], data[1]
@@ -340,10 +340,10 @@ class ChatMessageReq(IMessage):
         return "peer: %s, msg: %s" % (self.msg_to, self.msg_content)
 
 
-class ChatMessageRsp(IMessage):
+class ChatRsp(IMessage):
     """Represent a single chat response."""
 
-    __MSG_TYPE = CHAT_MSG_RSP
+    __MSG_TYPE = CHAT_RSP
     __ENCODE_FORMAT = "?10s"  # ? -> Result, 10s -> Reason
 
     def __init__(self, seq_num=None, result=None, reason=None):
@@ -352,13 +352,13 @@ class ChatMessageRsp(IMessage):
         self.reason = reason
 
     def message_type(self):
-        return ChatMessageRsp.__MSG_TYPE
+        return ChatRsp.__MSG_TYPE
 
     def sequence_number(self):
         return self._seq_num
 
     def to_bytes(self):
-        return struct.pack(ChatMessageRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
+        return struct.pack(ChatRsp.__ENCODE_FORMAT, utils.to_bytes(self.result), utils.to_bytes(self.reason))
 
     def from_bytes(self, data):
         (self._seq_num, data) = data[0], data[1]
@@ -382,7 +382,7 @@ class BroadcastReq(IMessage):
         self.msg_to = msg_to
 
     def to_bytes(self):
-        return struct.pack(BroadcastMessage.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
+        return struct.pack(BroadcastReq.__ENCODE_FORMAT, utils.to_bytes(self.msg_to), utils.to_bytes(self.msg_content))
 
 
 class BroadcastRsp(IMessage):

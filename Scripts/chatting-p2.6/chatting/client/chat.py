@@ -57,7 +57,7 @@ class ChatClient(messagehandler.IMessageHandler):
         elif len(msg) > 1024:
             raise Exception("Max message length reached: 1024!")
         else:
-            self._transceiver.send_message(message.ChatMessage(msg_to, msg))
+            self._transceiver.send_message(message.ChatReq(msg_to, msg))
 
     def handle_event(self, sock, fd, event):
         if fd == sys.stdin.fileno():  # handle input from sys.stdin
@@ -69,7 +69,7 @@ class ChatClient(messagehandler.IMessageHandler):
 def test_message_available():
     assert hasattr(message, 'LoginReq')
     assert hasattr(message, 'LoginRsp')
-    assert hasattr(message, 'ChatMessage')
+    assert hasattr(message, 'ChatReq')
 
 
 if __name__ == '__main__':
