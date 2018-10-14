@@ -26,16 +26,16 @@ from chatting import eventloop, message, messagehandler
 class ChatClient(messagehandler.IMessageHandler):
     """Gui for chatting."""
 
-    def __init__(self, nick_name, event_loop, msg_transceiver):
+    def __init__(self, nick_name, event_loop, msg_sender):
         self._nick_name = nick_name
         event_loop.add(sys.stdin,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
-        self._transceiver = msg_transceiver
-        self._transceiver.set_msg_handler(self)
+        self._msg_sender = msg_sender
+        self._msg_sender.set_msg_handler(self)
 
     def do_login(self):
         logging.debug("sending login req.")
-        self._transceiver.send_message(message.LoginReq(self._nick_name))
+        self._msg_sender.send_message(message.LoginReq(self._nick_name))
 
     def handle_login_rsp(self, login_rsp, src_addr):
         if login_rsp.result:
@@ -57,7 +57,7 @@ class ChatClient(messagehandler.IMessageHandler):
         elif len(msg) > 1024:
             raise Exception("Max message length reached: 1024!")
         else:
-            self._transceiver.send_message(message.ChatReq(msg_to, msg))
+            self._msg_sender.send_message(message.ChatReq(msg_to, msg))
 
     def handle_event(self, sock, fd, event):
         if fd == sys.stdin.fileno():  # handle input from sys.stdin

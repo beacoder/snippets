@@ -81,6 +81,7 @@ class UDPServer(object):
             elif msg_type == message.LOGOUT_REQ:
                 msg_handler.handle_logout_req(msg, from_addr)
             elif msg_type == message.CHAT_REQ:
+                self.send_message(message.ChatRsp(seq_num, 'Sucess', ''), from_addr)
                 msg_handler.handle_chat_req(msg, from_addr)
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
