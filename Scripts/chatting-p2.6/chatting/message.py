@@ -58,12 +58,14 @@ def unpack_helper(fmt, data):
 
 def is_request(msg):
     msg_type = msg.message_type()
-    return msg_type in (HEARTBEAT_REQ, LOGIN_REQ, LOGOUT_REQ)
+    return msg_type in (HEARTBEAT_REQ, LOGIN_REQ, LOGOUT_REQ,
+                        CHAT_REQ, BROADCAST_REQ)
 
 
 def is_response(msg):
     msg_type = msg.message_type()
-    return msg_type in (HEARTBEAT_RSP, LOGIN_RSP, LOGOUT_RSP)
+    return msg_type in (HEARTBEAT_RSP, LOGIN_RSP, LOGOUT_RSP,
+                        CHAT_RSP, BROADCAST_RSP)
 
 
 def searialize_message(msg):
