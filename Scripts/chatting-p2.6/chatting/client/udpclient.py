@@ -42,7 +42,7 @@ class UDPClient(object):
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
         event_loop.add_periodic(self.handle_periodic)
         self._retry_map = {}  # key: seq_num, value: retry-times
-        self._msg_map = {}  # key: seq_num, value: msg
+        self._msg_map = {}    # key: seq_num, value: msg
         self._heartbeatreq_sent = False
 
     def close(self):
