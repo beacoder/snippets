@@ -101,8 +101,9 @@ class UDPClient(object):
 
     def send_message(self, msg):
         if message.is_request(msg):
-            self._msg_map[msg.sequence_number()] = msg
-            self._retry_map[msg.sequence_number()] = 0
+            seq_num = msg.sequence_number()
+            self._msg_map[seq_num] = msg
+            self._retry_map[seq_num] = 0
         data = message.searialize_message(msg)
         dest = (self._server_addr, self._server_port)
         if data and dest:
