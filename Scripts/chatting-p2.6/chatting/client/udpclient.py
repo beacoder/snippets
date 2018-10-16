@@ -101,7 +101,8 @@ class UDPClient(object):
 
     def send_message(self, msg):
         if message.is_request(msg):
-            if msg.sequence_number() not in self._msg_map:
+            seq_num = msg.sequence_number()
+            if seq_num not in self._msg_map:
                 self._msg_map[seq_num] = msg
                 self._retry_map[seq_num] = 0
         data = message.searialize_message(msg)
