@@ -136,8 +136,8 @@ class UDPClient(object):
                 self._retry_map[seq_num] += 1
                 logging.info('UDPClient: msg %s timeout for %d times' % (msg, self._retry_map[seq_num]))
             else:
-                self._cancel_retransmission(seq_num)
                 logging.warning('UDPClient: failed to send msg %s for %d times' % (msg, self._retry_map[seq_num]))
+                self._cancel_retransmission(seq_num)
                 if msg.message_type() == message.HEARTBEAT_REQ:
                     print("Server is down!")
                     sys.exit(1)
