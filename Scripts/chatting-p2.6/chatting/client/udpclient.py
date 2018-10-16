@@ -83,6 +83,10 @@ class UDPClient(object):
             else:
                 raise ValueError("Invalid message type: %d" % msg_type)
 
+    def _cancel_retransmission(seq_num):
+        del self._msg_map[seq_num]
+        del self._retry_map[seq_num]
+
     def _on_recv_data(self):
         data, addr = self._sock.recvfrom(BUF_SIZE)
         if data and addr:
@@ -93,8 +97,7 @@ class UDPClient(object):
                 self._handle_request(msg, addr)
             elif message.is_response(msg):
                 if seq_num in self._msg_map:
-                    del self._msg_map[seq_num]
-                    del self._retry_map[seq_num]
+                    _cancel_retransmission(seq_num)
                     self._handle_response(msg, addr)
                 else:
                     logging.error("UDPClient: unexpected message recved")
@@ -133,6 +136,7 @@ class UDPClient(object):
                 self._retry_map[seq_num] += 1
                 logging.info('UDPClient: msg %s timeout for %d times' % (msg, self._retry_map[seq_num]))
             else:
+                _cancel_retransmission(seq_num)
                 logging.warning('UDPClient: failed to send msg %s for %d times' % (msg, self._retry_map[seq_num]))
                 if msg.message_type() == message.HEARTBEAT_REQ:
                     print("Server is down!")
