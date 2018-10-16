@@ -104,9 +104,9 @@ class UDPServer(object):
 
     def send_message(self, msg, dest_addr):
         if message.is_request(msg):
-            seq_num = msg.sequence_number()
-            self._msg_map[seq_num] = (msg, dest_addr)
-            self._retry_map[seq_num] = 0
+            if msg.sequence_number() not in self._msg_map:
+                self._msg_map[seq_num] = (msg, dest_addr)
+                self._retry_map[seq_num] = 0
         data = message.searialize_message(msg)
         if data and dest_addr:
             logging.debug("UDPServer: send data %s to %s" % (data, dest_addr))
