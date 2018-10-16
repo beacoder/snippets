@@ -130,14 +130,17 @@ class UDPClient(object):
             self._heartbeatreq_sent = True
 
     def _do_retransmission(self):
+        timed_out_msgs = set()
         for seq_num, msg in self._msg_map.iteritems():
             if self._retry_map[seq_num] < MAX_RETRY_TIMES:
                 self.send_message(msg)
                 self._retry_map[seq_num] += 1
                 logging.info('UDPClient: msg %s timeout for %d times' % (msg, self._retry_map[seq_num]))
             else:
+                timed_out_msgs.add(seq_num)
                 logging.warning('UDPClient: failed to send msg %s for %d times' % (msg, self._retry_map[seq_num]))
-                self._cancel_retransmission(seq_num)
                 if msg.message_type() == message.HEARTBEAT_REQ:
                     print("Server is down!")
                     sys.exit(1)
+        for seq_num in timed_out_msgs:
+            self._cancel_retransmission(seq_num)

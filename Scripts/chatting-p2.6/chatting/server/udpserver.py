@@ -126,13 +126,16 @@ class UDPServer(object):
         self._do_retransmission()
 
     def _do_retransmission(self):
+        timed_out_msgs = set()
         for seq_num, (msg, dest_addr) in self._msg_map.iteritems():
             if self._retry_map[seq_num] < MAX_RETRY_TIMES:
                 self.send_message(msg, dest_addr)
                 self._retry_map[seq_num] += 1
                 logging.info('UDPServer: msg %s timeout for %d times' % (msg, self._retry_map[seq_num]))
             else:
+                timed_out_msgs.add(seq_num)
                 logging.warning('UDPServer: failed to send msg %s for %d times' % (msg, self._retry_map[seq_num]))
-                self._cancel_retransmission(seq_num)
                 if msg.message_type() == message.HEARTBEAT_REQ:
                     self._msg_handler.handle_heartbeat_req_timeout(msg, dest_addr)
+        for seq_num in timed_out_msgs:
+            self._cancel_retransmission(seq_num)
