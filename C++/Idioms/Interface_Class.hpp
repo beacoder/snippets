@@ -59,11 +59,11 @@ class Curve : public IShape
 
 int main (void)
 {
-  using ShapePtr = std::shared_ptr<IShape>;
+  using ShapePtr = std::unique_ptr<IShape>;
 
   std::vector<ShapePtr> vShapes;
-  vShapes.emplace_back(std::make_shared(Shape::getShape("Line")));   // favor emplace_back over push_back
-  vShapes.emplace_back(std::make_shared(Shape::getShape("Curve")));  // favor emplace_back over push_back
+  vShapes.emplace_back(std::make_unique(Shape::getShape("Line")));   // favor emplace_back over push_back
+  vShapes.emplace_back(std::make_unique(Shape::getShape("Curve")));  // favor emplace_back over push_back
   
   auto drawer = [&vShapes]()
   { 
