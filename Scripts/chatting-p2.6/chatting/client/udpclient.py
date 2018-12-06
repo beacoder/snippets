@@ -36,7 +36,9 @@ class UDPClient(object):
         self._server_addr = server_addr
         self._server_port = server_port
         self._msg_handler = None
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._sock = socket.socket(socket.AF_INET, # IPv4
+                                   # socket.AF_INET6, # IPv6
+                                   socket.SOCK_DGRAM)
         self._sock.setblocking(False)
         event_loop.add(self._sock,
                        eventloop.POLL_IN | eventloop.POLL_ERR, self)
