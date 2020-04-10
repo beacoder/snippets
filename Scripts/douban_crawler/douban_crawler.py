@@ -65,7 +65,7 @@ Given a seed, and return found sites.
         year    = (re.findall(_DOUBAN_MOVIE_YEAR_PATTERN,       response))[0]
         rate    = float((re.findall(_DOUBAN_MOVIE_RATE_PATTERN, response))[0])
         address = seed
-    except BaseException, e:
+    except BaseException as e:
         error_happened = True
 
     if not error_happened:
