@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 10000; ++i)
     {
         uint32_t curRd = initRd % getSum();
-                                     
+
         if (curRd <= accumulatedWeights2[currentIndex])
         {
             currentIndex = (curRd == 0 ? 0 : currentIndex);
@@ -88,9 +88,9 @@ int main(int argc, char *argv[])
         {
             currentIndex = ((currentIndex + 1) % pool.size());
         }
-        
+
         finalResult[currentIndex-1].emplace_back(i);
-        
+
         initRd += 1;
         //std::cout << "This one falls into position: " << currentIndex -1 << std::endl;
     }
