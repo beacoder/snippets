@@ -17,14 +17,31 @@ public:
         GPDU            = 255,
     };
 
+    enum ProtocolType
+    {
+        GTP_Prime = 0,
+        GTP       = 1,
+    };
+
+    GtpUMessage();
+    ~GtpUMessage();
+
     std::uint16_t getMessageType() const;
+    std::uint8_t  getVersionNumber() const;
+    ProtocolType  getProtocolType() const;
 
 private:
     //-----------Begin IMessage-------------------
-    virtual std::uint16_t getMessageId() const;
+    virtual MessageId getMessageId() const;
     //-----------End IMessage---------------------
 
+    void setExtentionFlag(bool enabled);
+    void setSequenceFlag(bool enabled);
+    void setPduNumberFlag(bool enabled);
+    void setProtocolType();
+
 private:
+    std::uint8_t  fixedField_;
     std::uint16_t messageType_;
 };
 

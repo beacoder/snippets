@@ -14,7 +14,7 @@ public:
         GtpU      = 1,
     };
 
-    virtual uint16_t getMessageId() const = 0;
+    virtual MessageId getMessageId() const = 0;
 };
 
 #endif // GTPU_INTERFACES_IMESSAGE_H
