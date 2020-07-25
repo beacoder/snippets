@@ -17,7 +17,7 @@ std::uint8_t GtpUMessage::getVersionNumber() const
 
 GtpUMessage::ProtocolType GtpUMessage::getProtocolType() const
 {
-    return static_cast<GtpUMessage::ProtocolType>((fixedField_ & 0x10) >> 4);
+    return static_cast<GtpUMessage::ProtocolType>((fixedField_ & ProtocolTypeFlag) >> 4);
 }
 
 GtpUMessage::GtpUMessage()
@@ -34,11 +34,11 @@ void GtpUMessage::setExtentionFlag(bool enabled)
 {
     if (enabled)
     {
-        fixedField_ |= 0x04;
+        fixedField_ |= ExtentionFlag;
     }
     else
     {
-        fixedField_ &= ~0x04;
+        fixedField_ &= ~ExtentionFlag;
     }
 }
 
@@ -46,11 +46,11 @@ void GtpUMessage::setSequenceFlag(bool enabled)
 {
     if (enabled)
     {
-        fixedField_ |= 0x02;
+        fixedField_ |= SequenceFlag;
     }
     else
     {
-        fixedField_ &= ~0x02;
+        fixedField_ &= ~SequenceFlag;
     }
 }
 
@@ -58,15 +58,15 @@ void GtpUMessage::setPduNumberFlag(bool enabled)
 {
     if (enabled)
     {
-        fixedField_ |= 0x01;
+        fixedField_ |= PduNumberFlag;
     }
     else
     {
-        fixedField_ &= ~0x01;
+        fixedField_ &= ~PduNumberFlag;
     }
 }
 
 void GtpUMessage::setProtocolType()
 {
-    fixedField_ |= 0x10;
+    fixedField_ |= ProtocolTypeFlag;
 }

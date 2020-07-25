@@ -23,6 +23,14 @@ public:
         GTP       = 1,
     };
 
+    enum HeaderFlag
+    {
+        PduNumberFlag    = 0x01,
+        SequenceFlag     = 0x02,
+        ExtentionFlag    = 0x04,
+        ProtocolTypeFlag = 0x10,
+    };
+
     GtpUMessage();
     ~GtpUMessage();
 
