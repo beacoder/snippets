@@ -1,20 +1,27 @@
 #ifndef GTPU_INTERFACES_IMESSAGE_H
 #define GTPU_INTERFACES_IMESSAGE_H
 
-#include <cinttypes>
-#include <cstdio>
+#include <vector>
 
 // IPC Message interface
 class IMessage
 {
 public:
-    enum MessageId
+    enum MessageType
     {
-        UnDefined = 0,
-        GtpU      = 1,
+        UnDefined       = 0,
+        EchoRequest     = 1,
+        EchoResponse    = 2,
+        ErrorIndication = 26,
+        EndMarker       = 254,
+        GPDU            = 255,
     };
 
-    virtual MessageId getMessageId() const = 0;
+    virtual MessageType getMessageType() const = 0;
+
+    virtual void serialize(std::vector<char>& data) = 0;
+
+    virtual void unserialize(std::vector<char>& data) = 0;
 };
 
 #endif // GTPU_INTERFACES_IMESSAGE_H

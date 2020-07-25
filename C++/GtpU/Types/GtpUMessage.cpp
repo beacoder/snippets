@@ -1,13 +1,8 @@
 #include "GtpUMessage.h"
 
-IMessage::MessageId GtpUMessage::getMessageId() const
+IMessage::MessageType GtpUMessage::getMessageType() const
 {
-    return GtpU;
-}
-
-std::uint16_t GtpUMessage::getMessageType() const
-{
-    return messageType_;
+    return static_cast<IMessage::MessageType>(messageType_);
 }
 
 std::uint8_t GtpUMessage::getVersionNumber() const
