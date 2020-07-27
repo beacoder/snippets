@@ -9,12 +9,13 @@ class IMessage
 public:
     enum MessageType
     {
-        UnDefined       = 0,
-        EchoRequest     = 1,
-        EchoResponse    = 2,
-        ErrorIndication = 26,
-        EndMarker       = 254,
-        GPDU            = 255,
+        UnDefined        = 0,
+        EchoRequest      = 1,
+        EchoResponse     = 2,
+        ErrorIndication  = 26,
+        ExtensionHeaders = 31,
+        EndMarker        = 254,
+        GPDU             = 255,
     };
 
     virtual MessageType getMessageType() const = 0;

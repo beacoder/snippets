@@ -1,10 +1,10 @@
-#ifndef GTPU_TYPES_GTPUMESSAGE_H
-#define GTPU_TYPES_GTPUMESSAGE_H
+#ifndef GTPU_TYPES_GTPUHEADER_H
+#define GTPU_TYPES_GTPUHEADER_H
 
-#include "Interfaces/IMessage.h"
+#include <cstdint>
 
 
-class GtpUMessage : public IMessage
+class GtpUHeader
 {
 public:
     enum ProtocolType
@@ -21,19 +21,13 @@ public:
         ProtocolTypeFlag = 0x10,
     };
 
-    GtpUMessage();
-    ~GtpUMessage();
+    GtpUHeader();
+    ~GtpUHeader();
 
     std::uint8_t  getVersionNumber() const;
     ProtocolType  getProtocolType() const;
 
 private:
-    //-----------Begin IMessage-------------------
-    IMessage::MessageType getMessageType() const override;
-    void serialize(std::vector<char>& data) override;
-    void unserialize(std::vector<char>& data) override;
-    //-----------End IMessage---------------------
-
     void setExtentionFlag(bool enabled);
     void setSequenceFlag(bool enabled);
     void setPduNumberFlag(bool enabled);
@@ -44,4 +38,4 @@ private:
     std::uint16_t messageType_;
 };
 
-#endif // GTPU_TYPES_GTPUMESSAGE_H
+#endif // GTPU_TYPES_GTPUHEADER_H
