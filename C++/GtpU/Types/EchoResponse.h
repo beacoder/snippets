@@ -1,7 +1,8 @@
 #ifndef GTPU_TYPES_ECHORESPONSE_H
 #define GTPU_TYPES_ECHORESPONSE_H
 
-#include "Interfaces/IMessage.h"
+#include "GtpuHeader.h"
+
 
 class EchoResponse : public IMessage
 {
@@ -14,6 +15,9 @@ private:
     void serialize(std::vector<char>& data) override;
     void unserialize(std::vector<char>& data) override;
     //-----------End IMessage---------------------
+
+private:
+    GtpuHeader header_;
 }
 
 #endif // GTPU_TYPES_ECHORESPONSE_H

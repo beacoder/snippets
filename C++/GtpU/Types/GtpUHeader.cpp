@@ -22,15 +22,15 @@ GtpuHeader::~GtpuHeader()
 
 }
 
-void GtpuHeader::setExtentionFlag(bool enabled)
+void GtpuHeader::setExtensionFlag(bool enabled)
 {
     if (enabled)
     {
-        flags_ |= ExtentionFlag;
+        flags_ |= ExtensionFlag;
     }
     else
     {
-        flags_ &= ~ExtentionFlag;
+        flags_ &= ~ExtensionFlag;
     }
 }
 

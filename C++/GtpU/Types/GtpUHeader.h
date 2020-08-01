@@ -18,18 +18,18 @@ public:
     {
         PduNumberFlag    = 0x01,
         SequenceFlag     = 0x02,
-        ExtentionFlag    = 0x04,
+        ExtensionFlag    = 0x04,
         ProtocolTypeFlag = 0x10,
     };
 
     GtpuHeader(IMessage::MessageType type);
     ~GtpuHeader();
 
-    std::uint8_t  getVersionNumber() const;
-    ProtocolType  getProtocolType() const;
+    std::uint8_t getVersionNumber() const;
+    ProtocolType getProtocolType() const;
 
 private:
-    void setExtentionFlag(bool enabled);
+    void setExtensionFlag(bool enabled);
     void setSequenceFlag(bool enabled);
     void setPduNumberFlag(bool enabled);
     void setProtocolType();
