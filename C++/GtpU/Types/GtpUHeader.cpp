@@ -1,64 +1,64 @@
-#include "GtpUHeader.h"
+#include "GtpuHeader.h"
 
 
-std::uint8_t GtpUHeader::getVersionNumber() const
+std::uint8_t GtpuHeader::getVersionNumber() const
 {
-    return (flagField_ & 0xE0) >> 4;
+    return (flags_ & 0xE0) >> 4;
 }
 
-GtpUHeader::ProtocolType GtpUHeader::getProtocolType() const
+GtpuHeader::ProtocolType GtpuHeader::getProtocolType() const
 {
-    return static_cast<GtpUHeader::ProtocolType>((flagField_ & ProtocolTypeFlag) >> 4);
+    return static_cast<GtpuHeader::ProtocolType>((flags_ & ProtocolTypeFlag) >> 4);
 }
 
-GtpUHeader::GtpUHeader(IMessage::MessageType type)
+GtpuHeader::GtpuHeader(IMessage::MessageType type)
     : messageType_(type)
 {
 
 }
 
-GtpUHeader::~GtpUHeader()
+GtpuHeader::~GtpuHeader()
 {
 
 }
 
-void GtpUHeader::setExtentionFlag(bool enabled)
+void GtpuHeader::setExtentionFlag(bool enabled)
 {
     if (enabled)
     {
-        flagField_ |= ExtentionFlag;
+        flags_ |= ExtentionFlag;
     }
     else
     {
-        flagField_ &= ~ExtentionFlag;
+        flags_ &= ~ExtentionFlag;
     }
 }
 
-void GtpUHeader::setSequenceFlag(bool enabled)
+void GtpuHeader::setSequenceFlag(bool enabled)
 {
     if (enabled)
     {
-        flagField_ |= SequenceFlag;
+        flags_ |= SequenceFlag;
     }
     else
     {
-        flagField_ &= ~SequenceFlag;
+        flags_ &= ~SequenceFlag;
     }
 }
 
-void GtpUHeader::setPduNumberFlag(bool enabled)
+void GtpuHeader::setPduNumberFlag(bool enabled)
 {
     if (enabled)
     {
-        flagField_ |= PduNumberFlag;
+        flags_ |= PduNumberFlag;
     }
     else
     {
-        flagField_ &= ~PduNumberFlag;
+        flags_ &= ~PduNumberFlag;
     }
 }
 
-void GtpUHeader::setProtocolType()
+void GtpuHeader::setProtocolType()
 {
-    flagField_ |= ProtocolTypeFlag;
+    flags_ |= ProtocolTypeFlag;
 }

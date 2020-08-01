@@ -5,7 +5,7 @@
 #include <cstdint>
 
 
-class GtpUHeader
+class GtpuHeader
 {
 public:
     enum ProtocolType
@@ -22,8 +22,8 @@ public:
         ProtocolTypeFlag = 0x10,
     };
 
-    GtpUHeader(IMessage::MessageType type);
-    ~GtpUHeader();
+    GtpuHeader(IMessage::MessageType type);
+    ~GtpuHeader();
 
     std::uint8_t  getVersionNumber() const;
     ProtocolType  getProtocolType() const;
@@ -41,7 +41,7 @@ private:
 //
 //                                        Bits
 // Octets	8	7	6	5	4	3	2	1
-// 1		      Version           PT	(*)	E	S	PN
+// 1		     Version            PT	(*)	E	S	PN
 // 2		Message Type
 // 3		Length (1st Octet)
 // 4		Length (2nd Octet)
@@ -54,9 +54,13 @@ private:
 // 11		N-PDU Number
 // 12		Next Extension Header Type
 
-    std::uint8_t  flagField_;
+    std::uint8_t  flags_;
     std::uint8_t  messageType_;
     std::uint16_t length_;
+    std::uint32_t teid_;
+    std::uint16_t sequenceNbr_;
+    std::uint8_t  nPduNbr_;
+    std::uint8_t  extensionType_;
 };
 
 #endif // GTPU_TYPES_GTPUHEADER_H
