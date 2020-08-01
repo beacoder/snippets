@@ -3,15 +3,16 @@
 
 std::uint8_t GtpUHeader::getVersionNumber() const
 {
-    return (fixedField_ & 0xE0) >> 4;
+    return (flagField_ & 0xE0) >> 4;
 }
 
 GtpUHeader::ProtocolType GtpUHeader::getProtocolType() const
 {
-    return static_cast<GtpUHeader::ProtocolType>((fixedField_ & ProtocolTypeFlag) >> 4);
+    return static_cast<GtpUHeader::ProtocolType>((flagField_ & ProtocolTypeFlag) >> 4);
 }
 
-GtpUHeader::GtpUHeader()
+GtpUHeader::GtpUHeader(IMessage::MessageType type)
+    : messageType_(type)
 {
 
 }
@@ -25,11 +26,11 @@ void GtpUHeader::setExtentionFlag(bool enabled)
 {
     if (enabled)
     {
-        fixedField_ |= ExtentionFlag;
+        flagField_ |= ExtentionFlag;
     }
     else
     {
-        fixedField_ &= ~ExtentionFlag;
+        flagField_ &= ~ExtentionFlag;
     }
 }
 
@@ -37,11 +38,11 @@ void GtpUHeader::setSequenceFlag(bool enabled)
 {
     if (enabled)
     {
-        fixedField_ |= SequenceFlag;
+        flagField_ |= SequenceFlag;
     }
     else
     {
-        fixedField_ &= ~SequenceFlag;
+        flagField_ &= ~SequenceFlag;
     }
 }
 
@@ -49,15 +50,15 @@ void GtpUHeader::setPduNumberFlag(bool enabled)
 {
     if (enabled)
     {
-        fixedField_ |= PduNumberFlag;
+        flagField_ |= PduNumberFlag;
     }
     else
     {
-        fixedField_ &= ~PduNumberFlag;
+        flagField_ &= ~PduNumberFlag;
     }
 }
 
 void GtpUHeader::setProtocolType()
 {
-    fixedField_ |= ProtocolTypeFlag;
+    flagField_ |= ProtocolTypeFlag;
 }
