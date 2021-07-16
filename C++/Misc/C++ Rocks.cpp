@@ -60,7 +60,7 @@ T adder(const T& v) {
 }
 
 template<typename T, typename ... Args>
-T adder(const T& first, const Args& ... args) {
+typename std::enable_if<(sizeof...(Args) > 0)>::type adder(const T& first, const Args& ... args) {
   return first + adder(args ...);
 }
 
