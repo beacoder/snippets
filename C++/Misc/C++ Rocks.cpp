@@ -1,5 +1,6 @@
 #include <functional>
 #include <iostream>
+#include <type_traits>
 
 /// combine std::bind(), variadic templates, and perfect forwarding
 
@@ -60,7 +61,7 @@ T adder(const T& v) {
 }
 
 template<typename T, typename ... Args>
-typename std::enable_if<(sizeof...(Args) > 0)>::type adder(const T& first, const Args& ... args) {
+typename std::enable_if<(sizeof...(Args) > 0), T>::type adder(const T& first, const Args& ... args) {
   return first + adder(args ...);
 }
 
