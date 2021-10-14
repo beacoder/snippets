@@ -30,4 +30,4 @@ private:
 };
 
 // For CRTP hack to replace duplicated clone in all SubClass, refer to following link.
-// https://katyscode.wordpress.com/2013/08/22/c-polymorphic-cloning-and-the-crtp-curiously-recurring-template-pattern/
+// https://stackoverflow.com/questions/65916601/clone-derived-class-from-base-class-pointer
