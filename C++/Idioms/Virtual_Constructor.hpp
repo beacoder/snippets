@@ -20,11 +20,11 @@ public:
 private:
     Ptr create () const                         // Virtual constructor (creation)
     {
-      return std::make_unique<std::remove_reference_t<decltype(*this)>>();
+      return std::make_unique<Manager>();
     }
   
     Ptr clone () const                          // Virtual constructor (copying)
     {
-      return std::make_unique<std::remove_reference_t<decltype(*this)>>(*this);
+      return std::make_unique<Manager>(*this);
     }
 };
