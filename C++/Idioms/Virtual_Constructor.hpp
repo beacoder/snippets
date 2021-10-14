@@ -28,3 +28,6 @@ private:
       return std::make_unique<Manager>(*this);
     }
 };
+
+// For CRTP hack to replace duplicated clone in all SubClass, refer to following link.
+// https://katyscode.wordpress.com/2013/08/22/c-polymorphic-cloning-and-the-crtp-curiously-recurring-template-pattern/
