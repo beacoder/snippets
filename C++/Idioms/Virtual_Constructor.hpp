@@ -2,8 +2,8 @@
 
 class Employee
 {
-  public:
-    using Ptr = std::shared_ptr<Employee>;
+public:
+    using Ptr = std::unique_ptr<Employee>;
 
     virtual ~Employee ()        = default;      // Native support for polymorphic destruction.
     virtual Ptr create () const = 0;            // Virtual constructor (creation)
@@ -12,19 +12,19 @@ class Employee
 
 class Manager : public Employee                 // "is-a" relationship
 {
-  public:
+public:
     Manager () {}                               // Default constructor
     Manager (Manager const &) {}                // Copy constructor
     virtual ~Manager () {}
 
-  private:
+private:
     Ptr create () const                         // Virtual constructor (creation)
     {
-      return Ptr(new Manager());
+      return std::make_unique<std::remove_reference_t<decltype(*this)>>();
     }
   
     Ptr clone () const                          // Virtual constructor (copying)
     {
-      return Ptr(new Manager (*this));
+      return std::make_unique<std::remove_reference_t<decltype(*this)>>(*this);
     }
 };
