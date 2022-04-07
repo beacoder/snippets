@@ -1,4 +1,4 @@
-//@see https://blog.csdn.net/wzh200x/article/details/37708609
+// @see https://blog.csdn.net/wzh200x/article/details/37708609
 //
 // 需求：广告按权重展现 => weighted arbitration
 //
@@ -12,11 +12,9 @@
 
 #include <algorithm>
 #include <iostream>
-#include <iterator>
 #include <map>
 #include <set>
-#include <stdlib.h>
-#include <time.h>
+#include <vector>
 
 // Key, Value -> Weight
 const std::map<uint32_t, uint32_t> pool {
