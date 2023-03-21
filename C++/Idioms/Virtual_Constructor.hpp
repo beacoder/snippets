@@ -33,12 +33,15 @@ private:
 // https://stackoverflow.com/questions/65916601/clone-derived-class-from-base-class-pointer
 template <class Derived>
 class CloneHelper: public Employee {
-    Derived* create() const override
+    Ptr create() const override
     {
-        return new Derived(* static_cast<Derived *>(this) );
+        return std::make_unique<Derived>();
     }
 
-    ...
+    Ptr clone () const override
+    {
+      return std::make_unique<Derived>(*this);
+    }
 };
 
 class Manager : public CloneHelper<Manager>
