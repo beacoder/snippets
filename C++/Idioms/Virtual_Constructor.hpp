@@ -29,5 +29,19 @@ private:
     }
 };
 
-// For CRTP hack to replace duplicated clone in all SubClass, refer to following link.
+// Replace duplicated clone in all SubClasses with CRTP hack.
 // https://stackoverflow.com/questions/65916601/clone-derived-class-from-base-class-pointer
+template <class Derived>
+class CloneHelper: public Employee {
+    Derived* create() const override
+    {
+        return new Derived(* static_cast<Derived *>(this) );
+    }
+
+    ...
+};
+
+class Manager : public CloneHelper<Manager>
+{
+    ...
+};
