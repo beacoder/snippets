@@ -40,7 +40,7 @@ class CloneHelper: public Employee {
 
     Ptr clone () const override
     {
-      return std::make_unique<Derived>(static_cast<Derived&>(*this));
+        return std::make_unique<Derived>(static_cast<Derived&>(*this));
     }
 };
 
