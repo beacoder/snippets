@@ -57,16 +57,16 @@ auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg) ...); };
 /// variadic template recursive function
 
 template<typename T>
-T adder(const T& v) {
+T sum(const T& v) {
   return v;
 }
 
 template<typename T, typename ... Args>
-typename std::enable_if<(sizeof...(Args) > 0), T>::type adder(const T& first, const Args& ... args) {
-  return first + adder(args ...);
+typename std::enable_if<(sizeof...(Args) > 0), T>::type sum(const T& first, const Args& ... args) {
+  return first + sum(args ...);
 }
 
 int main()
 {
-  std::cout << adder(1,2,3,4,5);    
+  std::cout << sum(1,2,3,4,5);    
 }
