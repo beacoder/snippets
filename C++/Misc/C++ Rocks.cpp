@@ -67,7 +67,7 @@ typename std::enable_if<(sizeof...(Args) > 0), T>::type sum(const T& first, cons
   return first + sum(args ...);
 }
 
-// version-2
+// version-2, can handle both lvalue and rvalue.
 template<typename T>
 T sum(T&& v) {
   return v;
