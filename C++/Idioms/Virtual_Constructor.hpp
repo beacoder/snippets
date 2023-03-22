@@ -32,7 +32,10 @@ private:
 // Replace duplicated clone in all subclasses with CRTP hack.
 // https://stackoverflow.com/questions/65916601/clone-derived-class-from-base-class-pointer
 template <class Derived>
-class CloneHelper: public Employee {
+class CloneHelper: public Employee
+{
+    using Employee::Employee;
+    
     Ptr create() const override
     {
         return std::make_unique<Derived>();
