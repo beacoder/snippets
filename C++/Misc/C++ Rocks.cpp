@@ -56,26 +56,20 @@ auto f1 = [=](auto&& arg) { f(42, std::forward<decltype(arg)>(arg) ...); };
 
 /// variadic template recursive function
 
-// version-1
+// version-1, can handle both lvalue and rvalue.
 template<typename T>
-T sum(const T& v) {
-  return v;
-}
-
-template<typename T, typename ... Args>
-typename std::enable_if<(sizeof...(Args) > 0), T>::type sum(const T& first, const Args& ... args) {
-  return first + sum(args ...);
-}
-
-// version-2, can handle both lvalue and rvalue.
-template<typename T>
-T sum(T&& v) {
-  return v;
-}
+T sum(T&& v) { return v; }
 
 template<typename T, typename ... Args>
 typename std::enable_if<(sizeof...(Args) > 0), T>::type sum(T&& first, Args&& ... args) {
   return first + sum(std::forward<Args>(args)...);
+}
+
+// version-2, simplified with folding expression from C++17
+template<typename ... Args>
+int sum(Args&& ... args)
+{
+    return (args + ...);
 }
 
 int main()
