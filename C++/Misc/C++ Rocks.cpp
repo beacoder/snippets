@@ -65,7 +65,7 @@ typename std::enable_if<(sizeof...(Args) > 0), T>::type sum(T&& first, Args&& ..
   return first + sum(std::forward<Args>(args)...);
 }
 
-// version-2, simplified with folding expression from C++17
+// version-2, simplified with fold expression from C++17
 template<typename ... Args>
 int sum(Args&& ... args)
 {
