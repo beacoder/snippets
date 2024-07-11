@@ -23,7 +23,7 @@ Ensure that an object is initialized before its first use, e.g: Singleton patter
 ```
 #### Virtual_Constructor
 ```
-Creating an object or it's copy without knowing its concrete type
+Creating an object without knowing its concrete type
 ```
 #### Non_throwing_swap
 ```
