@@ -2,7 +2,7 @@
 
 @see [More_C++_Idioms] (http://en.wikibooks.org/wiki/More_C++_Idioms)
 
-#### Interface_Class
+#### Interface_class
 ```
 Separate interface of class from its implementation, e.g: Strategy pattern
 Invoke implementation of class using runtime polymorphism
@@ -17,11 +17,11 @@ To provide basic exception safety guarantee
 ```
 Hide implementation details of interface from clients, e.g: Bridge pattern
 ```
-#### Construct_On_First_Use
+#### Construct_on_first_use
 ```
 Ensure that an object is initialized before its first use, e.g: Singleton pattern
 ```
-#### Virtual_Constructor
+#### Virtual_constructor
 ```
 Creating an object without knowing its concrete type
 ```
@@ -34,7 +34,7 @@ To provide uniform interface to it to facilitate generic programming
 ```
 Create an exception safe implementation of overloaded assignment operator
 ```
-#### Non_Virtual_Interface
+#### Non_virtual_interface
 ```
 Separate a class interface into two distinct interfaces:
 Client interface: This is the public non-virtual interface
