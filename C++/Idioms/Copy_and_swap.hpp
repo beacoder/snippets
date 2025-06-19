@@ -7,6 +7,7 @@ public:
 
     String(const String& s) : str(s.str) {}
 
+     // when you don't have swap defined
     String & operator=(const String& s)
     {
         if (this != &s)
@@ -18,6 +19,7 @@ public:
         return *this;
     }
 
+    // when you have swap defined
     String & operator=(const String& s)
     {
         if (this != &s)
