@@ -1,7 +1,8 @@
 class String
 {
 public:
-    // These two will do a **member-wise move** from the source object (rvalue) to the destination object.
+    // These two will do a member-wise move from the source object (rvalue) to the destination object.
+    // Don't use these when you got dynamically allocated memory in class (need to handle pointer properly).
     String(String&& s)             = default;
     String & operator=(String&& s) = default;
 
@@ -12,10 +13,10 @@ public:
     {
         if (this != &s)
         {
-            *this = String(s); // Do **member-wise move**
+            *this = String(s); // Copy-constructor and member-wise move
         }
       
-        // Old resources are released after **member-wise move**
+        // Old resources are released after member-wise move
         return *this;
     }
 
