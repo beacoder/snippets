@@ -8,7 +8,7 @@ public:
 
     String(const String& s) : str(s.str) {}
 
-     // when you don't have swap defined
+     // When you don't have swap defined
     String & operator=(const String& s)
     {
         if (this != &s)
@@ -16,11 +16,11 @@ public:
             *this = String(s); // Copy-constructor and member-wise move
         }
       
-        // Old resources are released after member-wise move
+        // Need to make sure old resources are properly released by move-assignment function
         return *this;
     }
 
-    // when you have swap defined
+    // When you have swap defined
     String & operator=(const String& s)
     {
         if (this != &s)
