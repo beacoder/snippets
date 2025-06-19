@@ -16,7 +16,7 @@ public:
             *this = String(s); // Copy-constructor and member-wise move
         }
       
-        // Need to make sure old resources are properly released by move-assignment function
+        // Need to make sure old resources are properly released by move-assignment operator
         return *this;
     }
 
