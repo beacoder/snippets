@@ -12,7 +12,7 @@ public:
             *this = String(s); // Do **member-wise move**
         }
       
-        // Old resources are released with the destruction of the temporary above
+        // Old resources are released after **member-wise move**
         return *this;
     }
 
