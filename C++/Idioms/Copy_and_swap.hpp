@@ -5,6 +5,8 @@ public:
     String(String&& s)             = default;
     String & operator=(String&& s) = default;
 
+    String(const String& s) : str(s.str) {}
+
     String & operator=(const String& s)
     {
         if (this != &s)
