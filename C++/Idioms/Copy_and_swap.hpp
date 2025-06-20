@@ -3,7 +3,8 @@ class String
 public:
     // These two will do a member-wise move from the source object (rvalue) to the destination object.
     String(String&& s)             = default;
-    String & operator=(String&& s) = default; // Don't use this when you got dynamically allocated memory in class (need to handle pointer properly).
+    String & operator=(String&& s) = default; // Don't use this when you have manually allocated resources.
+                                              // OK to use when you have smart pointers or containers from std.
 
     String(const String& s) : str(s.str) {}
 
