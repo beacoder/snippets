@@ -4,7 +4,7 @@ public:
     // These two will do a member-wise move from the source object (rvalue) to the destination object.
     String(String&& s)             = default;
     String & operator=(String&& s) = default; // Don't use this when you have manually allocated resources.
-                                              // OK to use when you have smart pointers or containers from std.
+                                              // OK to use when you have smart pointers or containers from stl.
 
     String(const String& s) : str(s.str) {}
 
