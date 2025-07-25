@@ -1,6 +1,10 @@
 class String
 {
 public:
+    // The Rule of Five
+    String()  = default;
+    ~String() = default;
+
     // These two will do a member-wise move from the source object (rvalue) to the destination object.
     String(String&& s)             = default;
     String & operator=(String&& s) = default; // Don't use this when you have manually allocated resources.
