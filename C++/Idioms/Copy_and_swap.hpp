@@ -1,8 +1,9 @@
 class String
 {
 public:
-    // The Rule of Five
     String()  = default;
+
+    // The Rule of Five
     ~String() = default;
 
     // These two will do a member-wise move from the source object (rvalue) to the destination object.
