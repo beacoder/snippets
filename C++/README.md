@@ -91,5 +91,3 @@ A quick reference to standard-library features and language improvements introdu
 | `float` / `double` for ML half-precision | `std::bfloat16_t` |
 
 ---
-
-*Note: This document preserves the original comparison points and wording as closely as possible while making the layout readable in Markdown.*
