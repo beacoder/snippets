@@ -3,54 +3,45 @@
 // when an object needs to modify the shared data. Efficient for read-heavy,
 // write-rare scenarios.
 
-class CowString
+template <class T>
+class Cow
 {
   public:
-    CowString(const char* s = "")
-      : data_(std::make_shared<std::string>(s)) {}
+    Cow() : data_(std::make_shared<T>()) {}
+
+    Cow(const T& v) : data_(std::make_shared<T>(v)) {}
 
     // Shallow copy — shares the underlying data
-    CowString(const CowString&) = default;
-    CowString& operator=(const CowString&) = default;
+    Cow(const Cow&)            = default;
+    Cow& operator=(const Cow&) = default;
 
     // Read access — no copy needed
-    const char& operator[](size_t i) const
-    {
-        return (*data_)[i];
-    }
+    const T& read() const { return *data_; }
 
     // Write access — detach from shared data if more than one owner
-    char& operator[](size_t i)
+    T& write()
     {
         detach();
-        return (*data_)[i];
+        return *data_;
     }
-
-    void append(const char* s)
-    {
-        detach();
-        data_->append(s);
-    }
-
-    const std::string& str() const { return *data_; }
 
   private:
-    // Copy-on-write: if the data is shared, make a private copy before mutating
     void detach()
     {
         if (data_.use_count() > 1)
-            data_ = std::make_shared<std::string>(*data_);
+            data_ = std::make_shared<T>(*data_);
     }
 
-    std::shared_ptr<std::string> data_;
+    std::shared_ptr<T> data_;
 };
 
 void foo()
 {
-    CowString a("hello");
-    CowString b = a;      // Shared — no copy
+    Cow<std::vector<int>> a{std::vector<int>{1, 2, 3}};
+    Cow<std::vector<int>> b = a;  // Shared — no copy
 
-    b[0] = 'H';           // b detaches, a still sees "hello"
+    b.write().push_back(4);       // b detaches, a still sees {1, 2, 3}
 
-    a.append(" world");   // a detaches (if still shared)
+    a.read().size();              // 3
+    b.read().size();              // 4
 }
