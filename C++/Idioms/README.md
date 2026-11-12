@@ -57,12 +57,6 @@ Custom alternatives to std::function / std::any
 Share data between multiple objects; copy only when an object needs to mutate
 Efficient for read-heavy, write-rare scenarios
 ```
-#### Expression_templates
-```
-Represent chained operations as types to avoid intermediate temporaries
-Single-pass evaluation for a + b + c without allocating intermediate results
-Widely used in linear algebra libraries (Eigen, Blaze)
-```
 #### Shrink_to_fit
 ```
 Release unused capacity from a container after it has grown and then shrunk
