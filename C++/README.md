@@ -58,11 +58,8 @@ A quick reference to standard-library features and language improvements introdu
 | Mutex around `std::cout` | `std::osyncstream(std::cout) << ...;` | the one-statement temporary **is** valid: it emits atomically at the end of the full-expression. Use a *named* `osyncstream` only when the write spans several statements |
 | `s.find(x) != s.end()` for `set` / `map` | `s.contains(x)` | container members for **associative/unordered** containers only. For `std::string` / `string_view` the old form is `find(sub) != npos` and `contains` is C++23 |
 | `static_cast<std::ptrdiff_t>(v.size())` | `std::ssize(v)` | |
-| `(a + b) / 2` | `std::midpoint(a, b)` | overflow-safe, correct rounding |
-| `a + t * (b - a)` | `std::lerp(a, b, t)` | |
 | `int arr[] = {1,2,3};` then copy into a container | `std::to_array({1, 2, 3})` | element type deduced; `std::to_array<int>({1,2,3})` also works |
 | `#ifdef` / compiler intrinsics for constexpr checks | `std::is_constant_evaluated()` | prefer C++23 `if consteval` |
-| Hand-rolled `ceil(log2(x))` / popcount | `std::bit_ceil`, `bit_floor`, `bit_width`, `popcount`, `countl_zero`, `has_single_bit`, `rotl`, `rotr` | |
 | Unsafe signed/unsigned comparison `a < b` | `std::cmp_less(a, b)` (and `cmp_equal`, `cmp_greater`, ...) | |
 | `boost::date_time` or C `tm` / `time_t` | `<chrono>` calendar (`year_month_day`, `floor<days>`) and time-zone library (`tzdb`, `zoned_time`) | |
 | Header includes (preprocessor, ODR issues) | Modules: `module`/`import` (C++20 core language) | the standard library *named modules* `import std;` / `std.compat` are **C++23**, not C++20 |
@@ -70,9 +67,7 @@ A quick reference to standard-library features and language improvements introdu
 | `constexpr` functions that must always run at compile time | `consteval` | immediate functions |
 | `s.find(prefix) == 0` | `s.starts_with(prefix)` / `s.ends_with(suffix)` | `std::string` and `string_view` |
 | `__BYTE_ORDER__` / runtime endian probing | `std::endian::native == std::endian::little` | |
-| `M_PI`, `acos(-1)` | `std::numbers::pi` (and `e`, `sqrt2`, `ln2`, ...) | |
 | `__builtin_expect(cond, 1)` | `[[likely]]` / `[[unlikely]]` | |
-| Empty-base-optimisation tricks | `[[no_unique_address]]` | |
 | Mutex + condition variable for one-shot signalling | `std::atomic<T>::wait()` / `notify_one()` / `notify_all()` | |
 | Non-atomic storage that needs atomic access | `std::atomic_ref<T>` | |
 | Mutex around a `shared_ptr` | `std::atomic<std::shared_ptr<T>>` | |
