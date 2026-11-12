@@ -18,23 +18,16 @@ A quick reference to standard-library features and language improvements introdu
 | `std::result_of<...>::type` | `std::invoke_result_t<...>` | |
 | `boost::apply_tuple` / manual `std::get<I>` | `std::apply(f, tuple)` | |
 | Manual `std::invoke`-style dispatch on member pointers | `std::invoke(f, args...)` | |
-| `std::apply` boilerplate for constructors | `std::make_from_tuple<T>(t)` | aggregate paren-init needs C++20 |
 | `namespace a { namespace b { ... } }` | `namespace a::b { ... }` | |
 | `std::lock(m1, m2)` + `std::unique_lock` wrappers | `std::scoped_lock l(m1, m2)` | |
 | Hand-written reader/writer lock | `std::shared_mutex` + `std::shared_lock` | `shared_lock` itself is C++14, `shared_mutex` is C++17 |
 | `static const` with ODR headaches | `inline constexpr int x = 42;` | inline variables |
-| Explicit `std::vector<T>::iterator` template arguments | `std::vector v{1, 2, 3};` | CTAD |
-| `std::array<int,3> a{{1,2,3}}` | `std::array a{1, 2, 3};` | CTAD |
 | `char*` / `uint8_t*` for raw bytes | `std::byte` | |
 | `boost::filesystem` / POSIX `opendir` + `stat` | `std::filesystem` | |
-| `std::min(std::max(x, lo), hi)` | `std::clamp(x, lo, hi)` | |
-| `std::accumulate` (sequential only) | `std::reduce` / `std::inclusive_scan` / `std::exclusive_scan` / `std::transform_reduce` | `reduce` is parallel **only** with an explicit execution policy and may reassociate, so it is not a drop-in for non-associative ops |
 | Hand-rolled thread fan-out / `std::async` soup | Execution policies `std::execution::par` / `par_unseq` on the standard algorithms | the actual C++17 feature behind the `reduce` row |
-| Euclid loop for gcd/lcm | `std::gcd` / `std::lcm` | |
 | `atoi` / `sscanf` / `sprintf` / iostreams formatting | `std::from_chars` / `std::to_chars` | locale-free, no allocation |
-| `__attribute__((warn_unused_result))` | `[[nodiscard]]` | |
-| `__attribute__((unused))` | `[[maybe_unused]]` | different concern from `[[nodiscard]]` |
-| `/* fall through */` comment + `-Wimplicit-fallthrough` | `[[fallthrough]];` | |
+| `__attribute__((warn_unused_result))` / `__attribute__((unused))` / `/* fall through */` + `-Wimplicit-fallthrough` | `[[nodiscard]]` / `[[maybe_unused]]` / `[[fallthrough]];` | `[[nodiscard]]` and `[[maybe_unused]]` address different 
+ concerns; `[[fallthrough]]` replaces the comment + warning-flag dance |
 | Custom allocator boilerplate / arena hacks | `std::pmr` polymorphic memory resources | |
 | `static_cast<const T&>(x)` to force const | `std::as_const(x)` | |
 | `std::not1` / `std::not2` / `std::bind` tricks | `std::not_fn` | |
@@ -45,7 +38,6 @@ A quick reference to standard-library features and language improvements introdu
 | `template <class T, T v>` | `template <auto N>` | |
 | Named function objects for constant expressions | `constexpr` lambdas | |
 | `time_point_cast` + manual truncation | `chrono::floor` / `ceil` / `round` | |
-| Nested `std::hypot(std::hypot(x, y), z)` | `std::hypot(x, y, z)` | |
 
 ---
 
