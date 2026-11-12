@@ -26,8 +26,7 @@ A quick reference to standard-library features and language improvements introdu
 | `boost::filesystem` / POSIX `opendir` + `stat` | `std::filesystem` | |
 | Hand-rolled thread fan-out / `std::async` soup | Execution policies `std::execution::par` / `par_unseq` on the standard algorithms | the actual C++17 feature behind the `reduce` row |
 | `atoi` / `sscanf` / `sprintf` / iostreams formatting | `std::from_chars` / `std::to_chars` | locale-free, no allocation |
-| `__attribute__((warn_unused_result))` / `__attribute__((unused))` / `/* fall through */` + `-Wimplicit-fallthrough` | `[[nodiscard]]` / `[[maybe_unused]]` / `[[fallthrough]];` | `[[nodiscard]]` and `[[maybe_unused]]` address different 
- concerns; `[[fallthrough]]` replaces the comment + warning-flag dance |
+| `__attribute__((warn_unused_result))` / `__attribute__((unused))` / `-Wimplicit-fallthrough` | `[[nodiscard]]` / `[[maybe_unused]]` / `[[fallthrough]];` | `[[nodiscard]]` and `[[maybe_unused]]` address different concerns; `[[fallthrough]]` replaces the warning-flag dance |
 | Custom allocator boilerplate / arena hacks | `std::pmr` polymorphic memory resources | |
 | `static_cast<const T&>(x)` to force const | `std::as_const(x)` | |
 | `std::not1` / `std::not2` / `std::bind` tricks | `std::not_fn` | |
